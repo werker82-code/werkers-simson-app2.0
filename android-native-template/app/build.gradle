@@ -1,0 +1,13 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.werkerswerkstatt.simson'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.werkerswerkstatt.simson'
+        minSdk 24
+        targetSdk 35
+        versionCode 32
+        versionName '3.2.0'
+    }
+}

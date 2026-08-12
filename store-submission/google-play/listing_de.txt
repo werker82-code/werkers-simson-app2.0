@@ -1,0 +1,41 @@
+APP NAME
+Werkers Simson
+
+CATEGORY
+Auto & Vehicles
+
+SHORT DESCRIPTION
+Simson Modelle, Werkstattwissen, Diagnose und digitale Fahrzeugakte.
+
+FULL DESCRIPTION
+Werkers Simson ist dein mobiler Begleiter rund um klassische Simson-Fahrzeuge.
+
+Die App verbindet Modellwissen, Werkstattreferenzen und die Verwaltung deiner eigenen Fahrzeuge in einer übersichtlichen Anwendung.
+
+Funktionen:
+• Modellarchiv für zahlreiche Simson-Baureihen
+• S51 Varianten- und Farbvergleich
+• technische Fahrzeugreferenzen
+• Vergaser- und Zündungszuordnung
+• geführter Diagnose-Assistent
+• fahrzeugspezifische Fehlerdiagnose
+• interaktive Elektrik- und Baugruppenübersichten
+• Ersatzteil-/Baugruppenreferenz
+• Einkaufsliste für Ersatzteile
+• digitale Garage für mehrere Fahrzeuge
+• Wartungs- und Reparaturhistorie
+• Kostenübersicht und Restaurationsfortschritt
+• Foto- und Dokumentenablage
+• Service-Erinnerungen
+• Fahrzeug-Dashboard und Zeitstrahl
+• Backup und Export lokaler Daten
+
+Werkers Simson ist als Werkstatt- und Nachschlagewerkzeug gedacht. Technische Angaben ersetzen keine fahrzeug- oder motorspezifischen Reparaturunterlagen. Bei sicherheitsrelevanten Arbeiten sind die passenden Hersteller-, Fach- und Prüfvorgaben maßgeblich.
+
+Die Kernfunktionen arbeiten lokal auf dem Gerät. Es ist kein Benutzerkonto erforderlich.
+
+PRIVACY POLICY URL – VOR VERÖFFENTLICHUNG ONLINE STELLEN
+https://www.werkers-werkstatt.com/datenschutz-simson-app
+
+SUPPORT URL – VOR VERÖFFENTLICHUNG ONLINE STELLEN
+https://www.werkers-werkstatt.com/simson-app-support

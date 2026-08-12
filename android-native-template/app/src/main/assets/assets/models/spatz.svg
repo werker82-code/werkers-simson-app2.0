@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 360">
+<rect width="512" height="360" fill="#ebe7de"/><rect x="12" y="12" width="488" height="336" fill="none" stroke="#111" stroke-width="3"/>
+<circle cx="116" cy="278" r="51" fill="none" stroke="#111" stroke-width="15"/><circle cx="347" cy="278" r="51" fill="none" stroke="#111" stroke-width="15"/><path d="M117 276 L170 211 L263 278 L347 278 M170 211 L293 211 L347 278 M170 211 L143 173 M142 173 L118 173" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/><path d="M178 196 Q230 164 281 199" fill="none" stroke="#111" stroke-width="12"/>
+<text x="28" y="52" font-family="Arial" font-size="16" font-weight="700" letter-spacing="3">WERKERS WERKSTATT</text>
+<text x="28" y="92" font-family="Arial" font-size="31" font-weight="900">Spatz SR 4-1</text>
+<text x="28" y="120" font-family="Arial" font-size="14">1964–1971 · Modellkarte</text>
+</svg>

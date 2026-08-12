@@ -1,0 +1,2637 @@
+{
+  "models": [
+    {
+      "id": "sr1",
+      "name": "Simson SR1",
+      "years": "1955–1957",
+      "type": "Moped",
+      "engine": "2-Takt",
+      "ccm": "ca. 50 cm³",
+      "gear": "2-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 50 km/h",
+      "desc": "Das erste Moped aus Suhl mit Tretkurbel.",
+      "url": "https://www.werkers-werkstatt.com/sr1-details",
+      "production": [
+        1955,
+        1957
+      ],
+      "facts": [
+        "Tretkurbel und Fahrradcharakter prägen die frühe Bauform.",
+        "Frühe Simson-Generation vor der Vogelserie.",
+        "Bei Restaurierungen sind originale Anbauteile und Lackreste besonders interessant."
+      ],
+      "image": "assets/models/sr1.svg"
+    },
+    {
+      "id": "sr2",
+      "name": "Simson SR2 / SR2E",
+      "years": "1957–1964",
+      "type": "Moped",
+      "engine": "2-Takt",
+      "ccm": "ca. 50 cm³",
+      "gear": "2-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 50 km/h",
+      "desc": "Weiterentwicklung des SR1 und früher Simson-Klassiker.",
+      "url": "https://www.werkers-werkstatt.com/sr2-details",
+      "production": [
+        1957,
+        1964
+      ],
+      "facts": [
+        "Klassisches frühes Simson-Moped mit Tretkurbeln.",
+        "SR2E ist die weiterentwickelte Ausführung.",
+        "Rahmen, Tank, Lenker und Beleuchtung sind wichtige Identifikationsmerkmale."
+      ],
+      "image": "assets/models/sr2.svg"
+    },
+    {
+      "id": "kr50",
+      "name": "Simson KR50",
+      "years": "1958–1964",
+      "type": "Kleinroller",
+      "engine": "2-Takt",
+      "ccm": "ca. 50 cm³",
+      "gear": "2-Gang",
+      "cooling": "Gebläse",
+      "speed": "ca. 50 km/h",
+      "desc": "Vorgänger der Schwalbe.",
+      "url": "https://www.werkers-werkstatt.com/simson-kr50-details",
+      "production": [
+        1958,
+        1964
+      ],
+      "facts": [
+        "Früher Kleinroller und unmittelbarer Vorläufer der Schwalbe.",
+        "Gebläsekühlung und geschlossene Rollerkarosserie.",
+        "Blechteile und zeittypische Ausstattung sind bei Originalitätsprüfungen wichtig."
+      ],
+      "image": "assets/models/kr50.svg"
+    },
+    {
+      "id": "spatz",
+      "name": "Spatz SR 4-1",
+      "years": "1964–1971",
+      "type": "Vogelserie",
+      "engine": "2-Takt",
+      "ccm": "ca. 50 cm³",
+      "gear": "2-/3-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 50 km/h",
+      "desc": "Kleines und leichtes Modell der Vogelserie.",
+      "url": "https://www.werkers-werkstatt.com/simson-spatz-details",
+      "production": [
+        1964,
+        1971
+      ],
+      "facts": [
+        "Kleinster Vertreter der Vogelserie.",
+        "Je nach Ausführung unterschiedliche Motorisierung und Schaltung.",
+        "Tankform, Sitz, Seitenteile und Farbgebung helfen bei der Einordnung."
+      ],
+      "image": "assets/models/spatz.svg"
+    },
+    {
+      "id": "star",
+      "name": "Star SR 4-2",
+      "years": "1964–1975",
+      "type": "Vogelserie",
+      "engine": "2-Takt",
+      "ccm": "ca. 50 cm³",
+      "gear": "3-Gang",
+      "cooling": "Gebläse",
+      "speed": "ca. 60 km/h",
+      "desc": "Zweisitzer der Vogelserie.",
+      "url": "https://www.werkers-werkstatt.com/simson-star-details",
+      "production": [
+        1964,
+        1975
+      ],
+      "facts": [
+        "Vogelserie mit klassischem Tank und großem Scheinwerfergehäuse.",
+        "Dreigang-Konzept in der klassischen Ausführung.",
+        "Viele Fahrzeuge wurden später technisch modernisiert – Originalteile daher einzeln prüfen."
+      ],
+      "image": "assets/models/star.svg"
+    },
+    {
+      "id": "sperber",
+      "name": "Sperber SR 4-3",
+      "years": "1966–1972",
+      "type": "Vogelserie",
+      "engine": "2-Takt",
+      "ccm": "ca. 50 cm³",
+      "gear": "4-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 75 km/h",
+      "desc": "Sportlicher Vertreter der Vogelserie.",
+      "url": "https://www.werkers-werkstatt.com/simson-sperber-details",
+      "production": [
+        1966,
+        1972
+      ],
+      "facts": [
+        "Sportlichster früher Vogelserien-Vertreter.",
+        "Vierganggetriebe und höhere Fahrleistung als klassische Mopeds.",
+        "Rahmen- und Motorkombination sind für eine belastbare Bestimmung besonders wichtig."
+      ],
+      "image": "assets/models/sperber.svg"
+    },
+    {
+      "id": "kr511",
+      "name": "Schwalbe KR 51/1",
+      "years": "1968–1980",
+      "type": "Kleinroller",
+      "engine": "M53-Familie",
+      "ccm": "ca. 50 cm³",
+      "gear": "3-Gang",
+      "cooling": "Gebläse",
+      "speed": "ca. 60 km/h",
+      "desc": "Klassische Schwalbe mit gebläsegekühltem Motor.",
+      "url": "https://www.werkers-werkstatt.com/kr51-details",
+      "production": [
+        1968,
+        1980
+      ],
+      "facts": [
+        "Gebläsegekühlte Schwalbe-Generation.",
+        "Mehrere Untervarianten innerhalb der KR51/1-Baureihe.",
+        "Motor, Ansaugung, Auspuff und Elektrik immer zusammen mit dem Baujahr betrachten."
+      ],
+      "image": "assets/models/kr511.svg"
+    },
+    {
+      "id": "habicht",
+      "name": "Habicht SR 4-4",
+      "years": "1971–1975",
+      "type": "Vogelserie",
+      "engine": "2-Takt",
+      "ccm": "ca. 50 cm³",
+      "gear": "4-Gang",
+      "cooling": "Gebläse",
+      "speed": "ca. 60 km/h",
+      "desc": "Viergang-Moped der Vogelserie.",
+      "url": "https://www.werkers-werkstatt.com/simson-habicht-details",
+      "production": [
+        1971,
+        1975
+      ],
+      "facts": [
+        "Viergang-Vertreter der Vogelserie.",
+        "Optisch eng mit Star/Sperber verwandt.",
+        "Motor- und Ausstattungsdetails trennen die Varianten voneinander."
+      ],
+      "image": "assets/models/habicht.svg"
+    },
+    {
+      "id": "s50",
+      "name": "Simson S50",
+      "years": "1975–1980",
+      "type": "Straßenmoped",
+      "engine": "M53/2-Familie",
+      "ccm": "ca. 50 cm³",
+      "gear": "3-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 60 km/h",
+      "desc": "Vorgänger der S51.",
+      "url": "https://www.werkers-werkstatt.com/s50-details",
+      "production": [
+        1975,
+        1980
+      ],
+      "facts": [
+        "Direkter Vorgänger der S51.",
+        "Charakteristische S-Baureihen-Rahmenform, aber ältere Motorfamilie.",
+        "Bei Umbauten wird häufig S51-Technik nachgerüstet; Motortyp daher prüfen."
+      ],
+      "image": "assets/models/s50.svg"
+    },
+    {
+      "id": "s51",
+      "name": "Simson S51",
+      "years": "1980–1990",
+      "type": "Straßenmoped",
+      "engine": "M531 / M541",
+      "ccm": "49,8 cm³",
+      "gear": "3-/4-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "60 km/h",
+      "desc": "Die bekannte S-Baureihe mit vielen Varianten.",
+      "url": "https://www.werkers-werkstatt.com/s-51-details",
+      "production": [
+        1980,
+        1990
+      ],
+      "facts": [
+        "M531/M541-Motorfamilie und zahlreiche Ausstattungsvarianten.",
+        "N, B-, Electronic-, Enduro-, Comfort- und spätere /1-Ausführungen.",
+        "Für Originalität müssen Baujahr, FIN, Motor, Zündung, Lack und Anbauteile gemeinsam passen."
+      ],
+      "image": "assets/models/s51.svg"
+    },
+    {
+      "id": "s70",
+      "name": "Simson S70",
+      "years": "1980er",
+      "type": "Leichtkraftrad",
+      "engine": "M741-Familie",
+      "ccm": "ca. 70 cm³",
+      "gear": "4-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "modellabhängig",
+      "desc": "Hubraumstärkere Schwester der S51.",
+      "url": "https://www.werkers-werkstatt.com/s-51-details",
+      "production": [
+        1983,
+        1990
+      ],
+      "facts": [
+        "Hubraumstärkere Variante der S-Baureihe.",
+        "Originale S70-Komponenten sind sammlerisch besonders relevant.",
+        "Motor-/Rahmennachweis und Papiere sind wichtiger als reine Optik."
+      ],
+      "image": "assets/models/s70.svg"
+    },
+    {
+      "id": "kr512",
+      "name": "Schwalbe KR 51/2",
+      "years": "1980–1986",
+      "type": "Kleinroller",
+      "engine": "M531 / M541-Familie",
+      "ccm": "ca. 50 cm³",
+      "gear": "3-/4-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 60 km/h",
+      "desc": "Späte Schwalbe mit neuem Motorkonzept.",
+      "url": "https://www.werkers-werkstatt.com/kr51-details",
+      "production": [
+        1980,
+        1986
+      ],
+      "facts": [
+        "Fahrtwindgekühlte Schwalbe mit neuer M5xx-Motorfamilie.",
+        "Untervarianten unterscheiden sich bei Getriebe und Elektrik.",
+        "Motorlagerung und Auspuffführung unterscheiden sich grundlegend von KR51/1."
+      ],
+      "image": "assets/models/kr512.svg"
+    },
+    {
+      "id": "sr5080",
+      "name": "Simson SR 50/80",
+      "years": "1986–2002",
+      "type": "Roller",
+      "engine": "M5xx / M7xx-Familie",
+      "ccm": "50 / 70 cm³",
+      "gear": "4-Gang",
+      "cooling": "Fahrtwind",
+      "speed": "modellabhängig",
+      "desc": "Moderner Stadtroller.",
+      "url": "https://www.werkers-werkstatt.com/sr-50-80-details",
+      "production": [
+        1986,
+        2002
+      ],
+      "facts": [
+        "Moderner Roller der späten Simson-Produktion.",
+        "50- und 70-cm³-Ausführungen.",
+        "Elektrik und Ausstattung änderten sich über die Produktionszeit deutlich."
+      ],
+      "image": "assets/models/sr5080.svg"
+    },
+    {
+      "id": "duo",
+      "name": "Simson DUO",
+      "years": "1961–1991",
+      "type": "Dreirad",
+      "engine": "modellabhängig",
+      "ccm": "ca. 50 cm³",
+      "gear": "modellabhängig",
+      "cooling": "modellabhängig",
+      "speed": "modellabhängig",
+      "desc": "Dreirädriges Fahrzeug auf Simson-Technik.",
+      "url": "https://www.werkers-werkstatt.com/duo-details",
+      "production": [
+        1961,
+        1991
+      ],
+      "facts": [
+        "Dreirädriges Fahrzeug mit eigenständiger Karosserie.",
+        "Technik variiert je nach DUO-Generation.",
+        "Rahmen/Karosserie, Motor und Dokumentation sollten gemeinsam geprüft werden."
+      ],
+      "image": "assets/models/duo.svg"
+    }
+  ],
+  "s51": [
+    {
+      "name": "S51 N",
+      "gear": "3-Gang",
+      "ignition": "Unterbrecher",
+      "headlight": "Basis",
+      "features": "ohne Blinker, Batterie und Zündschloss",
+      "colors": [
+        "Atlantikblau"
+      ],
+      "rarity": "mittel"
+    },
+    {
+      "name": "S51 B1-3",
+      "gear": "3-Gang",
+      "ignition": "Unterbrecher",
+      "headlight": "25 W",
+      "features": "Blinker, Batterie, Zündschloss, Hupe",
+      "colors": [
+        "Saharabraun",
+        "Saftgrün"
+      ],
+      "rarity": "normal"
+    },
+    {
+      "name": "S51 B1-4",
+      "gear": "4-Gang",
+      "ignition": "Unterbrecher",
+      "headlight": "25 W",
+      "features": "Ausstattung ähnlich B1-3, aber Viergangmotor",
+      "colors": [
+        "Saharabraun",
+        "Saftgrün"
+      ],
+      "rarity": "normal"
+    },
+    {
+      "name": "S51 B2-4",
+      "gear": "4-Gang",
+      "ignition": "Elektronik",
+      "headlight": "35 W",
+      "features": "Elektronikzündung, Blinker, Batterie, größerer Tacho",
+      "colors": [
+        "Billardgrün"
+      ],
+      "rarity": "beliebt"
+    },
+    {
+      "name": "S51 Enduro E",
+      "gear": "4-Gang",
+      "ignition": "Elektronik",
+      "headlight": "modellabhängig",
+      "features": "hochgelegter Auspuff, Hitzeschutz, Faltenbälge, Rahmenstreben",
+      "colors": [
+        "Silbermetallic"
+      ],
+      "rarity": "beliebt"
+    },
+    {
+      "name": "S51 Enduro E/4",
+      "gear": "4-Gang",
+      "ignition": "Unterbrecher",
+      "headlight": "modellabhängig",
+      "features": "preisgünstigere Enduro-Variante",
+      "colors": [
+        "Silbermetallic"
+      ],
+      "rarity": "interessant"
+    },
+    {
+      "name": "S51 Comfort C",
+      "gear": "4-Gang",
+      "ignition": "Elektronik",
+      "headlight": "modellabhängig",
+      "features": "Drehzahlmesser, Seitenständer, Faltenbälge, gehobene Ausstattung",
+      "colors": [
+        "Atlasweiß"
+      ],
+      "rarity": "gesucht"
+    },
+    {
+      "name": "S51/1 B",
+      "gear": "modellabhängig",
+      "ignition": "modellabhängig",
+      "headlight": "12 V",
+      "features": "spätere B-Ausführung mit 12-V-Elektrik",
+      "colors": [
+        "baujahrabhängig"
+      ],
+      "rarity": "interessant"
+    },
+    {
+      "name": "S51/1 C (C1)",
+      "gear": "4-Gang",
+      "ignition": "Elektronik",
+      "headlight": "12 V",
+      "features": "Comfort-Nachfolger mit gehobener Ausstattung",
+      "colors": [
+        "baujahrabhängig"
+      ],
+      "rarity": "gesucht"
+    },
+    {
+      "name": "S51/1 E (E1)",
+      "gear": "4-Gang",
+      "ignition": "modellabhängig",
+      "headlight": "12 V",
+      "features": "12-V-Enduro-Ausführung",
+      "colors": [
+        "baujahrabhängig"
+      ],
+      "rarity": "gesucht"
+    }
+  ],
+  "colors": [
+    {
+      "name": "Saftgrün",
+      "hex": "#7e9d45",
+      "note": "häufig B1"
+    },
+    {
+      "name": "Saharabraun",
+      "hex": "#b79a63",
+      "note": "häufig B1"
+    },
+    {
+      "name": "Billardgrün",
+      "hex": "#1f6a3e",
+      "note": "typisch B2-4"
+    },
+    {
+      "name": "Atlantikblau",
+      "hex": "#2f76a8",
+      "note": "typisch S51 N"
+    },
+    {
+      "name": "Atlasweiß",
+      "hex": "#e8e7dc",
+      "note": "typisch Comfort"
+    },
+    {
+      "name": "Silbermetallic",
+      "hex": "#a9adb0",
+      "note": "typisch Enduro"
+    },
+    {
+      "name": "Flammenrot",
+      "hex": "#b4362e",
+      "note": "späte/Export-Zuordnung"
+    },
+    {
+      "name": "Sonnengelb",
+      "hex": "#e3bb25",
+      "note": "seltene Exportfarbe"
+    }
+  ],
+  "guides": [
+    {
+      "title": "Kupplung einstellen beim M541",
+      "tag": "Getriebe",
+      "models": "S51 / KR51/2 / SR50",
+      "tools": [
+        "Schraubendreher",
+        "Schlüssel",
+        "Tuch"
+      ],
+      "steps": [
+        "Bowdenzug prüfen.",
+        "Hebelspiel kontrollieren.",
+        "Bowdenzug grob einstellen.",
+        "Zentrale Kupplungs-Grundeinstellung am Motordeckel vornehmen.",
+        "Kontermutter sichern.",
+        "Probefahrt und Funktionsprüfung durchführen."
+      ],
+      "warning": "Bei anhaltendem Problem Druckstifte, Mechanik, Beläge und Ölzustand prüfen."
+    },
+    {
+      "title": "Vergaser systematisch prüfen",
+      "tag": "Motor",
+      "models": "S-/KR-/SR-Serie",
+      "tools": [
+        "Schraubendreher",
+        "Maulschlüssel",
+        "Vergaserreiniger"
+      ],
+      "steps": [
+        "Kraftstofffluss und Tankentlüftung prüfen.",
+        "Startvergaser kontrollieren.",
+        "Vergaser reinigen.",
+        "Düsen und Kanäle reinigen.",
+        "Schwimmer/Nadelventil prüfen.",
+        "Flansch und Ansaugweg auf Nebenluft prüfen.",
+        "Erst danach Leerlauf fein einstellen."
+      ],
+      "warning": "Düsen und Einstellwerte müssen zum Vergasertyp passen."
+    },
+    {
+      "title": "Zündung prüfen",
+      "tag": "Elektrik",
+      "models": "S50 / S51 / Schwalbe",
+      "tools": [
+        "Zündkerzenschlüssel",
+        "Messgerät"
+      ],
+      "steps": [
+        "Zündkerze prüfen.",
+        "Kerzenstecker und Kabel prüfen.",
+        "Masseverbindungen prüfen.",
+        "Zündungstyp bestimmen.",
+        "Unterbrecher bzw. Geber/Steuerteil systematisch prüfen.",
+        "Zündzeitpunkt kontrollieren."
+      ],
+      "warning": "Kraftstoffdämpfe von Funken fernhalten."
+    },
+    {
+      "title": "Getriebeöl wechseln",
+      "tag": "Wartung",
+      "models": "M53 / M5xx",
+      "tools": [
+        "Auffangbehälter",
+        "Schlüssel",
+        "Trichter"
+      ],
+      "steps": [
+        "Motor kurz warmfahren.",
+        "Fahrzeug sicher abstellen.",
+        "Altöl ablassen.",
+        "Abrieb kontrollieren.",
+        "Dichtung prüfen.",
+        "Passende Sorte/Menge einfüllen.",
+        "Dichtheit prüfen."
+      ],
+      "warning": "Ölsorte und Füllmenge motorspezifisch wählen."
+    },
+    {
+      "title": "Bremsen einstellen & prüfen",
+      "tag": "Fahrwerk",
+      "models": "Trommelbremsen",
+      "tools": [
+        "Schlüssel",
+        "Zange"
+      ],
+      "steps": [
+        "Bremszug prüfen.",
+        "Hebel/Rückstellung kontrollieren.",
+        "Spiel einstellen.",
+        "Bremswirkung prüfen.",
+        "Beläge/Trommel kontrollieren.",
+        "Vorsichtige Bremsprobe durchführen."
+      ],
+      "warning": "Bremsen sind sicherheitsrelevant."
+    },
+    {
+      "title": "Kette prüfen & spannen",
+      "tag": "Fahrwerk",
+      "models": "S-/Vogelserie",
+      "tools": [
+        "Achsschlüssel",
+        "Schlüssel",
+        "Schmiermittel"
+      ],
+      "steps": [
+        "Kette prüfen.",
+        "Durchhang an mehreren Positionen prüfen.",
+        "Hinterachse lösen.",
+        "Beide Kettenspanner gleichmäßig einstellen.",
+        "Radflucht kontrollieren.",
+        "Achse sichern und Kette schmieren."
+      ],
+      "warning": "Zu stramme oder zu lose Ketten verursachen Schäden bzw. Gefahr."
+    }
+  ],
+  "diagnostics": {
+    "Motor dreht im Stand hoch": {
+      "system": "Motor / Ansaugung",
+      "severity": "mittel",
+      "checks": [
+        "Gaszug und Schieber prüfen.",
+        "Vergaserschieber/Feder kontrollieren.",
+        "Vergaserflansch und Dichtungen auf Nebenluft prüfen.",
+        "Startvergaser auf vollständiges Schließen prüfen.",
+        "Wellendichtringe als Falschluftquelle berücksichtigen.",
+        "Leerlauf erst danach einstellen."
+      ]
+    },
+    "Kein Zündfunke": {
+      "system": "Elektrik / Zündung",
+      "severity": "hoch",
+      "checks": [
+        "Sichere Zündkerze testen.",
+        "Kerzenstecker und Leitung prüfen.",
+        "Masse prüfen.",
+        "Abstellleitung/Zündschloss prüfen.",
+        "Unterbrecher bzw. Geber/Steuerteil prüfen.",
+        "Kabel und Steckverbindungen kontrollieren."
+      ]
+    },
+    "Springt kalt schlecht an": {
+      "system": "Startsystem / Gemisch",
+      "severity": "mittel",
+      "checks": [
+        "Kraftstofffluss prüfen.",
+        "Startvergaser prüfen.",
+        "Zündkerze/Funken prüfen.",
+        "Schwimmerstand prüfen.",
+        "Leerlaufsystem reinigen.",
+        "Kompression und Zündzeitpunkt prüfen."
+      ]
+    },
+    "Geht warm aus": {
+      "system": "Zündung / Kraftstoff",
+      "severity": "hoch",
+      "checks": [
+        "Im Fehlerzustand Zündfunken prüfen.",
+        "Tankbelüftung prüfen.",
+        "Wärmeabhängige Zündungskomponenten eingrenzen.",
+        "Kerzenstecker/Zündkerze testen.",
+        "Vergaser/Nadelventil prüfen."
+      ]
+    },
+    "Motor hat wenig Leistung": {
+      "system": "Motor / Abgas",
+      "severity": "mittel",
+      "checks": [
+        "Luftfilter prüfen.",
+        "Auspuff auf Verkokung prüfen.",
+        "Vergaserbestückung kontrollieren.",
+        "Zündzeitpunkt prüfen.",
+        "Kompression bewerten.",
+        "Zylinder/Kolben und Nebenluft prüfen."
+      ]
+    },
+    "Kupplung trennt nicht": {
+      "system": "Kupplung",
+      "severity": "mittel",
+      "checks": [
+        "Bowdenzug prüfen.",
+        "Hebelspiel einstellen.",
+        "Grundeinstellung prüfen.",
+        "Druckmechanik prüfen.",
+        "Kupplungspaket prüfen.",
+        "Ölzustand berücksichtigen."
+      ]
+    },
+    "Licht fällt aus": {
+      "system": "Elektrik",
+      "severity": "niedrig",
+      "checks": [
+        "Leuchtmittel prüfen.",
+        "Massepunkte reinigen.",
+        "Steckverbindungen prüfen.",
+        "Spannung messen.",
+        "Schalter/Zündschloss prüfen.",
+        "Spule/Regler erst danach beurteilen."
+      ]
+    },
+    "Bremse wirkt schlecht": {
+      "system": "Fahrwerk / Bremse",
+      "severity": "hoch",
+      "checks": [
+        "Bowdenzug und Einstellung prüfen.",
+        "Beläge prüfen.",
+        "Bremstrommel prüfen.",
+        "Bremsnocken prüfen.",
+        "Verunreinigungen beseitigen.",
+        "Vor Fahrt sichere Bremswirkung herstellen."
+      ]
+    },
+    "Motor nimmt schlecht Gas an": {
+      "system": "Motor / Gemisch",
+      "severity": "mittel",
+      "checks": [
+        "Kraftstofffluss prüfen.",
+        "Luftfilter und Ansaugweg prüfen.",
+        "Startvergaser auf vollständiges Schließen prüfen.",
+        "Hauptdüse und Vergaserkanäle prüfen.",
+        "Schwimmerstand/Nadelventil prüfen.",
+        "Zündzeitpunkt und Zündkerze prüfen.",
+        "Auspuff auf Verkokung prüfen."
+      ]
+    },
+    "Motor klingelt oder wird sehr heiß": {
+      "system": "Motor / Zündung",
+      "severity": "hoch",
+      "checks": [
+        "Belastung reduzieren und Motor abkühlen lassen.",
+        "Zündkerzenbild prüfen.",
+        "Zündzeitpunkt kontrollieren.",
+        "Gemisch-/Kraftstoffversorgung prüfen.",
+        "Nebenluft ausschließen.",
+        "Auspuff und Kühlung prüfen.",
+        "Bei metallischen Geräuschen Motor mechanisch prüfen."
+      ]
+    },
+    "Getriebe schaltet schlecht": {
+      "system": "Getriebe / Schaltung",
+      "severity": "mittel",
+      "checks": [
+        "Kupplungseinstellung prüfen.",
+        "Schalthebel und äußere Betätigung prüfen.",
+        "Getriebeöl und Dichtheit kontrollieren.",
+        "Schaltung nach passender Motorunterlage einstellen.",
+        "Spiel/Verschleiß der Schaltmechanik prüfen.",
+        "Bei Herausspringen von Gängen innere Getriebeteile prüfen."
+      ]
+    },
+    "Batterie wird nicht geladen": {
+      "system": "Elektrik / Laden",
+      "severity": "mittel",
+      "checks": [
+        "Batteriezustand und Anschlüsse prüfen.",
+        "Sicherung und Massepunkte prüfen.",
+        "Ladespannung messen.",
+        "Leitungen von Spule/Regler zur Batterie prüfen.",
+        "Ladeanlage/Regler passend zur Anlagenart prüfen.",
+        "Generator-/Ladespule erst nach Leitungsprüfung beurteilen."
+      ]
+    }
+  },
+  "rare": [
+    {
+      "name": "Super 80 / Super S80",
+      "score": 5.0,
+      "why": "Seltene Exportausführung; Originaltypenschild, Motor und Exportpapiere sind besonders wichtig."
+    },
+    {
+      "name": "SR80 CE",
+      "score": 5.0,
+      "why": "Kleine Produktionszahl und spezielle 70-cm³-Technik."
+    },
+    {
+      "name": "S51 / S70 Comfort Export",
+      "score": 4.8,
+      "why": "Sonderausstattung und dokumentierte Exportmerkmale."
+    },
+    {
+      "name": "SR2 / SR2E Export",
+      "score": 4.7,
+      "why": "Exportlackierungen und Originalzustand sind zentrale Merkmale."
+    },
+    {
+      "name": "MS50 Sperber",
+      "score": 4.5,
+      "why": "Spätes Modell mit moderner Technik und geringer Verbreitung."
+    },
+    {
+      "name": "S70 E / E2",
+      "score": 4.4,
+      "why": "Seltener als viele S51-Ausführungen."
+    },
+    {
+      "name": "S70 Comfort",
+      "score": 4.3,
+      "why": "Rahmen, Motor, Typenschild und Historie genau prüfen."
+    },
+    {
+      "name": "S83 CX / OR / Beta",
+      "score": 4.1,
+      "why": "Nachwendemodelle mit eigenständiger Technik."
+    },
+    {
+      "name": "Spatz Westexport",
+      "score": 4.0,
+      "why": "Technische Exportabweichungen machen Originale interessant."
+    },
+    {
+      "name": "S51 Exportmodelle",
+      "score": 3.8,
+      "why": "Sonderlackierung, Kennzeichnung und Dokumentation entscheiden."
+    }
+  ],
+  "fin_help": {
+    "note": "Der Assistent leitet kein exaktes Baujahr allein aus der FIN ab. Er prüft Format, Modell und angegebenes Baujahr gegen den bekannten Produktionszeitraum.",
+    "rules": [
+      "FIN möglichst exakt vom Rahmen ablesen, nicht nur vom Typenschild übernehmen.",
+      "Ziffernfolge auf nachträgliche Einschläge, Schleifspuren oder ungleichmäßige Schlagzahlen prüfen.",
+      "Typenschild, Rahmen-FIN und Fahrzeugpapiere müssen zusammenpassen.",
+      "Bei Import-/Exportfahrzeugen können zusätzliche Merkmale und Dokumente nötig sein."
+    ]
+  },
+  "originality_components": [
+    {
+      "id": "fin",
+      "name": "FIN / Typenschild",
+      "weight": 18,
+      "hint": "FIN, Typenschild, Baujahr und Papiere plausibel und untereinander stimmig."
+    },
+    {
+      "id": "engine",
+      "name": "Motor",
+      "weight": 14,
+      "hint": "Motortyp und Gangzahl passen zur gewählten Variante bzw. zum Bauzeitraum."
+    },
+    {
+      "id": "ignition",
+      "name": "Zündung",
+      "weight": 11,
+      "hint": "Unterbrecher/Elektronik/12-V-System passt zur Variante."
+    },
+    {
+      "id": "tank",
+      "name": "Tank",
+      "weight": 7,
+      "hint": "Form, Befestigung, Dekor und Lackaufbau sind zeitlich plausibel."
+    },
+    {
+      "id": "sidecovers",
+      "name": "Seitendeckel",
+      "weight": 7,
+      "hint": "Form, Schloss/Befestigung, Schriftzug und Lack passen."
+    },
+    {
+      "id": "speedo",
+      "name": "Tacho / Instrumente",
+      "weight": 7,
+      "hint": "Tacho, ggf. Drehzahlmesser und Instrumententräger entsprechen der Ausstattung."
+    },
+    {
+      "id": "suspension",
+      "name": "Federbeine / Gabel",
+      "weight": 7,
+      "hint": "Federbeine, Faltenbälge und Gabelausstattung sind variantenplausibel."
+    },
+    {
+      "id": "exhaust",
+      "name": "Auspuff",
+      "weight": 7,
+      "hint": "Tiefliegend oder Enduro-hochgelegt passend zur Variante."
+    },
+    {
+      "id": "electrics",
+      "name": "Elektrik / Blinker",
+      "weight": 7,
+      "hint": "Batterie, Blinker, Hupe, Zündschloss und Scheinwerfer passen."
+    },
+    {
+      "id": "seat",
+      "name": "Sitzbank / Gepäckträger",
+      "weight": 5,
+      "hint": "Sitzbankform und Heckausstattung sind zeittypisch."
+    },
+    {
+      "id": "paint",
+      "name": "Lack / Dekor",
+      "weight": 5,
+      "hint": "Farbe und Dekor sind für Variante/Baujahr plausibel; originale Lackreste erhöhen Aussagekraft."
+    },
+    {
+      "id": "controls",
+      "name": "Lenker / Armaturen",
+      "weight": 5,
+      "hint": "Schalter, Spiegel, Griffe und Armaturen sind zeittypisch."
+    }
+  ],
+  "restoration_states": [
+    "Originalzustand",
+    "Teilrestauriert",
+    "Vollrestauriert",
+    "Patina / unrestauriert",
+    "Umbau / Custom",
+    "Projektfahrzeug"
+  ],
+  "version": "3.8.0",
+  "tech_library": [
+    {
+      "id": "m5xx-overview",
+      "cat": "Motor",
+      "title": "M531 / M541 – Überblick",
+      "summary": "Motorfamilie der S51, KR51/2 und verwandter Modelle. Vor Arbeiten Motortyp und Gangzahl sicher identifizieren.",
+      "points": [
+        "Motorkennzeichnung und Gehäusemerkmale dokumentieren.",
+        "Kupplung, Schaltung und Zündung getrennt diagnostizieren.",
+        "Dichtflächen und Wellendichtringe bei Nebenluftverdacht einbeziehen.",
+        "Exakte Einstellwerte immer zum konkreten Motortyp nachschlagen."
+      ]
+    },
+    {
+      "id": "m53-overview",
+      "cat": "Motor",
+      "title": "M53-Familie – Überblick",
+      "summary": "Ältere Motorfamilie u. a. in früher Schwalbe und Vogelserie.",
+      "points": [
+        "Gebläse- und Fahrtwindvarianten unterscheiden.",
+        "Motorlagerung, Ansaugung und Auspuff modellbezogen prüfen.",
+        "Nicht automatisch Einstellwerte der M5xx-Familie übernehmen."
+      ]
+    },
+    {
+      "id": "carb-diagnosis",
+      "cat": "Vergaser",
+      "title": "Vergaser-Diagnose",
+      "summary": "Kraftstoffversorgung, Startvergaser, Schwimmer und Nebenluft systematisch prüfen.",
+      "points": [
+        "Kraftstofffluss vor Zerlegen testen.",
+        "Düsen nicht mit Draht aufweiten.",
+        "Schwimmer und Nadelventil auf Verschleiß prüfen.",
+        "Leerlaufeinstellung erst nach Ausschluss von Nebenluft."
+      ]
+    },
+    {
+      "id": "ignition-u",
+      "cat": "Zündung",
+      "title": "Unterbrecherzündung",
+      "summary": "Mechanische Kontaktzündung: Kontakt, Kondensator, Spulen und Zündzeitpunkt gehören zur Prüfkette.",
+      "points": [
+        "Kontaktflächen und Mechanik prüfen.",
+        "Masseverbindungen kontrollieren.",
+        "Zündzeitpunkt motortypbezogen einstellen.",
+        "Wärmefehler im Fehlerzustand prüfen."
+      ]
+    },
+    {
+      "id": "ignition-e",
+      "cat": "Zündung",
+      "title": "Elektronikzündung",
+      "summary": "Geber, Steuerteil, Zündspule und Verkabelung systematisch eingrenzen.",
+      "points": [
+        "Zündkerze/Kerzenstecker zuerst ausschließen.",
+        "Geberleitung und Masse prüfen.",
+        "Komponenten nicht wahllos tauschen.",
+        "Umbauten wie VAPE separat dokumentieren."
+      ]
+    },
+    {
+      "id": "vape",
+      "cat": "Elektrik",
+      "title": "VAPE / 12-V-Umbau dokumentieren",
+      "summary": "Bei umgebauten Fahrzeugen Schaltplan, Regler, Zündmodul und Verbraucher eindeutig dokumentieren.",
+      "points": [
+        "Originalzustand und Umbauzustand getrennt festhalten.",
+        "Kabelquerschnitt, Sicherung und Massepunkte prüfen.",
+        "Leuchtmittel zur Systemspannung passend wählen."
+      ]
+    },
+    {
+      "id": "electrics",
+      "cat": "Elektrik",
+      "title": "Elektrik – Fehlersuche",
+      "summary": "Von Verbraucher über Leitung und Schalter zur Erzeugung prüfen.",
+      "points": [
+        "Leuchtmittel/Fassung prüfen.",
+        "Masse und Steckverbindungen prüfen.",
+        "Spannung messen statt Teile raten.",
+        "Zündschlosskontakte berücksichtigen."
+      ]
+    },
+    {
+      "id": "clutch",
+      "cat": "Getriebe",
+      "title": "Kupplung – Prüflogik",
+      "summary": "Bowdenzug, Grundeinstellung und Kupplungspaket in dieser Reihenfolge prüfen.",
+      "points": [
+        "Zugspiel und Freigängigkeit kontrollieren.",
+        "Grundeinstellung vor Zerlegen prüfen.",
+        "Rutschen und Nicht-Trennen unterscheiden.",
+        "Ölzustand und mechanischen Verschleiß berücksichtigen."
+      ]
+    },
+    {
+      "id": "shifting",
+      "cat": "Getriebe",
+      "title": "Schaltung – Diagnose",
+      "summary": "Schaltproblem zuerst nach Betätigung, Einstellung und reproduzierbarem Fehlerbild trennen.",
+      "points": [
+        "Bowdenzüge/Betätigung je nach Modell prüfen.",
+        "Schaltwege und Rastung beobachten.",
+        "Fehler gangbezogen dokumentieren.",
+        "Bei internen Geräuschen nicht weiter erzwingen."
+      ]
+    },
+    {
+      "id": "brakes",
+      "cat": "Fahrwerk",
+      "title": "Trommelbremsen",
+      "summary": "Sicherheitsrelevante Baugruppe: Zug, Nocken, Beläge und Trommel gemeinsam bewerten.",
+      "points": [
+        "Bremszüge auf Schäden prüfen.",
+        "Beläge dürfen nicht ölig/fettig sein.",
+        "Rückstellung und Hebelweg prüfen.",
+        "Nach Arbeiten Bremsprobe mit niedriger Geschwindigkeit."
+      ]
+    },
+    {
+      "id": "chain",
+      "cat": "Fahrwerk",
+      "title": "Kette & Radflucht",
+      "summary": "Durchhang, Verschleiß, Schmierung und Radflucht gemeinsam kontrollieren.",
+      "points": [
+        "Durchhang an mehreren Radpositionen prüfen.",
+        "Spanner beidseitig gleichmäßig einstellen.",
+        "Ritzel/Zahnkranz auf Verschleiß prüfen.",
+        "Kettenschutz nach Arbeiten korrekt montieren."
+      ]
+    },
+    {
+      "id": "tires",
+      "cat": "Fahrwerk",
+      "title": "Reifen & Räder",
+      "summary": "Alter, Zustand, Dimension und Speichen/Radlager vor Fahrten prüfen.",
+      "points": [
+        "Risse und Beschädigungen kontrollieren.",
+        "Reifendruck nach Fahrzeug/Reifen festlegen.",
+        "Speichen und Radlager auf Auffälligkeiten prüfen."
+      ]
+    },
+    {
+      "id": "maintenance",
+      "cat": "Wartung",
+      "title": "Saisoncheck",
+      "summary": "Kompakter Check vor Saisonbeginn oder nach längerer Standzeit.",
+      "points": [
+        "Bremsen, Reifen und Lenkung.",
+        "Kraftstoffsystem auf Undichtigkeiten.",
+        "Kette, Beleuchtung und Hupe.",
+        "Getriebeölstand/Wechselintervall nach Motor.",
+        "Schraubverbindungen und Bowdenzüge."
+      ]
+    },
+    {
+      "id": "storage",
+      "cat": "Wartung",
+      "title": "Einlagern",
+      "summary": "Sauber, trocken und kraftstoffsystemgerecht einlagern.",
+      "points": [
+        "Korrosion und Feuchtigkeit vermeiden.",
+        "Batterie je nach Typ pflegen/abklemmen.",
+        "Reifen entlasten oder regelmäßig Position ändern.",
+        "Wiederinbetriebnahme mit Sicherheitscheck."
+      ]
+    },
+    {
+      "id": "originality",
+      "cat": "Restauration",
+      "title": "Originalität dokumentieren",
+      "summary": "Nicht nur einzelne Teile betrachten: Baujahr, FIN, Motor, Lack und Ausstattung müssen zusammenpassen.",
+      "points": [
+        "Vor Zerlegen Fotos aus allen Winkeln erstellen.",
+        "Originale Lackschichten dokumentieren.",
+        "Teilenummern/Kennzeichnungen fotografieren.",
+        "Umbauten reversibel und nachvollziehbar halten."
+      ]
+    },
+    {
+      "id": "buying",
+      "cat": "Kaufberatung",
+      "title": "Kaufprüfung Simson",
+      "summary": "Dokumente, Rahmen, Motor, Elektrik und Probefahrt strukturiert prüfen.",
+      "points": [
+        "FIN am Rahmen mit Papieren vergleichen.",
+        "Schweißstellen und Rahmenzustand prüfen.",
+        "Kaltstart verlangen, wenn möglich.",
+        "Bremsen, Lenkung, Getriebe und Geräusche prüfen.",
+        "Umbauten und fehlende Originalteile notieren."
+      ]
+    },
+    {
+      "id": "export",
+      "cat": "Sammler",
+      "title": "Exportmodell prüfen",
+      "summary": "Exportstatus nie nur aus Farbe oder Einzelmerkmal ableiten.",
+      "points": [
+        "Typenschild und Dokumente prüfen.",
+        "Länderspezifische Ausstattung dokumentieren.",
+        "Originale Lack-/Dekormerkmale sichern.",
+        "Historie und Vorbesitzerunterlagen sind besonders wertvoll."
+      ]
+    },
+    {
+      "id": "photo-doc",
+      "cat": "Restauration",
+      "title": "Foto-Dokumentation",
+      "summary": "Vorher/Nachher-Dokumentation steigert Nachvollziehbarkeit einer Restauration.",
+      "points": [
+        "Gesamtansichten und Detailbilder.",
+        "FIN/Typenschild separat und sicher speichern.",
+        "Kabelverlegung vor Demontage fotografieren.",
+        "Teile in Baugruppen dokumentieren."
+      ]
+    }
+  ],
+  "backup_schema": 2,
+  "vehicle_specs": {
+    "s50": {
+      "label": "Simson S50",
+      "engine_family": "M53/2-Familie",
+      "displacement": "ca. 50 cm³",
+      "gearbox": "3-Gang",
+      "carburetor": "BVF 16N1-8, abhängig von Ausführung",
+      "ignition": "6-V-Unterbrecher, ausstattungsabhängig",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 60 km/h",
+      "notes": [
+        "S50-Technik nicht automatisch mit S51-Technik gleichsetzen.",
+        "Viele Fahrzeuge wurden später auf M5xx-Motoren, VAPE oder andere Vergaser umgebaut.",
+        "Bei Ersatzteilen zuerst Motortyp, Vergasertyp und Zündung am Fahrzeug feststellen."
+      ]
+    },
+    "s51": {
+      "label": "Simson S51",
+      "engine_family": "M531 / M541",
+      "displacement": "49,8 cm³",
+      "gearbox": "3- oder 4-Gang, je nach Variante",
+      "carburetor": "BVF 16N1-11 bzw. spätere 16N3-Ausführungen, modell-/baujahrabhängig",
+      "ignition": "Unterbrecher, Elektronik oder spätere 12-V-Systeme je nach Variante",
+      "cooling": "Fahrtwind",
+      "speed": "60 km/h in klassischer DDR-Kleinkraftrad-Ausführung",
+      "notes": [
+        "S51 N, B1, B2, Enduro, Comfort und /1-Ausführungen unterscheiden sich deutlich bei Elektrik und Ausstattung.",
+        "Vor Teilebestellung immer Motor, Vergaser, Zündung und Baujahr bestimmen.",
+        "Umbauten auf VAPE sind verbreitet und verändern die elektrische Ersatzteilauswahl."
+      ]
+    },
+    "kr511": {
+      "label": "Schwalbe KR51/1",
+      "engine_family": "M53/1-Familie",
+      "displacement": "ca. 50 cm³",
+      "gearbox": "3-Gang",
+      "carburetor": "BVF 16N1-5, je nach Untervariante prüfen",
+      "ignition": "6-V-System, untervariantenabhängig",
+      "cooling": "Gebläse",
+      "speed": "ca. 60 km/h",
+      "notes": [
+        "Gebläsekühlung ist ein zentrales Unterscheidungsmerkmal zur KR51/2.",
+        "Ansaugung, Auspuff und Motorlagerung unterscheiden sich von der späteren KR51/2.",
+        "Elektrik und Ladeanlage nach exakter Untervariante prüfen."
+      ]
+    },
+    "kr512": {
+      "label": "Schwalbe KR51/2",
+      "engine_family": "M531 / M541-Familie",
+      "displacement": "ca. 50 cm³",
+      "gearbox": "3- oder 4-Gang, je nach Untervariante",
+      "carburetor": "BVF 16N1-12 bzw. spätere 16N3-Ausführung, untervariantenabhängig",
+      "ignition": "Unterbrecher oder Elektronik, je nach Untervariante",
+      "cooling": "Fahrtwind",
+      "speed": "ca. 60 km/h",
+      "notes": [
+        "KR51/2 N, E und L unterscheiden sich u. a. bei Getriebe und Elektrik.",
+        "M5xx-Motorfamilie unterscheidet sich konstruktiv deutlich von KR51/1.",
+        "Bei Schaltplan und Ersatzteilen immer Untervariante festlegen."
+      ]
+    }
+  },
+  "parts_reference": [
+    {
+      "system": "Motor",
+      "part": "Zündkerze",
+      "fit": "S50 / S51 / Schwalbe",
+      "ref": "M14-Gewinde; Wärmewert und Typ nach Motor-/Zündungsreferenz prüfen",
+      "check": "Kerzenbild, Elektrodenabstand, Isolator, Gewinde"
+    },
+    {
+      "system": "Motor",
+      "part": "Vergaser",
+      "fit": "S51",
+      "ref": "BVF 16N1-11 / 16N3-Familie je nach Ausführung",
+      "check": "Prägung am Vergasergehäuse ablesen"
+    },
+    {
+      "system": "Motor",
+      "part": "Vergaser",
+      "fit": "KR51/1",
+      "ref": "BVF 16N1-5, Untervariante prüfen",
+      "check": "Vergaserkennung und Ansauganlage gemeinsam prüfen"
+    },
+    {
+      "system": "Motor",
+      "part": "Vergaser",
+      "fit": "KR51/2",
+      "ref": "BVF 16N1-12 / 16N3-Familie je nach Untervariante",
+      "check": "Untervariante N/E/L berücksichtigen"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Zündanlage",
+      "fit": "S51",
+      "ref": "Unterbrecher / Elektronik / 12 V / VAPE-Umbau möglich",
+      "check": "Grundplatte, Polrad, Steuerteil/Regler und Spannung bestimmen"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Leuchtmittel",
+      "fit": "alle",
+      "ref": "Spannung und Leistung müssen zur vorhandenen Anlage passen",
+      "check": "6 V / 12 V und Lampenleistung vor Bestellung ablesen"
+    },
+    {
+      "system": "Antrieb",
+      "part": "Kette & Ritzel",
+      "fit": "S-/Vogelserie",
+      "ref": "Teilung und Zähnezahl fahrzeugspezifisch prüfen",
+      "check": "Ritzel, Kettenrad und Kette als System beurteilen"
+    },
+    {
+      "system": "Bremse",
+      "part": "Bremsbeläge",
+      "fit": "Trommelbremsen",
+      "ref": "Naben-/Bremsausführung vor Bestellung prüfen",
+      "check": "Belagbreite, Aufnahme und Trommelzustand kontrollieren"
+    },
+    {
+      "system": "Fahrwerk",
+      "part": "Federbeine",
+      "fit": "S51 / S50",
+      "ref": "Länge und Ausführung modell-/ausstattungsabhängig",
+      "check": "Auge-Auge-Maß und Bauart am Fahrzeug messen"
+    },
+    {
+      "system": "Bedienung",
+      "part": "Bowdenzüge",
+      "fit": "alle",
+      "ref": "Länge und Endstücke nach Modell, Lenker und Vergaser wählen",
+      "check": "Altteil vermessen und Anschlüsse vergleichen"
+    },
+    {
+      "system": "Dichtung",
+      "part": "Wellendichtringe",
+      "fit": "M53 / M5xx",
+      "ref": "Motortyp entscheidet über Abmessungen und Einbauorte",
+      "check": "Motorkennung vor Bestellung feststellen"
+    },
+    {
+      "system": "Auspuff",
+      "part": "Auspuffanlage",
+      "fit": "S51 / Enduro",
+      "ref": "tiefliegend oder hochgelegt je nach Variante",
+      "check": "Krümmerführung, Hitzeschutz und Halter prüfen"
+    },
+    {
+      "system": "Motor",
+      "part": "Kupplungszug",
+      "fit": "S51 / S50",
+      "ref": "Länge und Endstücke nach Lenker-/Hebelkonfiguration",
+      "check": "Altteil messen; Lenkerumbauten berücksichtigen"
+    },
+    {
+      "system": "Motor",
+      "part": "Gaszug",
+      "fit": "S51 / Schwalbe",
+      "ref": "Vergaser- und Lenkerabhängig",
+      "check": "Vergasertyp, Einstellschraube und Lenkerhöhe prüfen"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Grundplatte",
+      "fit": "S51",
+      "ref": "Unterbrecher / Elektronik / VAPE nicht untereinander austauschbar",
+      "check": "Zündungstyp und vorhandenes Polrad identifizieren"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Regler / Ladeanlage",
+      "fit": "6 V / 12 V / VAPE",
+      "ref": "muss zur vorhandenen Anlage passen",
+      "check": "Anlagenspannung und Zündsystem bestimmen"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Zündspule",
+      "fit": "Unterbrecher / Elektronik / VAPE",
+      "ref": "systemspezifisch",
+      "check": "vorhandene Zündanlage bestimmen"
+    },
+    {
+      "system": "Ansaugung",
+      "part": "Luftfilter",
+      "fit": "S50 / S51 / Schwalbe",
+      "ref": "Gehäuse und Ansaugkonzept modellabhängig",
+      "check": "Luftfilterkasten und Ansaugweg am Fahrzeug prüfen"
+    },
+    {
+      "system": "Auspuff",
+      "part": "Krümmer",
+      "fit": "S51 Standard / Enduro",
+      "ref": "Führung und Länge variantenabhängig",
+      "check": "Standard oder hochgelegter Enduro-Auspuff feststellen"
+    },
+    {
+      "system": "Fahrwerk",
+      "part": "Lenkkopflager",
+      "fit": "S-/Vogelserie",
+      "ref": "Baugruppe nach Rahmenmodell",
+      "check": "Rahmenmodell und vorhandene Lagersitze prüfen"
+    },
+    {
+      "system": "Fahrwerk",
+      "part": "Radlager",
+      "fit": "verschiedene Simson-Naben",
+      "ref": "Nabentyp entscheidend",
+      "check": "Nabe identifizieren und Lagerkennzeichnung am Altteil prüfen"
+    },
+    {
+      "system": "Bremse",
+      "part": "Bremszug",
+      "fit": "Vorder-/Hinterrad, modellabhängig",
+      "ref": "Länge und Anschlüsse unterscheiden sich",
+      "check": "Einbauort und Altzug vergleichen"
+    },
+    {
+      "system": "Karosserie",
+      "part": "Seitendeckel",
+      "fit": "S50 / S51",
+      "ref": "Form, Schloss und Dekor modell-/baujahrabhängig",
+      "check": "Rahmen, Verriegelung und gewünschte Originalität prüfen"
+    },
+    {
+      "system": "Karosserie",
+      "part": "Tank",
+      "fit": "S50 / S51",
+      "ref": "Form und Dekor varianten-/baujahrabhängig",
+      "check": "Modell, Baujahr und vorhandene Originalteile vergleichen"
+    },
+    {
+      "system": "Motor",
+      "part": "Kupplungsbeläge",
+      "fit": "M5xx-Motorfamilie",
+      "ref": "Kupplungspaket anhand Motor und vorhandener Baugruppe wählen",
+      "check": "Motorfamilie, Paketaufbau und vorhandene Beläge vergleichen"
+    },
+    {
+      "system": "Motor",
+      "part": "Druckstifte Kupplung",
+      "fit": "M5xx",
+      "ref": "Länge/Anzahl systemabhängig",
+      "check": "vorhandene Druckstifte und Betätigungsmechanik prüfen"
+    },
+    {
+      "system": "Motor",
+      "part": "Kickstarterwelle",
+      "fit": "M53 / M5xx",
+      "ref": "Motorfamilie entscheidet",
+      "check": "Motortyp und Verzahnung bestimmen"
+    },
+    {
+      "system": "Motor",
+      "part": "Schaltwelle / Schaltmechanik",
+      "fit": "M53 / M5xx",
+      "ref": "nicht zwischen Motorfamilien verwechseln",
+      "check": "Motorkennung vor Bestellung"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Kondensator",
+      "fit": "Unterbrecherzündung",
+      "ref": "nur Unterbrechersystem",
+      "check": "Zündungstyp sicher feststellen"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Elektronik-Steuerteil",
+      "fit": "6-V-Elektroniksystem",
+      "ref": "nur zur passenden Elektronikzündung",
+      "check": "Grundplatte/Geber und System bestimmen"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Blinkgeber",
+      "fit": "6 V / 12 V",
+      "ref": "Spannung und Lampenlast beachten",
+      "check": "Bordnetzspannung und Blinkerlampen prüfen"
+    },
+    {
+      "system": "Elektrik",
+      "part": "Sicherung",
+      "fit": "Batteriestromkreis",
+      "ref": "Wert nach konkretem Schaltplan",
+      "check": "nicht höher absichern als vorgesehen"
+    },
+    {
+      "system": "Bremse",
+      "part": "Bremsankerplatte",
+      "fit": "Vorder-/Hinterrad",
+      "ref": "Einbauort und Nabe beachten",
+      "check": "Nabentyp und Betätigungsseite vergleichen"
+    },
+    {
+      "system": "Fahrwerk",
+      "part": "Schwingenlager",
+      "fit": "S50 / S51 / Vogelserie",
+      "ref": "Rahmen-/Schwingentyp prüfen",
+      "check": "Bauform und vorhandene Lagerung identifizieren"
+    },
+    {
+      "system": "Antrieb",
+      "part": "Kettenrad",
+      "fit": "S-/Vogelserie",
+      "ref": "Zähnezahl und Aufnahme fahrzeugspezifisch",
+      "check": "Altteil zählen/messen und Nabe bestimmen"
+    },
+    {
+      "system": "Karosserie",
+      "part": "Sitzbank",
+      "fit": "S50 / S51",
+      "ref": "Form, Länge und Bezug variantenabhängig",
+      "check": "Baujahr/Modell und Haltepunkte vergleichen"
+    }
+  ],
+  "maintenance_plan": [
+    {
+      "task": "Reifendruck und Sichtprüfung",
+      "when": "vor längeren Fahrten / regelmäßig",
+      "km": 0,
+      "months": 0,
+      "category": "Sicherheit"
+    },
+    {
+      "task": "Bremswirkung und Bowdenzüge prüfen",
+      "when": "regelmäßig und nach Arbeiten",
+      "km": 0,
+      "months": 0,
+      "category": "Sicherheit"
+    },
+    {
+      "task": "Beleuchtung, Blinker und Hupe prüfen",
+      "when": "regelmäßig",
+      "km": 0,
+      "months": 0,
+      "category": "Elektrik"
+    },
+    {
+      "task": "Kettendurchhang, Schmierung und Radflucht prüfen",
+      "when": "regelmäßig, besonders nach Regen/Schmutz",
+      "km": 0,
+      "months": 0,
+      "category": "Antrieb"
+    },
+    {
+      "task": "Zündkerzenbild kontrollieren",
+      "when": "bei Wartung oder Motorlaufproblemen",
+      "km": 0,
+      "months": 0,
+      "category": "Motor"
+    },
+    {
+      "task": "Vergaser / Kraftstoffsystem auf Dichtheit prüfen",
+      "when": "regelmäßig und bei Standzeit",
+      "km": 0,
+      "months": 0,
+      "category": "Motor"
+    },
+    {
+      "task": "Getriebeölstand / Dichtheit kontrollieren",
+      "when": "regelmäßig; Wechsel nach motorspezifischer Unterlage",
+      "km": 0,
+      "months": 0,
+      "category": "Getriebe"
+    },
+    {
+      "task": "Lenkkopf, Radlager und Schwingenlager prüfen",
+      "when": "regelmäßig / bei Spiel oder Geräuschen",
+      "km": 0,
+      "months": 0,
+      "category": "Fahrwerk"
+    },
+    {
+      "task": "Schraubverbindungen und Auspuffbefestigung prüfen",
+      "when": "nach Reparaturen und regelmäßig",
+      "km": 0,
+      "months": 0,
+      "category": "Allgemein"
+    },
+    {
+      "task": "Batterie / Ladesystem prüfen",
+      "when": "saisonal bzw. bei Start der Saison",
+      "km": 0,
+      "months": 0,
+      "category": "Elektrik"
+    }
+  ],
+  "wiring_systems": [
+    {
+      "id": "u6",
+      "name": "6 V Unterbrecher",
+      "models": "S50 / S51 B1 / verschiedene Vogelmodelle",
+      "flow": [
+        "Lichtspule → Lichtkreis",
+        "Ladespule → Ladeanlage → Batterie",
+        "Primärspule → Unterbrecher/Kondensator → Zündspule → Zündkerze",
+        "Batterie → Zündschloss/Schalter → Blinker/Hupe"
+      ],
+      "warning": "Die genaue Klemmenbelegung unterscheidet sich nach Modell und Schaltplan."
+    },
+    {
+      "id": "e6",
+      "name": "6 V Elektronik",
+      "models": "S51 B2 / KR51/2 L u. a.",
+      "flow": [
+        "Geber/Grundplatte → Elektronik-Steuerteil",
+        "Steuerteil → Zündspule → Zündkerze",
+        "Lichtspule → Scheinwerfer/Rücklicht",
+        "Ladesystem → Batterie → Blinker/Hupe"
+      ],
+      "warning": "Steuerteil, Geber und Spulen nur systematisch prüfen; nicht wahllos tauschen."
+    },
+    {
+      "id": "v12",
+      "name": "12 V Originalsystem",
+      "models": "späte S51/1 / SR50-Ausführungen",
+      "flow": [
+        "Generator → Regler/Gleichrichter",
+        "Regler → Batterie / Bordnetz",
+        "Zündkreis → Zündspule → Zündkerze",
+        "Bordnetz → Licht, Blinker, Hupe"
+      ],
+      "warning": "Komponenten müssen zur konkreten 12-V-Ausführung passen."
+    },
+    {
+      "id": "vape",
+      "name": "VAPE-Umbau",
+      "models": "zahlreiche Simson-Modelle",
+      "flow": [
+        "Stator → Regler",
+        "Stator/Geber → Zündmodul → Zündspule",
+        "Regler → 12-V-Bordnetz",
+        "Batterie optional / je nach Einbaukonzept"
+      ],
+      "warning": "VAPE-Schaltbilder richten sich nach Kit und Fahrzeugmodell; Herstellerplan des konkreten Kits verwenden."
+    }
+  ],
+  "s51_detail_specs": [
+    {
+      "name": "S51 N",
+      "engine": "M531",
+      "gears": "3",
+      "ignition": "Unterbrecher",
+      "electrics": "6 V Basisausführung",
+      "signals": "keine Blinker",
+      "battery": "keine Batterie",
+      "speedometer": "einfach",
+      "exhaust": "tiefliegend",
+      "special": "Minimal-/Basisausstattung",
+      "certainty": "hoch",
+      "notes": "Ausstattungsdetails immer gegen Baujahr und Originalunterlagen prüfen."
+    },
+    {
+      "name": "S51 B1-3",
+      "engine": "M531",
+      "gears": "3",
+      "ignition": "Unterbrecher",
+      "electrics": "6 V",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "Standardinstrument",
+      "exhaust": "tiefliegend",
+      "special": "B-Ausführung mit Batterie, Blinker, Hupe und Zündschloss",
+      "certainty": "hoch",
+      "notes": "Leuchtmittel- und Ladeanlagendetails sind baujahrabhängig."
+    },
+    {
+      "name": "S51 B1-4",
+      "engine": "M541",
+      "gears": "4",
+      "ignition": "Unterbrecher",
+      "electrics": "6 V",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "Standardinstrument",
+      "exhaust": "tiefliegend",
+      "special": "Viergang-B-Ausführung",
+      "certainty": "hoch",
+      "notes": "Elektrische Einzelkomponenten nach Baujahr und tatsächlicher Anlage bestimmen."
+    },
+    {
+      "name": "S51 B2-4",
+      "engine": "M541",
+      "gears": "4",
+      "ignition": "Elektronik",
+      "electrics": "6 V Elektroniksystem",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "Standardinstrument",
+      "exhaust": "tiefliegend",
+      "special": "Elektronikzündung",
+      "certainty": "hoch",
+      "notes": "Steuerteil/Grundplatte/Polrad als zusammengehöriges System betrachten."
+    },
+    {
+      "name": "S51 Enduro E",
+      "engine": "M541",
+      "gears": "4",
+      "ignition": "Elektronik",
+      "electrics": "varianten-/baujahrabhängig",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "Standardinstrument",
+      "exhaust": "hochgelegt",
+      "special": "Enduro-Auspuff, Hitzeschutz, Faltenbälge, Rahmenstreben",
+      "certainty": "hoch",
+      "notes": "Enduro-Merkmale einzeln auf Originalität und zeitliche Plausibilität prüfen."
+    },
+    {
+      "name": "S51 Enduro E/4",
+      "engine": "M541",
+      "gears": "4",
+      "ignition": "Unterbrecher",
+      "electrics": "varianten-/baujahrabhängig",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "Standardinstrument",
+      "exhaust": "hochgelegt",
+      "special": "Enduro-Ausstattung mit Unterbrecherzündung",
+      "certainty": "mittel",
+      "notes": "Untervariante und Baujahr vor Bestellung elektrischer Komponenten prüfen."
+    },
+    {
+      "name": "S51 Comfort C",
+      "engine": "M541",
+      "gears": "4",
+      "ignition": "Elektronik",
+      "electrics": "gehobene Ausstattung",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "Tacho + Drehzahlmesser",
+      "exhaust": "tiefliegend",
+      "special": "Drehzahlmesser, Seitenständer, Faltenbälge",
+      "certainty": "hoch",
+      "notes": "Instrumente, Seitenständer und Fahrwerksdetails sind zentrale Comfort-Merkmale."
+    },
+    {
+      "name": "S51/1 B",
+      "engine": "M5xx-Familie",
+      "gears": "modellabhängig",
+      "ignition": "spätes System / variantenabhängig",
+      "electrics": "12 V",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "späte Ausführung",
+      "exhaust": "tiefliegend",
+      "special": "späte /1-Ausführung",
+      "certainty": "mittel",
+      "notes": "Bei /1-Fahrzeugen Baujahr, Zündanlage und konkrete Untervariante besonders sorgfältig zuordnen."
+    },
+    {
+      "name": "S51/1 C",
+      "engine": "M541-Familie",
+      "gears": "4",
+      "ignition": "Elektronik / späte Ausführung",
+      "electrics": "12 V",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "Comfort-Instrumentierung",
+      "exhaust": "tiefliegend",
+      "special": "später Comfort-Nachfolger",
+      "certainty": "mittel",
+      "notes": "Detailausstattung anhand Baujahr und Fahrzeug prüfen."
+    },
+    {
+      "name": "S51/1 E",
+      "engine": "M541-Familie",
+      "gears": "4",
+      "ignition": "späte Ausführung",
+      "electrics": "12 V",
+      "signals": "Blinker vorhanden",
+      "battery": "Batterie vorhanden",
+      "speedometer": "späte Ausführung",
+      "exhaust": "hochgelegt",
+      "special": "späte Enduro-Ausführung",
+      "certainty": "mittel",
+      "notes": "Enduro- und Elektrikdetails anhand Originalteilen und Dokumentation prüfen."
+    }
+  ],
+  "carb_reference": [
+    {
+      "model": "S50",
+      "engine": "M53/2",
+      "carb": "BVF 16N1-8",
+      "status": "häufige Serienreferenz",
+      "notes": "Vergaserprägung am Fahrzeug ablesen; Umbauten sind sehr häufig."
+    },
+    {
+      "model": "S51",
+      "engine": "M531/M541",
+      "carb": "BVF 16N1-11",
+      "status": "klassische Serienreferenz",
+      "notes": "Spätere 16N3-Ausführungen möglich; Baujahr und Variante berücksichtigen."
+    },
+    {
+      "model": "KR51/1",
+      "engine": "M53/1",
+      "carb": "BVF 16N1-5",
+      "status": "klassische Serienreferenz",
+      "notes": "Ansauganlage und Untervariante mitprüfen."
+    },
+    {
+      "model": "KR51/2",
+      "engine": "M531/M541",
+      "carb": "BVF 16N1-12",
+      "status": "klassische Serienreferenz",
+      "notes": "Spätere 16N3-Ausführungen möglich."
+    },
+    {
+      "model": "SR50",
+      "engine": "M5xx",
+      "carb": "BVF 16N3-Familie",
+      "status": "späte Serienreferenz",
+      "notes": "Exakte Untertype am Vergaser ablesen."
+    }
+  ],
+  "fluids_torque": [
+    {
+      "group": "Motor / Getriebe",
+      "item": "Getriebeöl",
+      "models": "M53-Familie",
+      "value": "motorspezifische Menge verwenden",
+      "confidence": "sicherheitsorientiert",
+      "note": "Keine pauschale Universalmenge in der App; Motortyp exakt bestimmen."
+    },
+    {
+      "group": "Motor / Getriebe",
+      "item": "Getriebeöl",
+      "models": "M5xx-Familie",
+      "value": "motorspezifische Menge verwenden",
+      "confidence": "sicherheitsorientiert",
+      "note": "M531/M541/M741 nicht mit M53 gleichsetzen."
+    },
+    {
+      "group": "Befestigung",
+      "item": "Zylinderkopf",
+      "models": "50-cm³-Serienmotoren",
+      "value": "nach Reparaturhandbuch des Motortyps",
+      "confidence": "sicherheitsorientiert",
+      "note": "Über Kreuz und auf kaltem Motor montieren; Gewindezustand beachten."
+    },
+    {
+      "group": "Befestigung",
+      "item": "Achsmuttern",
+      "models": "alle",
+      "value": "nach fahrzeugspezifischer Reparaturunterlage",
+      "confidence": "sicherheitsorientiert",
+      "note": "Sicherheitsrelevante Verschraubung; keine Universalwerte verwenden."
+    },
+    {
+      "group": "Befestigung",
+      "item": "Polrad / Rotor",
+      "models": "Unterbrecher/Elektronik/VAPE",
+      "value": "systemspezifisch",
+      "confidence": "sicherheitsorientiert",
+      "note": "Hersteller-/Reparaturwert des tatsächlich verbauten Systems verwenden."
+    },
+    {
+      "group": "Gemisch",
+      "item": "Zweitakt-Kraftstoff",
+      "models": "Serienfahrzeuge",
+      "value": "Mischungsverhältnis motor- und lagerabhängig prüfen",
+      "confidence": "konservativ",
+      "note": "Kurbelwellenlagerung und Motorzustand können für die korrekte Mischung entscheidend sein."
+    }
+  ],
+  "wiring_interactive": {
+    "u6": {
+      "title": "6 V Unterbrecher",
+      "nodes": [
+        {
+          "id": "gen",
+          "label": "Grundplatte / Spulen",
+          "type": "source"
+        },
+        {
+          "id": "points",
+          "label": "Unterbrecher + Kondensator",
+          "type": "ignition"
+        },
+        {
+          "id": "coil",
+          "label": "Zündspule",
+          "type": "ignition"
+        },
+        {
+          "id": "plug",
+          "label": "Zündkerze",
+          "type": "load"
+        },
+        {
+          "id": "light",
+          "label": "Lichtkreis",
+          "type": "load"
+        },
+        {
+          "id": "charge",
+          "label": "Ladeanlage",
+          "type": "control"
+        },
+        {
+          "id": "battery",
+          "label": "Batterie",
+          "type": "storage"
+        },
+        {
+          "id": "signals",
+          "label": "Blinker / Hupe",
+          "type": "load"
+        }
+      ],
+      "edges": [
+        [
+          "gen",
+          "points"
+        ],
+        [
+          "points",
+          "coil"
+        ],
+        [
+          "coil",
+          "plug"
+        ],
+        [
+          "gen",
+          "light"
+        ],
+        [
+          "gen",
+          "charge"
+        ],
+        [
+          "charge",
+          "battery"
+        ],
+        [
+          "battery",
+          "signals"
+        ]
+      ]
+    },
+    "e6": {
+      "title": "6 V Elektronik",
+      "nodes": [
+        {
+          "id": "gen",
+          "label": "Grundplatte / Geber",
+          "type": "source"
+        },
+        {
+          "id": "control",
+          "label": "Elektronik-Steuerteil",
+          "type": "control"
+        },
+        {
+          "id": "coil",
+          "label": "Zündspule",
+          "type": "ignition"
+        },
+        {
+          "id": "plug",
+          "label": "Zündkerze",
+          "type": "load"
+        },
+        {
+          "id": "light",
+          "label": "Lichtkreis",
+          "type": "load"
+        },
+        {
+          "id": "charge",
+          "label": "Ladesystem",
+          "type": "control"
+        },
+        {
+          "id": "battery",
+          "label": "Batterie",
+          "type": "storage"
+        }
+      ],
+      "edges": [
+        [
+          "gen",
+          "control"
+        ],
+        [
+          "control",
+          "coil"
+        ],
+        [
+          "coil",
+          "plug"
+        ],
+        [
+          "gen",
+          "light"
+        ],
+        [
+          "gen",
+          "charge"
+        ],
+        [
+          "charge",
+          "battery"
+        ]
+      ]
+    },
+    "v12": {
+      "title": "12 V Originalsystem",
+      "nodes": [
+        {
+          "id": "gen",
+          "label": "Generator",
+          "type": "source"
+        },
+        {
+          "id": "reg",
+          "label": "Regler / Gleichrichter",
+          "type": "control"
+        },
+        {
+          "id": "battery",
+          "label": "Batterie",
+          "type": "storage"
+        },
+        {
+          "id": "light",
+          "label": "Licht",
+          "type": "load"
+        },
+        {
+          "id": "signals",
+          "label": "Blinker / Hupe",
+          "type": "load"
+        },
+        {
+          "id": "ign",
+          "label": "Zündkreis",
+          "type": "ignition"
+        }
+      ],
+      "edges": [
+        [
+          "gen",
+          "reg"
+        ],
+        [
+          "reg",
+          "battery"
+        ],
+        [
+          "reg",
+          "light"
+        ],
+        [
+          "battery",
+          "signals"
+        ],
+        [
+          "gen",
+          "ign"
+        ]
+      ]
+    },
+    "vape": {
+      "title": "VAPE-Umbau",
+      "nodes": [
+        {
+          "id": "stator",
+          "label": "VAPE Stator",
+          "type": "source"
+        },
+        {
+          "id": "reg",
+          "label": "Regler",
+          "type": "control"
+        },
+        {
+          "id": "module",
+          "label": "Zündmodul",
+          "type": "ignition"
+        },
+        {
+          "id": "coil",
+          "label": "Zündspule",
+          "type": "ignition"
+        },
+        {
+          "id": "plug",
+          "label": "Zündkerze",
+          "type": "load"
+        },
+        {
+          "id": "board",
+          "label": "12-V-Bordnetz",
+          "type": "load"
+        },
+        {
+          "id": "battery",
+          "label": "Batterie optional",
+          "type": "storage"
+        }
+      ],
+      "edges": [
+        [
+          "stator",
+          "reg"
+        ],
+        [
+          "stator",
+          "module"
+        ],
+        [
+          "module",
+          "coil"
+        ],
+        [
+          "coil",
+          "plug"
+        ],
+        [
+          "reg",
+          "board"
+        ],
+        [
+          "reg",
+          "battery"
+        ]
+      ]
+    }
+  },
+  "assemblies": [
+    {
+      "id": "m5xx-clutch",
+      "title": "M5xx Kupplung",
+      "models": "S51 / KR51/2 / SR50",
+      "system": "Motor / Getriebe",
+      "parts": [
+        {
+          "n": 1,
+          "name": "Kupplungsdeckel",
+          "role": "Abdeckung / Zugang"
+        },
+        {
+          "n": 2,
+          "name": "Kupplungskorb",
+          "role": "Kraftübertragung"
+        },
+        {
+          "n": 3,
+          "name": "Kupplungspaket",
+          "role": "Beläge und Stahlscheiben"
+        },
+        {
+          "n": 4,
+          "name": "Druckplatte",
+          "role": "Betätigung"
+        },
+        {
+          "n": 5,
+          "name": "Druckstifte",
+          "role": "Kraftübertragung vom Hebel"
+        },
+        {
+          "n": 6,
+          "name": "Betätigungsmechanik",
+          "role": "Hebel / Einstellmechanismus"
+        }
+      ],
+      "checks": [
+        "Belagzustand",
+        "Korbnuten",
+        "Druckstifte",
+        "Betätigungsweg",
+        "Ölzustand"
+      ]
+    },
+    {
+      "id": "m5xx-ignition",
+      "title": "M5xx Zündung",
+      "models": "S51 / KR51/2",
+      "system": "Elektrik",
+      "parts": [
+        {
+          "n": 1,
+          "name": "Grundplatte",
+          "role": "Spulen / Geberträger"
+        },
+        {
+          "n": 2,
+          "name": "Polrad",
+          "role": "Magnetrotor"
+        },
+        {
+          "n": 3,
+          "name": "Geber oder Unterbrecher",
+          "role": "Zündsignal"
+        },
+        {
+          "n": 4,
+          "name": "Steuerteil / Kondensator",
+          "role": "systemabhängig"
+        },
+        {
+          "n": 5,
+          "name": "Zündspule",
+          "role": "Hochspannung"
+        },
+        {
+          "n": 6,
+          "name": "Zündkerze",
+          "role": "Funkenstrecke"
+        }
+      ],
+      "checks": [
+        "Zündungstyp",
+        "Masse",
+        "Steckverbindungen",
+        "Polrad/Grundplatte zusammengehörig",
+        "Zündzeitpunkt"
+      ]
+    },
+    {
+      "id": "s51-front",
+      "title": "S51 Vorderbau",
+      "models": "S50 / S51",
+      "system": "Fahrwerk / Bremse",
+      "parts": [
+        {
+          "n": 1,
+          "name": "Lenkkopf",
+          "role": "Rahmenlagerung"
+        },
+        {
+          "n": 2,
+          "name": "Telegabel",
+          "role": "Federung / Führung"
+        },
+        {
+          "n": 3,
+          "name": "Vorderradnabe",
+          "role": "Rad / Bremstrommel"
+        },
+        {
+          "n": 4,
+          "name": "Bremsankerplatte",
+          "role": "Bremsmechanik"
+        },
+        {
+          "n": 5,
+          "name": "Bremsbacken",
+          "role": "Reibelement"
+        },
+        {
+          "n": 6,
+          "name": "Bremszug",
+          "role": "Betätigung"
+        }
+      ],
+      "checks": [
+        "Lenkkopflagerspiel",
+        "Gabeldichtheit",
+        "Radlagerspiel",
+        "Belagzustand",
+        "Bowdenzug"
+      ]
+    },
+    {
+      "id": "s51-rear",
+      "title": "S51 Hinterbau",
+      "models": "S50 / S51",
+      "system": "Antrieb / Fahrwerk",
+      "parts": [
+        {
+          "n": 1,
+          "name": "Schwinge",
+          "role": "Hinterradführung"
+        },
+        {
+          "n": 2,
+          "name": "Federbeine",
+          "role": "Federung / Dämpfung"
+        },
+        {
+          "n": 3,
+          "name": "Hinterradnabe",
+          "role": "Rad / Bremse"
+        },
+        {
+          "n": 4,
+          "name": "Kettenrad",
+          "role": "Sekundärantrieb"
+        },
+        {
+          "n": 5,
+          "name": "Kette",
+          "role": "Kraftübertragung"
+        },
+        {
+          "n": 6,
+          "name": "Kettenspanner",
+          "role": "Durchhang / Radflucht"
+        }
+      ],
+      "checks": [
+        "Schwingenlager",
+        "Federbeinspiel",
+        "Kettendurchhang",
+        "Zahnprofil",
+        "Radflucht"
+      ]
+    },
+    {
+      "id": "kr51-front",
+      "title": "Schwalbe Vorderbau",
+      "models": "KR51/1 / KR51/2",
+      "system": "Fahrwerk / Karosserie",
+      "parts": [
+        {
+          "n": 1,
+          "name": "Lenker / Lenkrohr",
+          "role": "Lenkung"
+        },
+        {
+          "n": 2,
+          "name": "Vorderradführung",
+          "role": "Federung"
+        },
+        {
+          "n": 3,
+          "name": "Vorderradnabe",
+          "role": "Rad / Bremse"
+        },
+        {
+          "n": 4,
+          "name": "Beinschild",
+          "role": "Karosserie"
+        },
+        {
+          "n": 5,
+          "name": "Lampengehäuse",
+          "role": "Beleuchtung / Verkleidung"
+        },
+        {
+          "n": 6,
+          "name": "Bowdenzüge",
+          "role": "Bedienung"
+        }
+      ],
+      "checks": [
+        "Lenkungsspiel",
+        "Bremswirkung",
+        "Kabel-/Zugführung",
+        "Karosseriebefestigung"
+      ]
+    },
+    {
+      "id": "fuel-system",
+      "title": "Kraftstoffsystem",
+      "models": "viele Simson Modelle",
+      "system": "Motor / Kraftstoff",
+      "parts": [
+        {
+          "n": 1,
+          "name": "Tank",
+          "role": "Kraftstoffspeicher"
+        },
+        {
+          "n": 2,
+          "name": "Tankdeckel / Entlüftung",
+          "role": "Druckausgleich"
+        },
+        {
+          "n": 3,
+          "name": "Kraftstoffhahn",
+          "role": "Absperrung / Filter"
+        },
+        {
+          "n": 4,
+          "name": "Schlauch",
+          "role": "Zufuhr"
+        },
+        {
+          "n": 5,
+          "name": "Vergaser",
+          "role": "Gemischbildung"
+        },
+        {
+          "n": 6,
+          "name": "Ansaugtrakt",
+          "role": "Luftführung"
+        }
+      ],
+      "checks": [
+        "Tankrost",
+        "Durchfluss",
+        "Entlüftung",
+        "Schlauchknick",
+        "Vergaserstand",
+        "Nebenluft"
+      ]
+    }
+  ],
+  "vehicle_diagnosis_profiles": {
+    "s51": {
+      "name": "Simson S51",
+      "priority": [
+        "Motor dreht im Stand hoch",
+        "Kein Zündfunke",
+        "Motor nimmt schlecht Gas an",
+        "Kupplung trennt nicht",
+        "Batterie wird nicht geladen",
+        "Getriebe schaltet schlecht"
+      ],
+      "prechecks": [
+        "Zündungstyp feststellen",
+        "Vergasertyp ablesen",
+        "Motor M531/M541 identifizieren",
+        "Umbauten wie VAPE dokumentieren"
+      ]
+    },
+    "s50": {
+      "name": "Simson S50",
+      "priority": [
+        "Kein Zündfunke",
+        "Motor nimmt schlecht Gas an",
+        "Motor hat wenig Leistung",
+        "Bremse wirkt schlecht"
+      ],
+      "prechecks": [
+        "M53/2-Motor prüfen",
+        "Vergasertyp ablesen",
+        "Unterbrecher-/Umbauzustand feststellen",
+        "S51-Motorumbau ausschließen oder dokumentieren"
+      ]
+    },
+    "kr511": {
+      "name": "Schwalbe KR51/1",
+      "priority": [
+        "Springt kalt schlecht an",
+        "Motor hat wenig Leistung",
+        "Kein Zündfunke",
+        "Bremse wirkt schlecht"
+      ],
+      "prechecks": [
+        "Gebläsekühlung / M53-Familie bestätigen",
+        "Ansauganlage prüfen",
+        "Vergaserkennung ablesen",
+        "Untervariante feststellen"
+      ]
+    },
+    "kr512": {
+      "name": "Schwalbe KR51/2",
+      "priority": [
+        "Kein Zündfunke",
+        "Motor dreht im Stand hoch",
+        "Kupplung trennt nicht",
+        "Batterie wird nicht geladen"
+      ],
+      "prechecks": [
+        "Untervariante N/E/L bestimmen",
+        "M531/M541 bestätigen",
+        "Zündungsart feststellen",
+        "Vergasertyp ablesen"
+      ]
+    }
+  },
+  "wire_color_legend": [
+    {
+      "key": "source",
+      "label": "Erzeugung / Generator",
+      "color": "#e3bb25",
+      "note": "App-Farbe, keine Aussage zur originalen Kabelfarbe"
+    },
+    {
+      "key": "ignition",
+      "label": "Zündkreis",
+      "color": "#b4362e",
+      "note": "App-Farbe, keine Aussage zur originalen Kabelfarbe"
+    },
+    {
+      "key": "control",
+      "label": "Regelung / Steuerung",
+      "color": "#2f76a8",
+      "note": "App-Farbe, keine Aussage zur originalen Kabelfarbe"
+    },
+    {
+      "key": "storage",
+      "label": "Batterie / Speicher",
+      "color": "#7e9d45",
+      "note": "App-Farbe, keine Aussage zur originalen Kabelfarbe"
+    },
+    {
+      "key": "load",
+      "label": "Verbraucher",
+      "color": "#777777",
+      "note": "App-Farbe, keine Aussage zur originalen Kabelfarbe"
+    }
+  ],
+  "guided_diagnosis": {
+    "start": {
+      "question": "Welcher Bereich macht Probleme?",
+      "options": [
+        {
+          "label": "Motor / Start / Leistung",
+          "next": "motor"
+        },
+        {
+          "label": "Zündung / Elektrik",
+          "next": "electrics"
+        },
+        {
+          "label": "Kupplung / Getriebe",
+          "next": "gear"
+        },
+        {
+          "label": "Bremse / Fahrwerk",
+          "next": "chassis"
+        }
+      ]
+    },
+    "motor": {
+      "question": "Was ist das Hauptsymptom?",
+      "options": [
+        {
+          "label": "Springt schlecht an",
+          "next": "motor_start"
+        },
+        {
+          "label": "Dreht im Stand hoch",
+          "result": "Motor dreht im Stand hoch"
+        },
+        {
+          "label": "Nimmt schlecht Gas an",
+          "result": "Motor nimmt schlecht Gas an"
+        },
+        {
+          "label": "Wenig Leistung",
+          "result": "Motor hat wenig Leistung"
+        },
+        {
+          "label": "Geht warm aus",
+          "result": "Geht warm aus"
+        }
+      ]
+    },
+    "motor_start": {
+      "question": "Wann ist das Problem am stärksten?",
+      "options": [
+        {
+          "label": "Kalt",
+          "result": "Springt kalt schlecht an"
+        },
+        {
+          "label": "Warm",
+          "result": "Geht warm aus"
+        },
+        {
+          "label": "Immer",
+          "next": "motor_start_always"
+        }
+      ]
+    },
+    "motor_start_always": {
+      "question": "Ist ein kräftiger Zündfunke vorhanden?",
+      "options": [
+        {
+          "label": "Nein / unsicher",
+          "result": "Kein Zündfunke"
+        },
+        {
+          "label": "Ja",
+          "result": "Springt kalt schlecht an"
+        }
+      ]
+    },
+    "electrics": {
+      "question": "Welcher elektrische Fehler liegt vor?",
+      "options": [
+        {
+          "label": "Kein Zündfunke",
+          "result": "Kein Zündfunke"
+        },
+        {
+          "label": "Licht fällt aus",
+          "result": "Licht fällt aus"
+        },
+        {
+          "label": "Batterie wird nicht geladen",
+          "result": "Batterie wird nicht geladen"
+        }
+      ]
+    },
+    "gear": {
+      "question": "Welches Symptom tritt auf?",
+      "options": [
+        {
+          "label": "Kupplung trennt nicht",
+          "result": "Kupplung trennt nicht"
+        },
+        {
+          "label": "Getriebe schaltet schlecht",
+          "result": "Getriebe schaltet schlecht"
+        }
+      ]
+    },
+    "chassis": {
+      "question": "Welcher Bereich ist betroffen?",
+      "options": [
+        {
+          "label": "Bremse wirkt schlecht",
+          "result": "Bremse wirkt schlecht"
+        },
+        {
+          "label": "Kette / Antrieb",
+          "next": "chain"
+        }
+      ]
+    },
+    "chain": {
+      "question": "Was fällt auf?",
+      "options": [
+        {
+          "label": "Kette schlägt / ist locker",
+          "custom": "Kette und Kettenspannung prüfen"
+        },
+        {
+          "label": "Antrieb ruckelt / Zahnprofil auffällig",
+          "custom": "Kette, Ritzel und Kettenrad gemeinsam prüfen"
+        }
+      ]
+    }
+  },
+  "repair_categories": [
+    "Motor",
+    "Kupplung",
+    "Getriebe",
+    "Vergaser",
+    "Zündung",
+    "Elektrik",
+    "Bremse",
+    "Fahrwerk",
+    "Antrieb",
+    "Auspuff",
+    "Karosserie",
+    "Wartung",
+    "Restauration",
+    "Sonstiges"
+  ],
+  "shopping_categories": [
+    "Ansaugung",
+    "Antrieb",
+    "Auspuff",
+    "Bedienung",
+    "Bremse",
+    "Dichtung",
+    "Elektrik",
+    "Fahrwerk",
+    "Karosserie",
+    "Motor"
+  ],
+  "document_types": [
+    "KBA-Papiere",
+    "Betriebserlaubnis",
+    "Kaufvertrag",
+    "TÜV / DEKRA",
+    "Versicherung",
+    "Rechnung",
+    "Gutachten",
+    "Restaurationsnachweis",
+    "Motor-/Rahmennachweis",
+    "Sonstiges"
+  ],
+  "restoration_project_templates": [
+    "Bestandsaufnahme",
+    "Demontage",
+    "Rahmen / Fahrwerk",
+    "Motor / Getriebe",
+    "Elektrik / Zündung",
+    "Karosserie / Lack",
+    "Bremsen / Räder",
+    "Montage",
+    "Einstellung / Probefahrt",
+    "Dokumentation / Abschluss"
+  ],
+  "service_templates": [
+    {
+      "name": "Bremsen prüfen",
+      "months": 6
+    },
+    {
+      "name": "Kette prüfen / schmieren",
+      "months": 3
+    },
+    {
+      "name": "Beleuchtung / Elektrik prüfen",
+      "months": 6
+    },
+    {
+      "name": "Getriebeöl / Dichtheit prüfen",
+      "months": 12
+    },
+    {
+      "name": "Vergaser / Kraftstoffsystem prüfen",
+      "months": 12
+    },
+    {
+      "name": "Saisoncheck",
+      "months": 12
+    }
+  ],
+  "dashboard_cards": [
+    "Marktwert",
+    "Gesamtinvestition",
+    "Restaurationsfortschritt",
+    "Offene Arbeiten",
+    "Nächster Service",
+    "Dokumentstatus"
+  ],
+  "timeline_types": {
+    "purchase": "Kauf",
+    "repair": "Reparatur",
+    "maintenance": "Wartung",
+    "document": "Dokument",
+    "photo": "Foto",
+    "service": "Service",
+    "restoration": "Restauration"
+  }
+}

@@ -1,0 +1,69 @@
+name: Build Werkers Simson AAB
+
+on:
+  workflow_dispatch:
+    inputs:
+      signed:
+        description: "Signiertes AAB für Google Play bauen?"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-aab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Java 17 einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Gradle einrichten
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: "8.13"
+
+      - name: Android SDK einrichten
+        uses: android-actions/setup-android@v3
+
+      - name: Android API 36 installieren
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Keystore vorbereiten
+        if: ${{ inputs.signed }}
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Es fehlen Signatur-Secrets."
+            exit 1
+          fi
+          echo "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/werkers-upload-key.jks"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/werkers-upload-key.jks" >> "$GITHUB_ENV"
+          echo "ANDROID_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+          echo "ANDROID_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+
+      - name: AAB bauen
+        working-directory: android-store-project
+        run: gradle --no-daemon clean bundleRelease
+
+      - name: AAB hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: werkers-simson-${{ inputs.signed && 'SIGNED' || 'UNSIGNED' }}-aab
+          path: android-store-project/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 30
