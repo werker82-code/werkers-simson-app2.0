@@ -7,11 +7,11 @@ def keyPasswordValue = System.getenv("ANDROID_KEY_PASSWORD")
 def hasReleaseSigning = ksPath && ksPassword && ksAlias && keyPasswordValue
 
 android {
-    namespace = 'com.werkerswerkstatt.simson'
+    namespace = 'com.werkers_werkstatt.meineapp'
     compileSdk = 36
 
     defaultConfig {
-        applicationId = 'com.werkerswerkstatt.simson'
+        applicationId = 'com.werkers_werkstatt.meineapp'
         minSdk = 24
         targetSdk = 36
         versionCode = 41200
