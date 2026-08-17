@@ -34,9 +34,21 @@ jobs:
         working-directory: android-store-project
         run: gradle --no-daemon clean bundleRelease
 
+      - name: Bundletool herunterladen
+        run: |
+          curl -L --fail --retry 3 -o bundletool.jar https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar
+          java -jar bundletool.jar version
+
       - uses: actions/upload-artifact@v4
         with:
           name: Werkers-Simson-V4.12.0-Base-AAB
           path: android-store-project/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundletool-1.18.3
+          path: bundletool.jar
           if-no-files-found: error
           retention-days: 7
