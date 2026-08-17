@@ -41,14 +41,14 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Werkers-Simson-V4.12.0-Base-AAB
+          name: Werkers-Simson-V4.12.0-PackageFix-${{ github.run_number }}
           path: android-store-project/app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
           retention-days: 7
 
       - uses: actions/upload-artifact@v4
         with:
-          name: bundletool-1.18.3
+          name: bundletool-1.18.3-${{ github.run_number }}
           path: bundletool.jar
           if-no-files-found: error
           retention-days: 7
