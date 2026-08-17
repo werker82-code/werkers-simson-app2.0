@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -19,10 +20,18 @@ public class MainActivity extends Activity {
     super.onCreate(savedInstanceState);
     webView = new WebView(this);
     setContentView(webView);
-    webView.getSettings().setJavaScriptEnabled(true);
-    webView.getSettings().setDomStorageEnabled(true);
-    webView.getSettings().setAllowFileAccess(true);
-    webView.getSettings().setAllowContentAccess(true);
+
+    WebSettings s = webView.getSettings();
+    s.setJavaScriptEnabled(true);
+    s.setDomStorageEnabled(true);
+    s.setAllowFileAccess(true);
+    s.setAllowContentAccess(true);
+    s.setAllowFileAccessFromFileURLs(true);
+    s.setAllowUniversalAccessFromFileURLs(false);
+    s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+      s.setSafeBrowsingEnabled(true);
+    }
 
     webView.setWebChromeClient(new WebChromeClient() {
       @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
@@ -43,13 +52,14 @@ public class MainActivity extends Activity {
         Uri u = request.getUrl();
         String scheme = u.getScheme();
         if ("file".equals(scheme)) return false;
-        if ("http".equals(scheme) || "https".equals(scheme)) {
-          startActivity(new Intent(Intent.ACTION_VIEW, u));
+        if ("http".equals(scheme) || "https".equals(scheme) || "mailto".equals(scheme)) {
+          try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) {}
           return true;
         }
-        return false;
+        return true;
       }
     });
+
     webView.loadUrl("file:///android_asset/index.html");
   }
 
@@ -58,12 +68,27 @@ public class MainActivity extends Activity {
     if (requestCode == FILE_CHOOSER_REQUEST && filePathCallback != null) {
       Uri[] results = null;
       if (resultCode == Activity.RESULT_OK && data != null) {
-        String dataString = data.getDataString();
-        if (dataString != null) results = new Uri[]{Uri.parse(dataString)};
+        if (data.getClipData() != null) {
+          int n = data.getClipData().getItemCount();
+          results = new Uri[n];
+          for (int i = 0; i < n; i++) results[i] = data.getClipData().getItemAt(i).getUri();
+        } else if (data.getData() != null) {
+          results = new Uri[]{data.getData()};
+        }
       }
       filePathCallback.onReceiveValue(results);
       filePathCallback = null;
     }
+  }
+
+  @Override protected void onDestroy() {
+    if (webView != null) {
+      webView.loadUrl("about:blank");
+      webView.stopLoading();
+      webView.destroy();
+      webView = null;
+    }
+    super.onDestroy();
   }
 
   @Override public void onBackPressed() {
