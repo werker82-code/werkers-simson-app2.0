@@ -1,4 +1,4 @@
-package com.werkerswerkstatt.simson;
+package com.werkers_werkstatt.meineapp;
 
 import android.app.Activity;
 import android.os.Bundle;
