@@ -31,7 +31,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
 
       - name: Install dependencies
         run: npm install
@@ -47,7 +46,6 @@ jobs:
           /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" ios/App/App/Info.plist || \
           /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" ios/App/App/Info.plist
 
-          # Use the Werkers Simson app icon if present.
           if [ -f "www/assets/icon-512.png" ]; then
             mkdir -p ios/App/App/Assets.xcassets/AppIcon.appiconset
             sips -z 1024 1024 www/assets/icon-512.png --out ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
