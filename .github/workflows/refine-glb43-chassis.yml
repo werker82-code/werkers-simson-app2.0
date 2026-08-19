@@ -1,0 +1,41 @@
+name: Refine S51 GLB 4.3 Chassis
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/refine_glb43_chassis.py'
+      - '.github/glb43-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate GLB 4.3 chassis components
+        run: python3 scripts/refine_glb43_chassis.py
+      - name: Verify GLB 4.3
+        run: |
+          test -f assets/models/frame.glb
+          test -f assets/models/swingarm.glb
+          test -f assets/models/fork.glb
+          test -f assets/models/shocks.glb
+          test -f assets/models/shocks_long.glb
+          test -f assets/models/exhaust_series.glb
+          test -f assets/models/exhaust_enduro.glb
+          test -f assets/models/exhaust_sport.glb
+          test -f www/assets/models/frame.glb
+          grep -q "glbFrame" configurator3d.js
+          grep -q "glbExhaustSeries" configurator3d.js
+          grep -q "configurator-glb4-3" sw.js
+      - name: Commit GLB 4.3 refinement
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models www/assets/models configurator3d.js www/configurator3d.js configurator3d.css www/configurator3d.css sw.js www/sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refine S51 chassis and exhaust to GLB 4.3'
+          git push
