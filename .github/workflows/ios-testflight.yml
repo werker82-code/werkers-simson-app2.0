@@ -133,6 +133,14 @@ jobs:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
-          IPA=$(find "$RUNNER_TEMP/export" -name '*.ipa' -maxdepth 1 | head -1)
-          test -f "$IPA"
+          set -e
+          shopt -s nullglob
+          IPA_FILES=("$RUNNER_TEMP"/export/*.ipa)
+          if [ ${#IPA_FILES[@]} -ne 1 ]; then
+            echo "Expected exactly one IPA, found ${#IPA_FILES[@]}"
+            ls -la "$RUNNER_TEMP/export" || true
+            exit 1
+          fi
+          IPA="${IPA_FILES[0]}"
+          echo "Uploading: $IPA"
           xcrun altool --upload-app --type ios --file "$IPA" --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"
