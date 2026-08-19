@@ -1,0 +1,34 @@
+name: Refine S51 Configurator 3D 3.3
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/refine_configurator3d_p33.py'
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply S51 3D detail 3.3
+        run: python3 scripts/refine_configurator3d_p33.py
+      - name: Validate JavaScript
+        run: node --check configurator3d.js && node --check www/configurator3d.js
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add configurator3d.js www/configurator3d.js configurator3d.css www/configurator3d.css sw.js www/sw.js
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Refine S51 front, cockpit and engine to 3D detail 3.3"
+            git push
+          fi
