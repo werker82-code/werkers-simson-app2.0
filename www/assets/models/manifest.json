@@ -1,5 +1,5 @@
 {
-  "version": "chassis-exhaust-highdetail-1",
+  "version": "body-cockpit-highdetail-1",
   "components": {
     "tank": "assets/models/tank.glb",
     "sidecover": "assets/models/sidecover.glb",
@@ -20,7 +20,25 @@
     "shocksLong": "assets/models/shocks_long.glb",
     "exhaustSeries": "assets/models/exhaust_series.glb",
     "exhaustEnduro": "assets/models/exhaust_enduro.glb",
-    "exhaustSport": "assets/models/exhaust_sport.glb"
+    "exhaustSport": "assets/models/exhaust_sport.glb",
+    "seatStandard": "assets/models/seat_standard.glb",
+    "seatFlat": "assets/models/seat_flat.glb",
+    "seatSport": "assets/models/seat_sport.glb",
+    "handlebarStreet": "assets/models/handlebar_street.glb",
+    "handlebarEnduro": "assets/models/handlebar_enduro.glb",
+    "handlebarCross": "assets/models/handlebar_cross.glb",
+    "cockpit": "assets/models/cockpit.glb",
+    "headlightShell": "assets/models/headlight_shell.glb",
+    "headlightClassic": "assets/models/headlight_classic.glb",
+    "headlightH4": "assets/models/headlight_h4.glb",
+    "headlightLed": "assets/models/headlight_led.glb",
+    "indicatorsFront": "assets/models/indicators_front.glb",
+    "indicatorsRear": "assets/models/indicators_rear.glb",
+    "taillight": "assets/models/taillight.glb",
+    "licenseplate": "assets/models/licenseplate.glb",
+    "frontFenderClassic": "assets/models/front_fender_classic.glb",
+    "frontFenderEnduro": "assets/models/front_fender_enduro.glb",
+    "rearFender": "assets/models/rear_fender.glb"
   },
   "detail": {
     "tank": "lofted S51 profile with flattened underside and knee recesses",
@@ -34,6 +52,13 @@
     "swingarm": "boxed rear swingarm with axle bridge and chain guard",
     "fork": "separate twin-leg telescopic fork with bridge and sliders",
     "shocks": "separate standard and long rear shock assemblies",
-    "exhaust": "right-side series, enduro-high and sport exhaust GLBs"
+    "exhaust": "right-side series, enduro-high and sport exhaust GLBs",
+    "seat": "standard, flat and sport seat GLBs with rounded lofted upholstery",
+    "handlebar": "street, enduro and cross handlebar assemblies with real lateral width",
+    "cockpit": "separate speedometer/cluster and mounting geometry",
+    "headlight": "separate shell plus classic, H4 and LED-look lens components",
+    "indicators": "separate front and rear indicator pairs",
+    "fenders": "curved classic/enduro front and rear fender meshes",
+    "rearLighting": "separate taillight and license plate components"
   }
 }
