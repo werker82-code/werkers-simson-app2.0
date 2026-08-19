@@ -1,5 +1,5 @@
 from pathlib import Path
-import json, math, struct
+import json, math, struct, re
 
 ROOT=Path('.')
 
@@ -15,17 +15,45 @@ def make_glb(name, verts, norms, indices, color):
         chunks.append(pad4(raw)); views.append({'buffer':0,'byteOffset':off,'byteLength':len(raw),'target':target}); off+=len(chunks[-1])
     binblob=b''.join(chunks)
     pts=[verts[i:i+3] for i in range(0,len(verts),3)]
-    mn=[min(p[j] for p in pts) for j in range(3)]; mx=[max(p[j] for p in pts) for j in range(3)]
-    doc={'asset':{'version':'2.0','generator':'Werkers Simson procedural GLB starter'},'scene':0,'scenes':[{'nodes':[0]}],
-         'nodes':[{'mesh':0,'name':name}], 'meshes':[{'name':name,'primitives':[{'attributes':{'POSITION':0,'NORMAL':1},'indices':2,'material':0}]}],
-         'materials':[{'pbrMetallicRoughness':{'baseColorFactor':color,'metallicFactor':0.15,'roughnessFactor':0.48}}],
-         'buffers':[{'byteLength':len(binblob)}], 'bufferViews':views,
-         'accessors':[{'bufferView':0,'componentType':5126,'count':len(verts)//3,'type':'VEC3','min':mn,'max':mx},
-                      {'bufferView':1,'componentType':5126,'count':len(norms)//3,'type':'VEC3'},
-                      {'bufferView':2,'componentType':5123,'count':len(indices),'type':'SCALAR'}]}
+    mn=[min(p[j] for p in pts) for j in range(3)]
+    mx=[max(p[j] for p in pts) for j in range(3)]
+    doc={
+        'asset':{'version':'2.0','generator':'Werkers Simson high-detail procedural GLB'},
+        'scene':0,'scenes':[{'nodes':[0]}],
+        'nodes':[{'mesh':0,'name':name}],
+        'meshes':[{'name':name,'primitives':[{'attributes':{'POSITION':0,'NORMAL':1},'indices':2,'material':0}]}],
+        'materials':[{'pbrMetallicRoughness':{'baseColorFactor':color,'metallicFactor':0.12,'roughnessFactor':0.42}}],
+        'buffers':[{'byteLength':len(binblob)}],
+        'bufferViews':views,
+        'accessors':[
+            {'bufferView':0,'componentType':5126,'count':len(verts)//3,'type':'VEC3','min':mn,'max':mx},
+            {'bufferView':1,'componentType':5126,'count':len(norms)//3,'type':'VEC3'},
+            {'bufferView':2,'componentType':5123,'count':len(indices),'type':'SCALAR'}
+        ]
+    }
     jb=pad4(json.dumps(doc,separators=(',',':')).encode(), b' ')
     total=12+8+len(jb)+8+len(binblob)
     return struct.pack('<4sII',b'glTF',2,total)+struct.pack('<I4s',len(jb),b'JSON')+jb+struct.pack('<I4s',len(binblob),b'BIN\x00')+binblob
+
+def compute_normals(verts, indices):
+    norms=[0.0]*len(verts)
+    for i in range(0,len(indices),3):
+        ia,ib,ic=indices[i:i+3]
+        ax,ay,az=verts[3*ia:3*ia+3]
+        bx,by,bz=verts[3*ib:3*ib+3]
+        cx,cy,cz=verts[3*ic:3*ic+3]
+        ux,uy,uz=bx-ax,by-ay,bz-az
+        vx,vy,vz=cx-ax,cy-ay,cz-az
+        nx=uy*vz-uz*vy
+        ny=uz*vx-ux*vz
+        nz=ux*vy-uy*vx
+        for j in (ia,ib,ic):
+            norms[3*j]+=nx; norms[3*j+1]+=ny; norms[3*j+2]+=nz
+    for j in range(len(verts)//3):
+        x,y,z=norms[3*j:3*j+3]
+        L=(x*x+y*y+z*z)**0.5 or 1.0
+        norms[3*j:3*j+3]=[x/L,y/L,z/L]
+    return norms
 
 def ellipsoid(rx,ry,rz,seg=28,ring=16):
     v=[]; n=[]; ind=[]
@@ -38,16 +66,8 @@ def ellipsoid(rx,ry,rz,seg=28,ring=16):
             v += [x,y,z]; n += [nx/L,ny/L,nz/L]
     for iy in range(ring):
         for ix in range(seg):
-            a=iy*(seg+1)+ix; b=a+seg+1; ind += [a,b,a+1,b,b+1,a+1]
-    return v,n,ind
-
-def box(sx,sy,sz):
-    faces=[((0,0,1),[(-sx,-sy,sz),(sx,-sy,sz),(sx,sy,sz),(-sx,sy,sz)]),((0,0,-1),[(sx,-sy,-sz),(-sx,-sy,-sz),(-sx,sy,-sz),(sx,sy,-sz)]),((0,1,0),[(-sx,sy,sz),(sx,sy,sz),(sx,sy,-sz),(-sx,sy,-sz)]),((0,-1,0),[(-sx,-sy,-sz),(sx,-sy,-sz),(sx,-sy,sz),(-sx,-sy,sz)]),((1,0,0),[(sx,-sy,sz),(sx,-sy,-sz),(sx,sy,-sz),(sx,sy,sz)]),((-1,0,0),[(-sx,-sy,-sz),(-sx,-sy,sz),(-sx,sy,sz),(-sx,sy,-sz)])]
-    v=[];n=[];ind=[]
-    for normal,vs in faces:
-        base=len(v)//3
-        for p in vs: v+=list(p); n+=list(normal)
-        ind += [base,base+1,base+2,base,base+2,base+3]
+            a=iy*(seg+1)+ix; b=a+seg+1
+            ind += [a,b,a+1,b,b+1,a+1]
     return v,n,ind
 
 def torus(R=.78,r=.13,seg=36,tube=14):
@@ -56,48 +76,132 @@ def torus(R=.78,r=.13,seg=36,tube=14):
         u=2*math.pi*i/seg; cu,su=math.cos(u),math.sin(u)
         for j in range(tube+1):
             q=2*math.pi*j/tube; cq,sq=math.cos(q),math.sin(q)
-            v += [(R+r*cq)*cu,(R+r*cq)*su,r*sq]; n += [cq*cu,cq*su,sq]
+            v += [(R+r*cq)*cu,(R+r*cq)*su,r*sq]
+            n += [cq*cu,cq*su,sq]
     for i in range(seg):
         for j in range(tube):
-            a=i*(tube+1)+j;b=a+tube+1;ind += [a,b,a+1,b,b+1,a+1]
+            a=i*(tube+1)+j;b=a+tube+1
+            ind += [a,b,a+1,b,b+1,a+1]
     return v,n,ind
 
+def tank_high_detail(seg=48):
+    profile=[
+        (-.96,.11,.15,-.055),(-.90,.20,.27,-.025),(-.78,.29,.36,.005),
+        (-.55,.325,.395,.018),(-.25,.345,.415,.020),(.05,.345,.415,.012),
+        (.32,.33,.395,0.0),(.56,.295,.355,-.012),(.74,.235,.300,-.028),
+        (.86,.165,.220,-.045),(.92,.075,.105,-.055),
+    ]
+    v=[]; ind=[]; exp_y=.74
+    for x,ry,rz,cy in profile:
+        for j in range(seg):
+            th=2*math.pi*j/seg
+            sy=math.sin(th); cz=math.cos(th)
+            y=cy + ry*math.copysign(abs(sy)**exp_y,sy)
+            z=rz*math.copysign(abs(cz)**.82,cz)
+            side=abs(cz)**6
+            vertical=math.exp(-((y-(cy-.02))/(max(ry,.001)*.62))**2)
+            longitudinal=math.exp(-((x-.02)/.62)**2)
+            z *= 1-.11*side*vertical*longitudinal
+            if y < cy-ry*.72:
+                y=cy-ry*.72+(y-(cy-ry*.72))*.55
+            if y > cy+ry*.82:
+                y=cy+ry*.82+(y-(cy+ry*.82))*.70
+            v += [x,y,z]
+    rings=len(profile)
+    for i in range(rings-1):
+        for j in range(seg):
+            a=i*seg+j; b=i*seg+(j+1)%seg
+            c=(i+1)*seg+j; d=(i+1)*seg+(j+1)%seg
+            ind += [a,c,b,b,c,d]
+    for end,flip in [(0,True),(rings-1,False)]:
+        x,ry,rz,cy=profile[end]
+        center=len(v)//3
+        v += [x,cy,0]
+        base=end*seg
+        for j in range(seg):
+            a=base+j; b=base+(j+1)%seg
+            ind += [center,b,a] if flip else [center,a,b]
+    return v,compute_normals(v,ind),ind
+
+def sidecover_high_detail():
+    poly=[
+        (-.57,.08),(-.54,.19),(-.46,.29),(-.30,.35),(-.08,.37),(.18,.34),
+        (.38,.27),(.52,.16),(.57,.02),(.54,-.12),(.44,-.25),(.25,-.33),
+        (.02,-.37),(-.22,-.35),(-.43,-.27),(-.56,-.12)
+    ]
+    cx=sum(x for x,y in poly)/len(poly); cy=sum(y for x,y in poly)/len(poly)
+    inner=[(cx+(x-cx)*.88,cy+(y-cy)*.86) for x,y in poly]
+    mid=[(cx+(x-cx)*.58,cy+(y-cy)*.58) for x,y in poly]
+    v=[];ind=[];N=len(poly)
+    for z,ring in [(0.035,poly),(-0.035,poly),(0.070,inner),(-0.070,inner),(0.086,mid),(-0.086,mid)]:
+        for x,y in ring: v += [x,y,z]
+    cf=len(v)//3; v += [cx,cy,.098]
+    cb=len(v)//3; v += [cx,cy,-.098]
+    for j in range(N):
+        nj=(j+1)%N
+        ind += [j,2*N+j,nj,nj,2*N+j,2*N+nj]
+        ind += [N+j,N+nj,3*N+j,N+nj,3*N+nj,3*N+j]
+        ind += [2*N+j,4*N+j,2*N+nj,2*N+nj,4*N+j,4*N+nj]
+        ind += [3*N+j,3*N+nj,5*N+j,3*N+nj,5*N+nj,5*N+j]
+        ind += [j,nj,N+j,nj,N+nj,N+j]
+        ind += [cf,4*N+j,4*N+nj]
+        ind += [cb,5*N+nj,5*N+j]
+    return v,compute_normals(v,ind),ind
+
 models={
- 'tank.glb':('S51_Tank',ellipsoid(.91,.34,.405),[.18,.38,.56,1]),
- 'sidecover.glb':('S51_Sidecover',box(.55,.36,.055),[.18,.38,.56,1]),
- 'wheel.glb':('S51_Wheel',torus(),[.04,.04,.04,1]),
- 'engine.glb':('S51_Engine',ellipsoid(.61,.45,.47),[.52,.55,.56,1]),
+    'tank.glb':('S51_Tank_HD',tank_high_detail(),[.18,.38,.56,1]),
+    'sidecover.glb':('S51_Sidecover_HD',sidecover_high_detail(),[.18,.38,.56,1]),
+    'wheel.glb':('S51_Wheel',torus(),[.04,.04,.04,1]),
+    'engine.glb':('S51_Engine',ellipsoid(.61,.45,.47),[.52,.55,.56,1]),
 }
 for base in [ROOT/'assets/models',ROOT/'www/assets/models']:
     base.mkdir(parents=True,exist_ok=True)
-    for fn,(name,geo,color) in models.items(): (base/fn).write_bytes(make_glb(name,*geo,color))
-manifest={'version':'starter-1','components':{'tank':'assets/models/tank.glb','sidecover':'assets/models/sidecover.glb','wheel':'assets/models/wheel.glb','engine':'assets/models/engine.glb'}}
-for p in [ROOT/'assets/models/manifest.json',ROOT/'www/assets/models/manifest.json']: p.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+    for fn,(name,geo,color) in models.items():
+        (base/fn).write_bytes(make_glb(name,*geo,color))
 
-loader=r'''\n  async function loadGLBMesh(url,key){\n    try{\n      const buf=await fetch(url).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer()});\n      const dv=new DataView(buf);if(dv.getUint32(0,true)!==0x46546c67)throw Error('not glb');\n      let off=12,jsonDoc=null,bin=null;\n      while(off<buf.byteLength){const len=dv.getUint32(off,true),typ=dv.getUint32(off+4,true);off+=8;const part=buf.slice(off,off+len);off+=len;if(typ===0x4E4F534A)jsonDoc=JSON.parse(new TextDecoder().decode(part));else if(typ===0x004E4942)bin=part}\n      const prim=jsonDoc.meshes[0].primitives[0],acc=jsonDoc.accessors,bv=jsonDoc.bufferViews;\n      function read(ai){const a=acc[ai],v=bv[a.bufferView],start=(v.byteOffset||0)+(a.byteOffset||0),count=a.count,comps=a.type==='VEC3'?3:1;let arr;if(a.componentType===5126)arr=new Float32Array(bin,start,count*comps);else if(a.componentType===5123)arr=new Uint16Array(bin,start,count*comps);else throw Error('component');return Array.from(arr)}\n      meshes[key]=mesh(read(prim.attributes.POSITION),read(prim.attributes.NORMAL),read(prim.indices));\n      return true;\n    }catch(e){console.warn('GLB fallback',key,e);return false}\n  }\n  async function loadGLBComponents(){\n    const root=location.pathname.includes('/www/')?'assets/models/':'assets/models/';\n    const ok=await Promise.all([loadGLBMesh(root+'tank.glb','glbTank'),loadGLBMesh(root+'sidecover.glb','glbSidecover'),loadGLBMesh(root+'wheel.glb','glbWheel'),loadGLBMesh(root+'engine.glb','glbEngine')]);\n    glbReady=ok.some(Boolean);\n  }\n'''
+manifest={
+    'version':'body-highdetail-1',
+    'components':{
+        'tank':'assets/models/tank.glb','sidecover':'assets/models/sidecover.glb',
+        'wheel':'assets/models/wheel.glb','engine':'assets/models/engine.glb'
+    },
+    'detail':{
+        'tank':'lofted S51 profile with flattened underside and knee recesses',
+        'sidecover':'bevelled rounded shield with shallow dome'
+    }
+}
+for p in [ROOT/'assets/models/manifest.json',ROOT/'www/assets/models/manifest.json']:
+    p.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+
+tank_old="""    if(meshes.glbTank)draw('glbTank',xform([-.17,.78,0],[1,1,1],[0,0,-.035]),paint,vp);else draw('sphere',xform([-.17,.78,0],[.91,.34,.405],[0,0,-.035]),paint,vp);
+    draw('sphere',xform([.44,.77,0],[.43,.30,.385],[0,0,-.13]),paint,vp);
+    draw('wedge',xform([-.72,.73,0],[.34,.20,.36],[0,0,.09]),paint,vp);
+    draw('cube',xform([-.15,.55,0],[.70,.055,.34],[0,0,-.04]),paint,vp);"""
+tank_new="""    if(meshes.glbTank){
+      draw('glbTank',xform([-.17,.78,0],[1,1,1],[0,0,-.035]),paint,vp);
+    }else{
+      draw('sphere',xform([-.17,.78,0],[.91,.34,.405],[0,0,-.035]),paint,vp);
+      draw('sphere',xform([.44,.77,0],[.43,.30,.385],[0,0,-.13]),paint,vp);
+      draw('wedge',xform([-.72,.73,0],[.34,.20,.36],[0,0,.09]),paint,vp);
+      draw('cube',xform([-.15,.55,0],[.70,.055,.34],[0,0,-.04]),paint,vp);
+    }"""
 
 for path in [ROOT/'configurator3d.js',ROOT/'www/configurator3d.js']:
     s=path.read_text(encoding='utf-8')
-    if 'let glbReady' not in s: s=s.replace('let meshes = {}, wrapped = false, pinchDist = 0;','let meshes = {}, wrapped = false, pinchDist = 0, glbReady = false;')
-    if 'async function loadGLBMesh' not in s: s=s.replace('  function initMeshes(){meshes={cube:cube(),sphere:uvSphere(),torus:torus(),cyl:cyl(),wedge:wedge()}}','  function initMeshes(){meshes={cube:cube(),sphere:uvSphere(),torus:torus(),cyl:cyl(),wedge:wedge()}}'+loader)
-    s=s.replace("draw('torus',xform([cx,cy,0],[wr,wr,wr]),tire,vp);","if(meshes.glbWheel)draw('glbWheel',xform([cx,cy,0],[wr/.91,wr/.91,wr/.91]),tire,vp);else draw('torus',xform([cx,cy,0],[wr,wr,wr]),tire,vp);")
-    s=s.replace("draw('sphere',xform([.02,-.57,0],[.61,.45,.47]),metal,vp);","if(meshes.glbEngine)draw('glbEngine',xform([.02,-.57,0]),metal,vp);else draw('sphere',xform([.02,-.57,0],[.61,.45,.47]),metal,vp);")
-    s=s.replace("draw('sphere',xform([-.17,.78,0],[.91,.34,.405],[0,0,-.035]),paint,vp);","if(meshes.glbTank)draw('glbTank',xform([-.17,.78,0],[1,1,1],[0,0,-.035]),paint,vp);else draw('sphere',xform([-.17,.78,0],[.91,.34,.405],[0,0,-.035]),paint,vp);")
-    s=s.replace("draw('wedge',xform([-.28,.02,-.31],[.55,.36,.055],[0,0,-.10]),side,vp);","if(meshes.glbSidecover)draw('glbSidecover',xform([-.28,.02,-.31],[1,1,1],[0,0,-.10]),side,vp);else draw('wedge',xform([-.28,.02,-.31],[.55,.36,.055],[0,0,-.10]),side,vp);")
-    s=s.replace("draw('wedge',xform([-.28,.02,.31],[.55,.36,.055],[0,0,-.10]),side,vp);","if(meshes.glbSidecover)draw('glbSidecover',xform([-.28,.02,.31],[1,1,1],[0,0,-.10]),side,vp);else draw('wedge',xform([-.28,.02,.31],[.55,.36,.055],[0,0,-.10]),side,vp);")
-    s=s.replace('program=mkProgram();initMeshes();bind();cancelAnimationFrame(raf);render()','program=mkProgram();initMeshes();loadGLBComponents();bind();cancelAnimationFrame(raf);render()')
-    s=s.replace('S51 3D · Detail 3.3','S51 3D · GLB 4.0').replace('PHASE 3.3','GLB 4.0')
+    if tank_old in s:
+        s=s.replace(tank_old,tank_new)
+    s=s.replace('S51 3D · GLB 4.0','S51 3D · GLB 4.1')
+    s=s.replace('<b>GLB 4.0</b>','<b>GLB 4.1</b>')
     path.write_text(s,encoding='utf-8')
 
 for path in [ROOT/'configurator3d.css',ROOT/'www/configurator3d.css']:
-    s=path.read_text(encoding='utf-8').replace('Phase 3.3 WebGL','Phase 4.0 GLB/WebGL')
+    s=path.read_text(encoding='utf-8')
+    s=s.replace('Phase 4.0 GLB/WebGL','Phase 4.1 High-detail GLB/WebGL')
     path.write_text(s,encoding='utf-8')
 
 for path in [ROOT/'sw.js',ROOT/'www/sw.js']:
     s=path.read_text(encoding='utf-8')
-    import re
-    s=re.sub(r'ww-v3-9-configurator-p3-3','ww-v3-9-configurator-glb4-0',s)
-    if 'assets/models/tank.glb' not in s:
-        s=s.replace('"./assets/s51-overview.svg"', '"./assets/s51-overview.svg","./assets/models/tank.glb","./assets/models/sidecover.glb","./assets/models/wheel.glb","./assets/models/engine.glb","./assets/models/manifest.json"')
+    s=s.replace('ww-v3-9-configurator-glb4-0','ww-v3-9-configurator-glb4-1')
     path.write_text(s,encoding='utf-8')
-print('GLB 4.0 components generated and wired')
+
+print('GLB 4.1 high-detail tank and side covers generated and integrated')
