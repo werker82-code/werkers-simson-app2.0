@@ -1,0 +1,36 @@
+<section id="configurator" class="view">
+  <div class="pageHead dark">
+    <span class="eyebrow lime">S51 KONFIGURATOR · PHASE 1</span>
+    <h1>Deine S51 zusammenstellen</h1>
+    <p>Bauteile auswählen, Vorschau sofort aktualisieren, Konfiguration speichern und in die Garage übernehmen.</p>
+  </div>
+  <div class="configIntro">
+    <p>Der Konfigurator bildet die komplette Auswahl- und Speicherlogik ab. Die aktuelle Fahrzeugansicht ist eine interaktive 2D/SVG-Vorschau; austauschbare GLB-3D-Bauteile folgen im nächsten Ausbau.</p>
+    <span class="configBadge">LIVE · OFFLINE</span>
+  </div>
+  <div class="configShell">
+    <div class="configStage">
+      <div id="configPreview" class="configPreviewFrame"></div>
+      <div class="configStageBar">
+        <button class="btn" onclick="configReset()">Zurücksetzen</button>
+        <button class="btn" onclick="configMatchPaint()">Seitendeckel = Tank</button>
+        <button class="btn black" onclick="configAddToGarage()">In Garage übernehmen</button>
+      </div>
+      <div id="configGarageStatus" class="configStatus hidden"></div>
+      <div id="configSummary" class="configSummary"></div>
+    </div>
+    <div class="configPanel">
+      <div id="configCategoryNav" class="configCats"></div>
+      <div id="configOptions"></div>
+    </div>
+  </div>
+  <div class="configSaveBox">
+    <span class="eyebrow">KONFIGURATIONEN</span>
+    <h2>Speichern & später weiterbauen</h2>
+    <div class="configSaveRow">
+      <input id="configName" placeholder="Name, z. B. S51 Enduro Grün">
+      <button class="btn black" onclick="configSave()">Konfiguration speichern</button>
+    </div>
+    <div id="configSaved"></div>
+  </div>
+</section>
