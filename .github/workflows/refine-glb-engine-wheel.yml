@@ -1,0 +1,42 @@
+name: Refine S51 GLB Engine Wheel 4.2
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/refine_glb_engine_wheel.py'
+      - '.github/glb42-trigger'
+permissions:
+  contents: write
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate detailed engine and wheel GLBs
+        run: python3 scripts/refine_glb_engine_wheel.py
+      - name: Verify GLB 4.2
+        run: |
+          test -f assets/models/engine.glb
+          test -f assets/models/engine_fins.glb
+          test -f assets/models/carb.glb
+          test -f assets/models/wheel.glb
+          test -f assets/models/rim.glb
+          test -f assets/models/spokes.glb
+          test -f assets/models/star5.glb
+          test -f assets/models/star10.glb
+          test -f assets/models/hub.glb
+          test -f assets/models/brakedisc.glb
+          test -f www/assets/models/engine_fins.glb
+          grep -q "GLB 4.2" configurator3d.js
+          grep -q "configurator-glb4-2" sw.js
+          grep -q 'engine-wheel-highdetail-1' assets/models/manifest.json
+          test $(stat -c%s assets/models/engine.glb) -gt 20000
+          test $(stat -c%s assets/models/spokes.glb) -gt 10000
+      - name: Commit GLB 4.2
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models www/assets/models configurator3d.js www/configurator3d.js configurator3d.css www/configurator3d.css sw.js www/sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refine S51 engine and wheels to GLB 4.2'
+          git push
