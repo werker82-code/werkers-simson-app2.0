@@ -1,0 +1,40 @@
+name: Integrate S51 Configurator 3D
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Integrate Phase 3 WebGL
+        run: python3 scripts/integrate_configurator3d.py
+
+      - name: Verify Phase 3 assets
+        run: |
+          test -f configurator3d.js
+          test -f configurator3d.css
+          test -f www/configurator3d.js
+          test -f www/configurator3d.css
+          grep -q 'configurator3d.js' index.html
+          grep -q 'configurator3d.js' www/index.html
+          grep -q 'ww-v3-9-configurator-p3' sw.js
+          grep -q 'ww-v3-9-configurator-p3' www/sw.js
+
+      - name: Commit Phase 3 integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html www/index.html sw.js www/sw.js
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "Enable WebGL 3D configurator phase 3"
+            git push
+          fi
