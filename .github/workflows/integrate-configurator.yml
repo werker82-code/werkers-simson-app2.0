@@ -1,6 +1,7 @@
 name: Integrate S51 Configurator
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - '.github/workflows/integrate-configurator.yml'
@@ -81,5 +82,3 @@ jobs:
             git commit -m "Wire S51 configurator into app"
             git push
           fi
-
-# one-time trigger refresh
