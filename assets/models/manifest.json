@@ -1,13 +1,26 @@
 {
-  "version": "body-highdetail-1",
+  "version": "engine-wheel-highdetail-1",
   "components": {
     "tank": "assets/models/tank.glb",
     "sidecover": "assets/models/sidecover.glb",
+    "engine": "assets/models/engine.glb",
+    "engineFins": "assets/models/engine_fins.glb",
+    "carb": "assets/models/carb.glb",
     "wheel": "assets/models/wheel.glb",
-    "engine": "assets/models/engine.glb"
+    "rim": "assets/models/rim.glb",
+    "spokes": "assets/models/spokes.glb",
+    "star5": "assets/models/star5.glb",
+    "star10": "assets/models/star10.glb",
+    "hub": "assets/models/hub.glb",
+    "brakeDisc": "assets/models/brakedisc.glb"
   },
   "detail": {
     "tank": "lofted S51 profile with flattened underside and knee recesses",
-    "sidecover": "bevelled rounded shield with shallow dome"
+    "sidecover": "bevelled rounded shield with shallow dome",
+    "engine": "multi-part M5x1-style case with covers and screw bosses",
+    "engineFins": "separate cylinder and stepped head cooling fins",
+    "carb": "carburetor, float bowl and intake tract",
+    "wheel": "high-resolution tire, separate rim, hub and crossed spokes",
+    "brakes": "separate front brake disc component"
   }
 }

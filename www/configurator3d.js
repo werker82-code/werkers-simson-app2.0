@@ -29,7 +29,31 @@
   function torus(rs=.72,rt=.14,seg=36,tube=14){let p=[],n=[],idx=[];for(let i=0;i<=seg;i++){let u=i/seg*Math.PI*2,cu=Math.cos(u),su=Math.sin(u);for(let j=0;j<=tube;j++){let v=j/tube*Math.PI*2,cv=Math.cos(v),sv=Math.sin(v),x=(rs+rt*cv)*cu,y=(rs+rt*cv)*su,z=rt*sv;p.push(x,y,z);n.push(cv*cu,cv*su,sv)}}for(let i=0;i<seg;i++)for(let j=0;j<tube;j++){let a=i*(tube+1)+j,b=a+tube+1;idx.push(a,b,a+1,b,b+1,a+1)}return mesh(p,n,idx)}
   function cyl(seg=26){let p=[],n=[],idx=[];for(let i=0;i<=seg;i++){let a=i/seg*Math.PI*2,c=Math.cos(a),s=Math.sin(a);p.push(c,-1,s,c,1,s);n.push(c,0,s,c,0,s)}for(let i=0;i<seg;i++){let a=i*2,b=a+2;idx.push(a,a+1,b,a+1,b+1,b)}return mesh(p,n,idx)}
   function wedge(){const p=[-1,-1,1,1,-1,1,.65,1,1,-.65,1,1,-1,-1,-1,1,-1,-1,.65,1,-1,-.65,1,-1];const n=[];for(let i=0;i<8;i++)n.push(0,0,i<4?1:-1);const idx=[0,1,2,0,2,3,4,6,5,4,7,6,0,4,5,0,5,1,3,2,6,3,6,7,1,5,6,1,6,2,0,3,7,0,7,4];return mesh(p,n,idx)}
-  function initMeshes(){meshes={cube:cube(),sphere:uvSphere(),torus:torus(),cyl:cyl(),wedge:wedge()}}\n  async function loadGLBMesh(url,key){\n    try{\n      const buf=await fetch(url).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer()});\n      const dv=new DataView(buf);if(dv.getUint32(0,true)!==0x46546c67)throw Error('not glb');\n      let off=12,jsonDoc=null,bin=null;\n      while(off<buf.byteLength){const len=dv.getUint32(off,true),typ=dv.getUint32(off+4,true);off+=8;const part=buf.slice(off,off+len);off+=len;if(typ===0x4E4F534A)jsonDoc=JSON.parse(new TextDecoder().decode(part));else if(typ===0x004E4942)bin=part}\n      const prim=jsonDoc.meshes[0].primitives[0],acc=jsonDoc.accessors,bv=jsonDoc.bufferViews;\n      function read(ai){const a=acc[ai],v=bv[a.bufferView],start=(v.byteOffset||0)+(a.byteOffset||0),count=a.count,comps=a.type==='VEC3'?3:1;let arr;if(a.componentType===5126)arr=new Float32Array(bin,start,count*comps);else if(a.componentType===5123)arr=new Uint16Array(bin,start,count*comps);else throw Error('component');return Array.from(arr)}\n      meshes[key]=mesh(read(prim.attributes.POSITION),read(prim.attributes.NORMAL),read(prim.indices));\n      return true;\n    }catch(e){console.warn('GLB fallback',key,e);return false}\n  }\n  async function loadGLBComponents(){\n    const root=location.pathname.includes('/www/')?'assets/models/':'assets/models/';\n    const ok=await Promise.all([loadGLBMesh(root+'tank.glb','glbTank'),loadGLBMesh(root+'sidecover.glb','glbSidecover'),loadGLBMesh(root+'wheel.glb','glbWheel'),loadGLBMesh(root+'engine.glb','glbEngine')]);\n    glbReady=ok.some(Boolean);\n  }\n
+  function initMeshes(){meshes={cube:cube(),sphere:uvSphere(),torus:torus(),cyl:cyl(),wedge:wedge()}}
+  async function loadGLBMesh(url,key){
+    try{
+      const buf=await fetch(url).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer()});
+      const dv=new DataView(buf);if(dv.getUint32(0,true)!==0x46546c67)throw Error('not glb');
+      let off=12,jsonDoc=null,bin=null;
+      while(off<buf.byteLength){const len=dv.getUint32(off,true),typ=dv.getUint32(off+4,true);off+=8;const part=buf.slice(off,off+len);off+=len;if(typ===0x4E4F534A)jsonDoc=JSON.parse(new TextDecoder().decode(part));else if(typ===0x004E4942)bin=part}
+      const prim=jsonDoc.meshes[0].primitives[0],acc=jsonDoc.accessors,bv=jsonDoc.bufferViews;
+      function read(ai){const a=acc[ai],v=bv[a.bufferView],start=(v.byteOffset||0)+(a.byteOffset||0),count=a.count,comps=a.type==='VEC3'?3:1;let arr;if(a.componentType===5126)arr=new Float32Array(bin,start,count*comps);else if(a.componentType===5123)arr=new Uint16Array(bin,start,count*comps);else throw Error('component');return Array.from(arr)}
+      meshes[key]=mesh(read(prim.attributes.POSITION),read(prim.attributes.NORMAL),read(prim.indices));
+      return true;
+    }catch(e){console.warn('GLB fallback',key,e);return false}
+  }
+  async function loadGLBComponents(){
+    const root='assets/models/';
+    const defs=[
+      ['tank.glb','glbTank'],['sidecover.glb','glbSidecover'],
+      ['engine.glb','glbEngine'],['engine_fins.glb','glbEngineFins'],['carb.glb','glbCarb'],
+      ['wheel.glb','glbWheel'],['rim.glb','glbRim'],['spokes.glb','glbSpokes'],
+      ['star5.glb','glbStar5'],['star10.glb','glbStar10'],['hub.glb','glbHub'],['brakedisc.glb','glbBrakeDisc']
+    ];
+    const ok=await Promise.all(defs.map(([file,key])=>loadGLBMesh(root+file,key)));
+    glbReady=ok.some(Boolean);
+  }
+
   function draw(meshName,model,color,vp){const me=meshes[meshName],mvp=M.mul(vp,model);gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,new Float32Array(mvp));gl.uniformMatrix4fv(gl.getUniformLocation(program,'uModel'),false,new Float32Array(model));gl.uniform3fv(gl.getUniformLocation(program,'uColor'),new Float32Array(color));const ap=gl.getAttribLocation(program,'aPos'),an=gl.getAttribLocation(program,'aNormal');gl.bindBuffer(gl.ARRAY_BUFFER,me.p);gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ARRAY_BUFFER,me.n);gl.enableVertexAttribArray(an);gl.vertexAttribPointer(an,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,me.i);gl.drawElements(gl.TRIANGLES,me.count,gl.UNSIGNED_SHORT,0)}
   function xform(t=[0,0,0],s=[1,1,1],r=[0,0,0]){return M.mul(M.t(...t),M.mul(M.rz(r[2]),M.mul(M.ry(r[1]),M.mul(M.rx(r[0]),M.s(...s)))))}
   function tubeBetween(a,b,r=.07){const dx=b[0]-a[0],dy=b[1]-a[1],dz=b[2]-a[2],len=Math.hypot(dx,dy,dz),mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,mz=(a[2]+b[2])/2;const yaw=Math.atan2(dx,dz),pitch=Math.atan2(Math.hypot(dx,dz),dy);return xform([mx,my,mz],[r,len/2,r],[pitch,yaw,0])}
@@ -37,65 +61,53 @@
 
   function drawWheel(cx,cy,wr,front,c,vp,chrome,dark){
     const tire=[.025,.026,.027], rim=c.rim==='black'?[.07,.075,.08]:c.rim==='polished'?[.88,.90,.90]:[.65,.67,.68];
-    if(meshes.glbWheel)draw('glbWheel',xform([cx,cy,0],[wr/.91,wr/.91,wr/.91]),tire,vp);else draw('torus',xform([cx,cy,0],[wr,wr,wr]),tire,vp);
-    draw('torus',xform([cx,cy,0],[wr*.79,wr*.79,wr*.79]),rim,vp);
-    if(c.tire==='enduro'){for(let i=0;i<22;i++){const a=i*Math.PI*2/22,x=cx+Math.cos(a)*wr*.91,y=cy+Math.sin(a)*wr*.91;draw('cube',xform([x,y,0],[.050,.095,.19],[0,0,a]),[.03,.03,.03],vp)}}
+    const sc=wr/.91;
+    if(meshes.glbWheel)draw('glbWheel',xform([cx,cy,0],[sc,sc,sc]),tire,vp);else draw('torus',xform([cx,cy,0],[wr,wr,wr]),tire,vp);
+    if(meshes.glbRim)draw('glbRim',xform([cx,cy,0],[sc,sc,sc]),rim,vp);else draw('torus',xform([cx,cy,0],[wr*.79,wr*.79,wr*.79]),rim,vp);
+    if(c.tire==='enduro'){for(let i=0;i<24;i++){const a=i*Math.PI*2/24,x=cx+Math.cos(a)*wr*.91,y=cy+Math.sin(a)*wr*.91;draw('cube',xform([x,y,0],[.046,.090,.19],[0,0,a]),[.03,.03,.03],vp)}}
     const type=c.wheelType||'spokes';
     if(type==='spokes'){
-      for(let i=0;i<20;i++){const a=i*Math.PI*2/20,b=a+.11,rr=wr*.64;draw('cyl',tubeBetween([cx+Math.cos(a)*wr*.18,cy+Math.sin(a)*wr*.18,-.07],[cx+Math.cos(b)*rr,cy+Math.sin(b)*rr,.07],.013),chrome,vp);draw('cyl',tubeBetween([cx+Math.cos(a)*wr*.18,cy+Math.sin(a)*wr*.18,.07],[cx+Math.cos(b)*rr,cy+Math.sin(b)*rr,-.07],.013),chrome,vp)}
-    } else {
-      const n=type==='star5'?5:10,spokeR=type==='star5'?.072:.047;for(let i=0;i<n;i++){const a=i*Math.PI*2/n,rr=wr*.62,x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;draw('cyl',tubeBetween([cx,cy,0],[x,y,0],spokeR),rim,vp)}
+      if(meshes.glbSpokes)draw('glbSpokes',xform([cx,cy,0],[sc,sc,sc]),chrome,vp);
+      else for(let i=0;i<20;i++){const a=i*Math.PI*2/20,b=a+.11,rr=wr*.64;draw('cyl',tubeBetween([cx+Math.cos(a)*wr*.18,cy+Math.sin(a)*wr*.18,-.07],[cx+Math.cos(b)*rr,cy+Math.sin(b)*rr,.07],.013),chrome,vp);draw('cyl',tubeBetween([cx+Math.cos(a)*wr*.18,cy+Math.sin(a)*wr*.18,.07],[cx+Math.cos(b)*rr,cy+Math.sin(b)*rr,-.07],.013),chrome,vp)}
+    }else if(type==='star5'){
+      if(meshes.glbStar5)draw('glbStar5',xform([cx,cy,0],[sc,sc,sc]),rim,vp);
+      else for(let i=0;i<5;i++){const a=i*Math.PI*2/5,rr=wr*.62;draw('cyl',tubeBetween([cx,cy,0],[cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,0],.072),rim,vp)}
+    }else{
+      if(meshes.glbStar10)draw('glbStar10',xform([cx,cy,0],[sc,sc,sc]),rim,vp);
+      else for(let i=0;i<10;i++){const a=i*Math.PI*2/10,rr=wr*.62;draw('cyl',tubeBetween([cx,cy,0],[cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,0],.047),rim,vp)}
     }
-    draw('cyl',axleModel(cx,cy,0,.13,.22),chrome,vp);
-    draw('cyl',axleModel(cx,cy,-.05,.24,.05),[.40,.42,.42],vp);
+    if(meshes.glbHub)draw('glbHub',xform([cx,cy,0],[sc,sc,sc]),chrome,vp);else{draw('cyl',axleModel(cx,cy,0,.13,.22),chrome,vp);draw('cyl',axleModel(cx,cy,-.05,.24,.05),[.40,.42,.42],vp)}
     if(front&&c.brake==='disc'){
-      draw('cyl',axleModel(cx,cy,-.16,wr*.38,.018),[.67,.69,.69],vp);
-      for(let i=0;i<12;i++){const a=i*Math.PI*2/12,x=cx+Math.cos(a)*wr*.27,y=cy+Math.sin(a)*wr*.27;draw('sphere',xform([x,y,-.182],[.022,.022,.015]),dark,vp)}
+      if(meshes.glbBrakeDisc)draw('glbBrakeDisc',xform([cx,cy,-.16],[sc,sc,sc]),[.68,.70,.70],vp);else draw('cyl',axleModel(cx,cy,-.16,wr*.38,.018),[.67,.69,.69],vp);
       draw('cube',xform([cx+wr*.31,cy-.03,-.24],[.105,.19,.095],[0,0,-.12]),[.10,.10,.10],vp);
       draw('cyl',tubeBetween([cx+wr*.31,cy+.14,-.24],[1.54,.63,-.26],.018),dark,vp);
-    } else if(front){draw('cyl',axleModel(cx,cy,-.02,.23,.16),[.49,.51,.51],vp)}
-    else {draw('cyl',axleModel(cx,cy,-.02,.22,.14),[.49,.51,.51],vp);draw('cube',xform([cx-.18,cy-.03,.13],[.08,.18,.08]),dark,vp)}
+    }else if(front){draw('cyl',axleModel(cx,cy,-.02,.23,.16),[.49,.51,.51],vp)}
+    else{draw('cube',xform([cx-.18,cy-.03,.13],[.08,.18,.08]),dark,vp)}
   }
 
   function drawEngine(c,vp,metal,dark,chrome){
     const fin=c.engine==='black'?[.16,.17,.17]:[.39,.41,.41], cover=c.engine==='polished'?[.90,.91,.90]:metal, alloy=[.58,.60,.60];
-    // Motorgehäuse und Seitendeckel
-    if(meshes.glbEngine)draw('glbEngine',xform([.02,-.57,0]),metal,vp);else draw('sphere',xform([.02,-.57,0],[.61,.45,.47]),metal,vp);
-    draw('wedge',xform([-.23,-.59,.18],[.38,.31,.25],[0,0,.04]),metal,vp);
-    draw('sphere',xform([.17,-.56,-.365],[.45,.37,.13]),cover,vp);
-    draw('cyl',axleModel(.17,-.56,-.50,.205,.043),c.engine==='black'?[.15,.16,.16]:[.60,.62,.62],vp);
-    draw('sphere',xform([-.25,-.56,.39],[.27,.28,.075]),cover,vp);
-    // Schrauben am Kupplungsdeckel
-    for(const [x,y] of [[.02,-.34],[.35,-.45],[.36,-.72],[.02,-.80]]) draw('sphere',xform([x,y,-.505],[.025,.025,.015]),dark,vp);
-    // Zylinder und Kühlrippen
-    draw('cube',xform([.025,.14,0],[.30,.32,.30]),fin,vp);
-    for(let i=0;i<9;i++)draw('cube',xform([.025,-.13+i*.068,0],[.405,.020,.395]),fin,vp);
-    // Zylinderkopf mit abgestuften Rippen
-    draw('wedge',xform([.025,.70,0],[.40,.105,.38]),fin,vp);
-    for(let i=0;i<5;i++)draw('cube',xform([.025,.43+i*.052,0],[.47-.025*i,.017,.43-.018*i]),fin,vp);
-    // Zündkerze und Stecker
+    const base=xform([.02,-.57,0]);
+    if(meshes.glbEngine)draw('glbEngine',base,metal,vp);else draw('sphere',xform([.02,-.57,0],[.61,.45,.47]),metal,vp);
+    if(meshes.glbEngineFins)draw('glbEngineFins',base,fin,vp);else{
+      for(let i=0;i<9;i++)draw('cube',xform([.025,-.13+i*.068,0],[.405,.020,.395]),fin,vp);
+      for(let i=0;i<5;i++)draw('cube',xform([.025,.43+i*.052,0],[.47-.025*i,.017,.43-.018*i]),fin,vp);
+    }
+    if(meshes.glbCarb)draw('glbCarb',base,alloy,vp);else{
+      draw('cube',xform([-.60,.15,.30],[.17,.20,.14],[0,0,-.04]),alloy,vp);
+      draw('sphere',xform([-.60,-.03,.30],[.17,.09,.14]),alloy,vp);
+    }
     draw('cyl',tubeBetween([.03,.78,0],[.04,.95,0],.038),[.85,.85,.81],vp);
     draw('cube',xform([.04,.975,0],[.065,.040,.055]),dark,vp);
     draw('cyl',tubeBetween([.04,1.01,0],[-.12,1.13,.16],.018),dark,vp);
-    // Vergaser, Ansaugstutzen und Luftführung hinter dem Zylinder
-    draw('cyl',tubeBetween([-.31,.22,.18],[-.52,.18,.28],.105),alloy,vp);
-    draw('cube',xform([-.60,.15,.30],[.17,.20,.14],[0,0,-.04]),alloy,vp);
-    draw('sphere',xform([-.60,-.03,.30],[.17,.09,.14]),alloy,vp);
-    draw('cube',xform([-.60,-.11,.30],[.15,.055,.13]),[.46,.48,.48],vp);
-    draw('cyl',tubeBetween([-.76,.15,.30],[-1.03,.12,.28],.105),dark,vp);
-    draw('sphere',xform([-1.09,.11,.27],[.17,.16,.15]),dark,vp);
-    // Gaszug und Benzinschlauch
     draw('cyl',tubeBetween([-.59,.36,.30],[-.45,.82,.24],.010),dark,vp);
     draw('cyl',tubeBetween([-.70,.28,.29],[-.55,.67,.32],.012),[.30,.36,.24],vp);
-    // Kickstarter und Schalthebel
     draw('cyl',tubeBetween([.38,-.80,-.37],[.85,-.95,-.37],.034),chrome,vp);
     draw('cube',xform([.91,-.98,-.37],[.18,.035,.08],[0,0,-.10]),dark,vp);
     draw('cyl',tubeBetween([-.34,-.73,-.25],[-.74,-.91,-.25],.034),chrome,vp);
     draw('cube',xform([-.80,-.94,-.25],[.18,.035,.08]),dark,vp);
-    // Abtriebswelle / Kettenritzelbereich
     draw('cyl',tubeBetween([.46,-.42,.30],[.78,-.29,.30],.045),dark,vp);
     draw('sphere',xform([.83,-.27,.30],[.09,.09,.09]),dark,vp);
-    draw('cube',xform([-.26,-.56,.43],[.17,.10,.05],[0,0,.1]),[.25,.25,.25],vp);
   }
 
   function drawTankAndBody(c,vp,paint,side,dark,chrome,enduro){
@@ -213,7 +225,7 @@
   function render(){if(!active||!gl||!canvas)return;resize();gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.clearColor(.91,.90,.86,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);const asp=canvas.width/canvas.height,proj=M.p(Math.PI/4,asp,.1,100),view=M.mul(M.t(0,-.05,-distance),M.mul(M.rx(pitch),M.ry(yaw))),vp=M.mul(proj,view);scene(vp);raf=requestAnimationFrame(render)}
   function resize(){const d=Math.min(devicePixelRatio||1,2),w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight);if(canvas.width!==Math.floor(w*d)||canvas.height!==Math.floor(h*d)){canvas.width=Math.floor(w*d);canvas.height=Math.floor(h*d);gl.viewport(0,0,canvas.width,canvas.height)}}
   function camera(name){if(name==='side'){yaw=-.02;pitch=-.06;distance=8.1}else if(name==='three'){yaw=-.58;pitch=-.10;distance=8.35}else if(name==='front'){yaw=-1.56;pitch=-.08;distance=8.0}else if(name==='rear'){yaw=1.56;pitch=-.08;distance=8.0}else{yaw=-.58;pitch=-.10;distance=8.35}}
-  function mount(){host=document.getElementById('configPreview');if(!host)return;active=true;host.innerHTML=`<div class="config3dTop"><b>S51 3D · GLB 4.1</b><span>Ziehen = drehen · Mausrad/Pinch = zoomen</span><button onclick="window.S51ThreeD.close()">2D zurück</button></div><div class="config3dCamera"><button onclick="window.S51ThreeD.camera('side')">Seite</button><button onclick="window.S51ThreeD.camera('three')">3/4</button><button onclick="window.S51ThreeD.camera('front')">Front</button><button onclick="window.S51ThreeD.camera('rear')">Heck</button><button onclick="window.S51ThreeD.camera('reset')">Ansicht zurücksetzen</button></div><canvas id="config3dCanvas" aria-label="Drehbare 3D-Vorschau der Simson S51"></canvas><div class="config3dFoot"><span>Tank · Seitendeckel · Rahmen · Cockpit · Blinker · Vergaser · Motor · Räder · rechter Auspuff</span><b>GLB 4.1</b></div>`;canvas=document.getElementById('config3dCanvas');gl=canvas.getContext('webgl',{antialias:true,alpha:false});if(!gl){active=false;host.innerHTML='<div class="config3dUnavailable">WebGL ist auf diesem Gerät nicht verfügbar. Die 2D-Vorschau bleibt nutzbar.</div>';return}program=mkProgram();initMeshes();loadGLBComponents();bind();cancelAnimationFrame(raf);render()}
+  function mount(){host=document.getElementById('configPreview');if(!host)return;active=true;host.innerHTML=`<div class="config3dTop"><b>S51 3D · GLB 4.2</b><span>Ziehen = drehen · Mausrad/Pinch = zoomen</span><button onclick="window.S51ThreeD.close()">2D zurück</button></div><div class="config3dCamera"><button onclick="window.S51ThreeD.camera('side')">Seite</button><button onclick="window.S51ThreeD.camera('three')">3/4</button><button onclick="window.S51ThreeD.camera('front')">Front</button><button onclick="window.S51ThreeD.camera('rear')">Heck</button><button onclick="window.S51ThreeD.camera('reset')">Ansicht zurücksetzen</button></div><canvas id="config3dCanvas" aria-label="Drehbare 3D-Vorschau der Simson S51"></canvas><div class="config3dFoot"><span>Tank · Seitendeckel · Rahmen · Cockpit · Blinker · Vergaser · Motor · Räder · rechter Auspuff</span><b>GLB 4.2</b></div>`;canvas=document.getElementById('config3dCanvas');gl=canvas.getContext('webgl',{antialias:true,alpha:false});if(!gl){active=false;host.innerHTML='<div class="config3dUnavailable">WebGL ist auf diesem Gerät nicht verfügbar. Die 2D-Vorschau bleibt nutzbar.</div>';return}program=mkProgram();initMeshes();loadGLBComponents();bind();cancelAnimationFrame(raf);render()}
   function close(){active=false;cancelAnimationFrame(raf);if(typeof window.configSetView==='function')window.configSetView('side')}
   function bind(){
     canvas.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
