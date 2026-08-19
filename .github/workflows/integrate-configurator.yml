@@ -81,3 +81,5 @@ jobs:
             git commit -m "Wire S51 configurator into app"
             git push
           fi
+
+# one-time trigger refresh
