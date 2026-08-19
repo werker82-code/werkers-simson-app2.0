@@ -1,4 +1,94 @@
-/* S51 Konfigurator · Phase 1 */
-.configHeroActions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}.configHeroActions .btn{flex:0 0 auto}.configShell{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:14px;align-items:start}.configStage{position:sticky;top:88px}.configPreviewFrame{border:1px solid #111;background:#e8e5dd;overflow:hidden}.configBikeSvg{display:block;width:100%;height:auto;min-height:360px}.exhaustPipe{fill:none;stroke:#7f8585;stroke-width:11;stroke-linecap:round}.muffler{fill:none;stroke:#c7caca;stroke-width:23;stroke-linecap:round}.configStageBar{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.configStageBar .btn{flex:1}.configPanel{border:1px solid #111;background:#faf8f3;min-height:600px}.configCats{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #111;scrollbar-width:thin}.configCat{flex:0 0 auto;border:0;border-right:1px solid #111;background:#e8e4db;padding:11px 13px;font-size:11px;font-weight:bold;white-space:nowrap}.configCat.active{background:#111;color:#d9ff39}.configPanelHead{padding:16px 14px 7px}.configPanelHead h2{font:36px Impact,"Arial Narrow",sans-serif;text-transform:uppercase;margin:5px 0}.configGroup{padding:0 14px 14px}.configGroup h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:11px 0 7px}.configOption{width:100%;display:grid;grid-template-columns:auto 1fr 24px;gap:10px;align-items:center;text-align:left;border:1px solid #111;border-bottom:0;background:#fff;padding:10px}.configOption:last-child{border-bottom:1px solid #111}.configOption.active{background:#111;color:#fff}.configOption b,.configOption small{display:block}.configOption small{color:#6e6a63;margin-top:3px;font-size:11px}.configOption.active small{color:#bbb}.configOption i{font-style:normal;font-weight:bold;text-align:center}.configSwatch{width:31px;height:31px;border:1px solid #111}.configSummary{margin-top:14px}.configSummaryGrid{display:grid;grid-template-columns:repeat(2,1fr);border-left:1px solid #111;border-top:1px solid #111}.configSummaryGrid>div{padding:10px;border-right:1px solid #111;border-bottom:1px solid #111;background:#faf8f3}.configSummaryGrid small,.configSummaryGrid b{display:block}.configSummaryGrid small{color:#666;font-size:10px;text-transform:uppercase;letter-spacing:.06em}.configSummaryGrid b{margin-top:4px;font-size:13px}.configLegal{background:#111;color:#ddd;padding:13px;line-height:1.45;font-size:11px}.configSaveBox{border:1px solid #111;background:#e8e4db;padding:14px;margin-top:14px}.configSaveBox h2{font-size:29px;margin:0 0 8px}.configSaveRow{display:grid;grid-template-columns:1fr auto;gap:7px}.configSaveRow input{width:100%;padding:11px;border:1px solid #111;background:#fff}.savedConfig{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-bottom:1px solid #111;padding:11px 2px}.savedConfig b,.savedConfig small{display:block}.savedConfig small{color:#666;margin-top:4px}.savedConfig>div:last-child{display:flex;gap:5px}.savedConfig button{border:1px solid #111;background:none;padding:7px 9px}.configStatus{background:#d9ff39;border-left:5px solid #111;padding:11px;margin-top:10px;font-size:12px}.configIntro{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin:17px 0}.configIntro p{color:#666;line-height:1.5;margin:0}.configBadge{display:inline-block;background:#111;color:#d9ff39;padding:5px 7px;font-size:10px;font-weight:bold;letter-spacing:.08em}
-@media(max-width:760px){.configShell{grid-template-columns:1fr}.configStage{position:static}.configBikeSvg{min-height:0}.configPanel{min-height:0}.configSummaryGrid{grid-template-columns:1fr 1fr}.configSaveRow{grid-template-columns:1fr}.configStageBar .btn{flex:1 1 45%}}
-@media(max-width:480px){.configSummaryGrid{grid-template-columns:1fr}.configOption{grid-template-columns:auto 1fr 22px}.configIntro{grid-template-columns:1fr}.configPanelHead h2{font-size:31px}.configCat{padding:10px 11px}.configStageBar .btn{flex:1 1 100%}}
+/* S51 Konfigurator · Phase 2 */
+.configHeroActions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.configHeroActions .btn{flex:0 0 auto}
+.configShell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:14px;align-items:start}
+.configStage{position:sticky;top:88px}
+.configPreviewFrame{position:relative;border:1px solid #111;background:#dedad0;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.08)}
+.configBikeSvg{display:block;width:100%;height:auto;min-height:390px}
+.exhaustPipe{fill:none;stroke:#7f8585;stroke-width:10;stroke-linecap:round}
+.muffler{fill:none;stroke:url(#chrome);stroke-width:24;stroke-linecap:round}
+.bar{fill:none;stroke:#181919;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+.grip{stroke:#333;stroke-width:10;stroke-linecap:round}
+.configViewToolbar{position:absolute;z-index:4;left:12px;right:12px;top:11px;display:flex;justify-content:space-between;gap:10px;pointer-events:none}
+.configViewToolbar>div{display:flex;background:rgba(250,248,243,.93);border:1px solid #111;backdrop-filter:blur(6px);pointer-events:auto}
+.configViewToolbar button{border:0;border-right:1px solid #111;background:transparent;padding:8px 10px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.configViewToolbar button:last-child{border-right:0}
+.configViewToolbar button.active{background:#111;color:#d9ff39}
+.configViewToolbar span{min-width:48px;padding:8px 9px;text-align:center;font-size:10px;font-weight:800}
+.configHotspots{cursor:pointer}
+.hotspot circle{fill:#111;stroke:#d9ff39;stroke-width:3;transition:.15s}
+.hotspot text{fill:#d9ff39;font:bold 12px Arial;text-anchor:middle;pointer-events:none}
+.hotspot:hover circle{fill:#d9ff39;stroke:#111;transform:scale(1.12);transform-origin:center}
+.hotspot:hover text{fill:#111}
+.configHotspotLegend{position:absolute;left:12px;bottom:10px;display:flex;gap:6px;flex-wrap:wrap;background:rgba(250,248,243,.9);border:1px solid #111;padding:5px 7px;font-size:9px;font-weight:700;backdrop-filter:blur(5px)}
+.configHotspotLegend span{display:flex;align-items:center;gap:3px}
+.configHotspotLegend b{display:grid;place-items:center;width:17px;height:17px;background:#111;color:#d9ff39;border-radius:50%;font-size:9px}
+.configStageBar{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.configStageBar .btn{flex:1}
+.configPanel{border:1px solid #111;background:#faf8f3;min-height:620px}
+.configCats{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #111;scrollbar-width:thin}
+.configCat{flex:0 0 auto;border:0;border-right:1px solid #111;background:#e8e4db;padding:11px 13px;font-size:11px;font-weight:bold;white-space:nowrap}
+.configCat.active{background:#111;color:#d9ff39}
+.configPanelHead{padding:16px 14px 7px}
+.configPanelHead h2{font:36px Impact,"Arial Narrow",sans-serif;text-transform:uppercase;margin:5px 0}
+.configGroup{padding:0 14px 14px}
+.configGroup h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:11px 0 7px}
+.configOption{width:100%;display:grid;grid-template-columns:auto 1fr 24px;gap:10px;align-items:center;text-align:left;border:1px solid #111;border-bottom:0;background:#fff;padding:10px;transition:.12s}
+.configOption:last-child{border-bottom:1px solid #111}
+.configOption:hover{transform:translateX(2px)}
+.configOption.active{background:#111;color:#fff}
+.configOption b,.configOption small{display:block}
+.configOption small{color:#6e6a63;margin-top:3px;font-size:11px;line-height:1.35}
+.configOption.active small{color:#bbb}
+.configOption i{font-style:normal;font-weight:bold;text-align:center}
+.configSwatch{width:31px;height:31px;border:1px solid #111;box-shadow:inset 0 0 0 3px rgba(255,255,255,.18)}
+.configSummary{margin-top:14px}
+.configSummaryGrid{display:grid;grid-template-columns:repeat(2,1fr);border-left:1px solid #111;border-top:1px solid #111}
+.configSummaryGrid>div{padding:10px;border-right:1px solid #111;border-bottom:1px solid #111;background:#faf8f3}
+.configSummaryGrid small,.configSummaryGrid b{display:block}
+.configSummaryGrid small{color:#666;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.configSummaryGrid b{margin-top:4px;font-size:13px}
+.configLegal{background:#111;color:#ddd;padding:13px;line-height:1.45;font-size:11px}
+.configSaveBox{border:1px solid #111;background:#e8e4db;padding:14px;margin-top:14px}
+.configSaveBox h2{font-size:29px;margin:0 0 8px}
+.configSaveRow{display:grid;grid-template-columns:1fr auto;gap:7px}
+.configSaveRow input{width:100%;padding:11px;border:1px solid #111;background:#fff}
+.savedConfig{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-bottom:1px solid #111;padding:11px 2px}
+.savedConfig b,.savedConfig small{display:block}
+.savedConfig small{color:#666;margin-top:4px}
+.savedConfig>div:last-child{display:flex;gap:5px}
+.savedConfig button{border:1px solid #111;background:none;padding:7px 9px}
+.configStatus{background:#d9ff39;border-left:5px solid #111;padding:11px;margin-top:10px;font-size:12px}
+.configIntro{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin:17px 0}
+.configIntro p{color:#666;line-height:1.5;margin:0}
+.configBadge{display:inline-block;background:#111;color:#d9ff39;padding:5px 7px;font-size:10px;font-weight:bold;letter-spacing:.08em}
+
+@media(max-width:900px){
+  .configShell{grid-template-columns:minmax(0,1.1fr) minmax(290px,.9fr)}
+  .configBikeSvg{min-height:340px}
+}
+@media(max-width:760px){
+  .configShell{grid-template-columns:1fr}
+  .configStage{position:static}
+  .configBikeSvg{min-height:0}
+  .configPanel{min-height:0}
+  .configSummaryGrid{grid-template-columns:1fr 1fr}
+  .configSaveRow{grid-template-columns:1fr}
+  .configStageBar .btn{flex:1 1 45%}
+  .configViewToolbar{left:7px;right:7px;top:7px}
+  .configViewToolbar button{padding:7px 8px}
+  .configHotspotLegend{left:7px;bottom:6px}
+}
+@media(max-width:480px){
+  .configSummaryGrid{grid-template-columns:1fr}
+  .configOption{grid-template-columns:auto 1fr 22px}
+  .configIntro{grid-template-columns:1fr}
+  .configPanelHead h2{font-size:31px}
+  .configCat{padding:10px 11px}
+  .configStageBar .btn{flex:1 1 100%}
+  .configViewToolbar{position:static;padding:6px;background:#dedad0;border-bottom:1px solid #111}
+  .configViewToolbar>div{flex:1}
+  .configViewToolbar button{flex:1}
+  .configViewToolbar span{flex:1}
+  .configHotspotLegend{position:static;border:0;border-top:1px solid #111;background:#faf8f3}
+}
