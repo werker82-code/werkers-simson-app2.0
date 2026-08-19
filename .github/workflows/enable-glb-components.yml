@@ -1,0 +1,33 @@
+name: Enable S51 GLB Components
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/enable_glb_components.py'
+      - '.github/glb4-trigger'
+permissions:
+  contents: write
+jobs:
+  build-glb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate and integrate GLB components
+        run: python3 scripts/enable_glb_components.py
+      - name: Verify GLB files
+        run: |
+          test -f assets/models/tank.glb
+          test -f assets/models/sidecover.glb
+          test -f assets/models/wheel.glb
+          test -f assets/models/engine.glb
+          test -f www/assets/models/tank.glb
+          grep -q "GLB 4.0" configurator3d.js
+          grep -q "configurator-glb4-0" sw.js
+      - name: Commit GLB integration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models www/assets/models configurator3d.js www/configurator3d.js configurator3d.css www/configurator3d.css sw.js www/sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'Enable interchangeable S51 GLB components 4.0'
+          git push
