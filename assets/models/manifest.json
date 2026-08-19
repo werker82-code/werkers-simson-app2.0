@@ -1,0 +1,9 @@
+{
+  "version": "starter-1",
+  "components": {
+    "tank": "assets/models/tank.glb",
+    "sidecover": "assets/models/sidecover.glb",
+    "wheel": "assets/models/wheel.glb",
+    "engine": "assets/models/engine.glb"
+  }
+}
