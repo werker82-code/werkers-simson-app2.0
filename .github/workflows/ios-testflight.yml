@@ -46,9 +46,18 @@ jobs:
           /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" ios/App/App/Info.plist || \
           /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" ios/App/App/Info.plist
 
+          # App Store icons must be fully opaque. Convert through JPEG to
+          # guarantee that the final PNG contains no alpha/transparency channel.
           if [ -f "www/assets/icon-512.png" ]; then
             mkdir -p ios/App/App/Assets.xcassets/AppIcon.appiconset
-            sips -z 1024 1024 www/assets/icon-512.png --out ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
+            sips -z 1024 1024 -s format jpeg -s formatOptions 100 \
+              www/assets/icon-512.png --out "$RUNNER_TEMP/AppIcon-opaque.jpg"
+            sips -s format png \
+              "$RUNNER_TEMP/AppIcon-opaque.jpg" \
+              --out ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
+            echo "Final App Store icon properties:"
+            sips -g pixelWidth -g pixelHeight -g hasAlpha \
+              ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
           fi
 
       - name: Prepare App Store Connect API key
