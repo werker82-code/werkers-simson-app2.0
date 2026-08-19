@@ -1,9 +1,13 @@
 {
-  "version": "starter-1",
+  "version": "body-highdetail-1",
   "components": {
     "tank": "assets/models/tank.glb",
     "sidecover": "assets/models/sidecover.glb",
     "wheel": "assets/models/wheel.glb",
     "engine": "assets/models/engine.glb"
+  },
+  "detail": {
+    "tank": "lofted S51 profile with flattened underside and knee recesses",
+    "sidecover": "bevelled rounded shield with shallow dome"
   }
 }
