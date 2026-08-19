@@ -1,5 +1,5 @@
 {
-  "version": "engine-wheel-highdetail-1",
+  "version": "chassis-exhaust-highdetail-1",
   "components": {
     "tank": "assets/models/tank.glb",
     "sidecover": "assets/models/sidecover.glb",
@@ -12,7 +12,15 @@
     "star5": "assets/models/star5.glb",
     "star10": "assets/models/star10.glb",
     "hub": "assets/models/hub.glb",
-    "brakeDisc": "assets/models/brakedisc.glb"
+    "brakeDisc": "assets/models/brakedisc.glb",
+    "frame": "assets/models/frame.glb",
+    "swingarm": "assets/models/swingarm.glb",
+    "fork": "assets/models/fork.glb",
+    "shocks": "assets/models/shocks.glb",
+    "shocksLong": "assets/models/shocks_long.glb",
+    "exhaustSeries": "assets/models/exhaust_series.glb",
+    "exhaustEnduro": "assets/models/exhaust_enduro.glb",
+    "exhaustSport": "assets/models/exhaust_sport.glb"
   },
   "detail": {
     "tank": "lofted S51 profile with flattened underside and knee recesses",
@@ -21,6 +29,11 @@
     "engineFins": "separate cylinder and stepped head cooling fins",
     "carb": "carburetor, float bowl and intake tract",
     "wheel": "high-resolution tire, separate rim, hub and crossed spokes",
-    "brakes": "separate front brake disc component"
+    "brakes": "separate front brake disc component",
+    "frame": "separate twin-rail frame, steering head and rear subframe",
+    "swingarm": "boxed rear swingarm with axle bridge and chain guard",
+    "fork": "separate twin-leg telescopic fork with bridge and sliders",
+    "shocks": "separate standard and long rear shock assemblies",
+    "exhaust": "right-side series, enduro-high and sport exhaust GLBs"
   }
 }

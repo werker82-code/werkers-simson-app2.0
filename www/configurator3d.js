@@ -48,7 +48,10 @@
       ['tank.glb','glbTank'],['sidecover.glb','glbSidecover'],
       ['engine.glb','glbEngine'],['engine_fins.glb','glbEngineFins'],['carb.glb','glbCarb'],
       ['wheel.glb','glbWheel'],['rim.glb','glbRim'],['spokes.glb','glbSpokes'],
-      ['star5.glb','glbStar5'],['star10.glb','glbStar10'],['hub.glb','glbHub'],['brakedisc.glb','glbBrakeDisc']
+      ['star5.glb','glbStar5'],['star10.glb','glbStar10'],['hub.glb','glbHub'],['brakedisc.glb','glbBrakeDisc'],
+      ['frame.glb','glbFrame'],['swingarm.glb','glbSwingarm'],['fork.glb','glbFork'],
+      ['shocks.glb','glbShocks'],['shocks_long.glb','glbShocksLong'],
+      ['exhaust_series.glb','glbExhaustSeries'],['exhaust_enduro.glb','glbExhaustEnduro'],['exhaust_sport.glb','glbExhaustSport']
     ];
     const ok=await Promise.all(defs.map(([file,key])=>loadGLBMesh(root+file,key)));
     glbReady=ok.some(Boolean);
@@ -184,13 +187,23 @@
   }
 
   function drawFrameAndRunningGear(c,vp,dark,chrome,ry,fy,enduro){
-    const frame=[[-1.96,ry,0],[-.82,.25,0],[-.05,-.79,0],[-.82,.25,0],[-.67,1.02,0],[-.67,1.02,0],[.72,.24,0],[-.05,-.79,0],[.72,.24,0],[1.53,.82,0],[1.53,.82,0],[2.15,fy,0]];
-    for(let i=0;i<frame.length;i+=2)draw('cyl',tubeBetween(frame[i],frame[i+1],i===8?.065:.072),dark,vp);
-    draw('cyl',tubeBetween([-.06,-.70,-.13],[-1.98,ry,-.13],.045),dark,vp);draw('cyl',tubeBetween([-.06,-.70,.13],[-1.98,ry,.13],.045),dark,vp);
-    draw('cyl',tubeBetween([1.48,.74,-.10],[2.15,fy,-.10],.050),c.fork==='black'?dark:chrome,vp);draw('cyl',tubeBetween([1.48,.74,.10],[2.15,fy,.10],.050),c.fork==='black'?dark:chrome,vp);
-    for(let i=0;i<5;i++)draw('cyl',xform([1.67+i*.055,.25-i*.13,-.10],[.068,.040,.068],[0,0,-.45]),dark,vp);
-    const sh=c.shock==='chrome'?chrome:[.24,.25,.25];draw('cyl',tubeBetween([-1.90,ry,-.20],[-.70,.57,-.20],.050),sh,vp);draw('cyl',tubeBetween([-1.90,ry,.20],[-.70,.57,.20],.050),sh,vp);
-    for(let i=0;i<7;i++){const t=i/6,x=-1.83+(1.02*t),y=ry+(.57-ry)*t;draw('torus',xform([x,y,-.20],[.10,.10,.10]),chrome,vp)}
+    if(meshes.glbFrame)draw('glbFrame',xform(),dark,vp);else{
+      const frame=[[-1.96,ry,0],[-.82,.25,0],[-.05,-.79,0],[-.82,.25,0],[-.67,1.02,0],[-.67,1.02,0],[.72,.24,0],[-.05,-.79,0],[.72,.24,0],[1.53,.82,0],[1.53,.82,0],[2.15,fy,0]];
+      for(let i=0;i<frame.length;i+=2)draw('cyl',tubeBetween(frame[i],frame[i+1],i===8?.065:.072),dark,vp);
+    }
+    if(meshes.glbSwingarm)draw('glbSwingarm',xform([0,ry+1.05,0]),dark,vp);else{
+      draw('cyl',tubeBetween([-.06,-.70,-.13],[-1.98,ry,-.13],.045),dark,vp);draw('cyl',tubeBetween([-.06,-.70,.13],[-1.98,ry,.13],.045),dark,vp);
+    }
+    const forkColor=c.fork==='black'?dark:chrome;
+    if(meshes.glbFork)draw('glbFork',xform([0,fy+1.05,0]),forkColor,vp);else{
+      draw('cyl',tubeBetween([1.48,.74,-.10],[2.15,fy,-.10],.050),forkColor,vp);draw('cyl',tubeBetween([1.48,.74,.10],[2.15,fy,.10],.050),forkColor,vp);
+      for(let i=0;i<5;i++)draw('cyl',xform([1.67+i*.055,.25-i*.13,-.10],[.068,.040,.068],[0,0,-.45]),dark,vp);
+    }
+    const sh=c.shock==='chrome'?chrome:[.24,.25,.25], shockMesh=c.shock==='long'?'glbShocksLong':'glbShocks';
+    if(meshes[shockMesh])draw(shockMesh,xform(),sh,vp);else{
+      draw('cyl',tubeBetween([-1.90,ry,-.20],[-.70,.57,-.20],.050),sh,vp);draw('cyl',tubeBetween([-1.90,ry,.20],[-.70,.57,.20],.050),sh,vp);
+      for(let i=0;i<7;i++){const t=i/6,x=-1.83+(1.02*t),y=ry+(.57-ry)*t;draw('torus',xform([x,y,-.20],[.10,.10,.10]),chrome,vp)}
+    }
     draw('cube',xform([-1.05,-.66,.22],[.83,.045,.10],[0,0,.04]),dark,vp);draw('cyl',tubeBetween([-.28,-.87,.15],[-.55,-1.48,.25],.035),dark,vp);draw('cyl',tubeBetween([-.28,-.87,-.15],[-.55,-1.48,-.25],.035),dark,vp);
     if(enduro||c.frontFender==='black')draw('wedge',xform([2.07,-.29,0],[.63,.055,.30],[0,0,.15]),dark,vp);else draw('wedge',xform([2.14,-.18,0],[.65,.045,.29],[0,0,.04]),c.frontFender==='paint'?hex(c.tankColor||'#2f608f'):chrome,vp);
     draw('wedge',xform([-2.03,-.20,0],[.66,.045,.29],[0,0,-.04]),c.rearFender==='paint'?hex(c.tankColor||'#2f608f'):dark,vp);
@@ -198,6 +211,8 @@
 
   function drawExhaust(c,vp){
     const ex=[.67,.70,.70], heat=[.10,.10,.10];
+    const key=c.exhaust==='enduro'?'glbExhaustEnduro':c.exhaust==='sport'?'glbExhaustSport':'glbExhaustSeries';
+    if(meshes[key]){draw(key,xform(),ex,vp);return}
     if(c.exhaust==='enduro'){
       draw('cyl',tubeBetween([.35,-.38,-.40],[1.38,.07,-.40],.070),ex,vp);draw('cyl',tubeBetween([1.38,.07,-.40],[2.08,.56,-.40],.105),ex,vp);draw('cube',xform([1.55,.18,-.49],[.46,.055,.06],[0,0,.32]),heat,vp);
     }else if(c.exhaust==='sport'){
@@ -225,7 +240,7 @@
   function render(){if(!active||!gl||!canvas)return;resize();gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.clearColor(.91,.90,.86,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);const asp=canvas.width/canvas.height,proj=M.p(Math.PI/4,asp,.1,100),view=M.mul(M.t(0,-.05,-distance),M.mul(M.rx(pitch),M.ry(yaw))),vp=M.mul(proj,view);scene(vp);raf=requestAnimationFrame(render)}
   function resize(){const d=Math.min(devicePixelRatio||1,2),w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight);if(canvas.width!==Math.floor(w*d)||canvas.height!==Math.floor(h*d)){canvas.width=Math.floor(w*d);canvas.height=Math.floor(h*d);gl.viewport(0,0,canvas.width,canvas.height)}}
   function camera(name){if(name==='side'){yaw=-.02;pitch=-.06;distance=8.1}else if(name==='three'){yaw=-.58;pitch=-.10;distance=8.35}else if(name==='front'){yaw=-1.56;pitch=-.08;distance=8.0}else if(name==='rear'){yaw=1.56;pitch=-.08;distance=8.0}else{yaw=-.58;pitch=-.10;distance=8.35}}
-  function mount(){host=document.getElementById('configPreview');if(!host)return;active=true;host.innerHTML=`<div class="config3dTop"><b>S51 3D · GLB 4.2</b><span>Ziehen = drehen · Mausrad/Pinch = zoomen</span><button onclick="window.S51ThreeD.close()">2D zurück</button></div><div class="config3dCamera"><button onclick="window.S51ThreeD.camera('side')">Seite</button><button onclick="window.S51ThreeD.camera('three')">3/4</button><button onclick="window.S51ThreeD.camera('front')">Front</button><button onclick="window.S51ThreeD.camera('rear')">Heck</button><button onclick="window.S51ThreeD.camera('reset')">Ansicht zurücksetzen</button></div><canvas id="config3dCanvas" aria-label="Drehbare 3D-Vorschau der Simson S51"></canvas><div class="config3dFoot"><span>Tank · Seitendeckel · Rahmen · Cockpit · Blinker · Vergaser · Motor · Räder · rechter Auspuff</span><b>GLB 4.2</b></div>`;canvas=document.getElementById('config3dCanvas');gl=canvas.getContext('webgl',{antialias:true,alpha:false});if(!gl){active=false;host.innerHTML='<div class="config3dUnavailable">WebGL ist auf diesem Gerät nicht verfügbar. Die 2D-Vorschau bleibt nutzbar.</div>';return}program=mkProgram();initMeshes();loadGLBComponents();bind();cancelAnimationFrame(raf);render()}
+  function mount(){host=document.getElementById('configPreview');if(!host)return;active=true;host.innerHTML=`<div class="config3dTop"><b>S51 3D · GLB 4.3</b><span>Ziehen = drehen · Mausrad/Pinch = zoomen</span><button onclick="window.S51ThreeD.close()">2D zurück</button></div><div class="config3dCamera"><button onclick="window.S51ThreeD.camera('side')">Seite</button><button onclick="window.S51ThreeD.camera('three')">3/4</button><button onclick="window.S51ThreeD.camera('front')">Front</button><button onclick="window.S51ThreeD.camera('rear')">Heck</button><button onclick="window.S51ThreeD.camera('reset')">Ansicht zurücksetzen</button></div><canvas id="config3dCanvas" aria-label="Drehbare 3D-Vorschau der Simson S51"></canvas><div class="config3dFoot"><span>Tank · Seitendeckel · Rahmen · Cockpit · Blinker · Vergaser · Motor · Räder · rechter Auspuff</span><b>GLB 4.3</b></div>`;canvas=document.getElementById('config3dCanvas');gl=canvas.getContext('webgl',{antialias:true,alpha:false});if(!gl){active=false;host.innerHTML='<div class="config3dUnavailable">WebGL ist auf diesem Gerät nicht verfügbar. Die 2D-Vorschau bleibt nutzbar.</div>';return}program=mkProgram();initMeshes();loadGLBComponents();bind();cancelAnimationFrame(raf);render()}
   function close(){active=false;cancelAnimationFrame(raf);if(typeof window.configSetView==='function')window.configSetView('side')}
   function bind(){
     canvas.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
