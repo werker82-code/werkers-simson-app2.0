@@ -1,5 +1,5 @@
 {
-  "version": "body-cockpit-highdetail-1",
+  "version": "visual-quality-1",
   "components": {
     "tank": "assets/models/tank.glb",
     "sidecover": "assets/models/sidecover.glb",
@@ -60,5 +60,11 @@
     "indicators": "separate front and rear indicator pairs",
     "fenders": "curved classic/enduro front and rear fender meshes",
     "rearLighting": "separate taillight and license plate components"
+  },
+  "quality": {
+    "renderer": "GLB 4.5 Studio",
+    "lighting": "dual-key studio light with specular material response",
+    "presentation": "transparent WebGL over radial studio background with contact shadows",
+    "proportions": "larger wheel envelope and refined camera/stance"
   }
 }
