@@ -1,0 +1,35 @@
+name: Refine S51 GLB 4.5 Studio
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/refine_glb45_visuals.py'
+      - '.github/glb45-trigger'
+permissions:
+  contents: write
+jobs:
+  refine-visuals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply GLB 4.5 studio visuals
+        run: python3 scripts/refine_glb45_visuals.py
+      - name: Verify JavaScript
+        run: |
+          node --check configurator3d.js
+          node --check www/configurator3d.js
+      - name: Verify visual markers
+        run: |
+          grep -q "GLB 4.5 STUDIO" configurator3d.js
+          grep -q "configurator-glb4-5" sw.js
+          grep -q "visual-quality-1" assets/models/manifest.json
+          cmp -s configurator3d.js www/configurator3d.js
+          cmp -s configurator3d.css www/configurator3d.css
+      - name: Commit studio refinement
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configurator3d.js www/configurator3d.js configurator3d.css www/configurator3d.css sw.js www/sw.js assets/models/manifest.json www/assets/models/manifest.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refine S51 rendering to GLB 4.5 Studio'
+          git push
