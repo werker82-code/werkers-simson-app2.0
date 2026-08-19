@@ -1,22 +1,59 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111111"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="style.css"><title>Werkers Werkstatt – Simson V3.8 · STORE RELEASE</title></head><body>
-<div class="app"><header><button class="brand" onclick="nav('home')"><img src="assets/icon.svg"><span><b>WERKERS WERKSTATT</b><small>SIMSON KULT & TECHNIK · V3.8 · STORE RELEASE</small></span></button><button class="searchBtn" onclick="openSearch()">⌕</button></header>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111111"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="configurator.css"><title>Werkers Werkstatt – Simson V3.9 · CONFIGURATOR</title></head><body>
+<div class="app"><header><button class="brand" onclick="nav('home')"><img src="assets/icon.svg"><span><b>WERKERS WERKSTATT</b><small>SIMSON KULT & TECHNIK · V3.9 · CONFIGURATOR</small></span></button><button class="searchBtn" onclick="openSearch()">⌕</button></header>
 <div id="overlay" class="overlay hidden"><div class="searchPanel"><div class="searchTop"><input id="globalSearch" placeholder="S51, Kupplung, Zündung …" oninput="doSearch()"><button onclick="closeSearch()">✕</button></div><div id="searchResults"></div></div></div>
 <main>
 <section id="home" class="view active"><article class="hero"><div class="shade"></div><div class="heroText"><span class="eyebrow lime">WERKERS WERKSTATT</span><h1>SIMSON<br>KULT & TECHNIK</h1><p>Modelle, Werkstattwissen, Diagnose und deine digitale Garage.</p><div><button class="btn light" onclick="nav('models')">Modelle</button><button class="btn ghost" onclick="nav('diagnose')">Diagnose</button></div></div></article>
-<div class="heading"><span class="eyebrow">SCHNELLSTART</span><h2>Werkzeuge für die Garage</h2></div><div class="dash"><button onclick="nav('s51')"><span>01</span><b>S51 Studio</b><small>Varianten, Farben & Vergleich</small></button><button onclick="nav('diagnose')"><span>02</span><b>Fehlerdiagnose</b><small>Symptom → Prüfkette</small></button><button onclick="nav('garage')"><span>03</span><b>Meine Simson</b><small>Fahrzeuge & Wartungsbuch</small></button><button onclick="nav('techarchive')"><span>04</span><b>Technikarchiv</b><small>Fahrzeugdaten & Schaltpläne</small></button></div>
+<div class="heading"><span class="eyebrow">SCHNELLSTART</span><h2>Werkzeuge für die Garage</h2></div><div class="dash"><button onclick="nav('s51')"><span>01</span><b>S51 Studio</b><small>Varianten, Farben & Konfigurator</small></button><button onclick="nav('diagnose')"><span>02</span><b>Fehlerdiagnose</b><small>Symptom → Prüfkette</small></button><button onclick="nav('garage')"><span>03</span><b>Meine Simson</b><small>Fahrzeuge & Wartungsbuch</small></button><button onclick="nav('techarchive')"><span>04</span><b>Technikarchiv</b><small>Fahrzeugdaten & Schaltpläne</small></button></div>
 <article class="spot"><div><span class="eyebrow lime">S51 TECHNIK-FOKUS</span><h2>Varianten direkt vergleichen</h2><p>Getriebe, Zündung, Ausstattung und typische Farbtöne.</p><button onclick="nav('s51')">S51 Studio öffnen →</button></div><div>S51</div></article>
 <div class="heading"><span class="eyebrow">SAMMLER</span><h2>Seltene Simsons</h2></div><div id="homeRare"></div><button class="wide" onclick="nav('rare')">Rangliste öffnen →</button></section>
 
 <section id="models" class="view"><div class="pageHead"><span class="eyebrow">MODELL-ARCHIV · GALERIE</span><h1>Simson Modelle</h1><p>Baureihen, Modellkarten, technische Daten und integrierte Kurzinfos.</p></div><div class="filters"><input id="modelSearch" placeholder="Modell suchen …" oninput="renderModels()"><select id="modelType" onchange="renderModels()"></select></div><div id="modelList"></div></section>
 <section id="modelDetail" class="view"><button class="back" onclick="nav('models')">← Modelle</button><div id="modelDetailBody"></div></section>
 
-<section id="s51" class="view"><div class="pageHead dark"><span class="eyebrow lime">S51 STUDIO</span><h1>Varianten & Farben</h1><p>Referenz für Restauration, Kauf und Originalitätsprüfung.</p></div><div class="s51img"><img src="assets/s51-overview.svg" alt="S51 Modellübersicht"></div><div class="tabs"><button class="active" onclick="tab(event,'variants')">Varianten</button><button onclick="tab(event,'colors')">Farben</button><button onclick="tab(event,'compare')">Vergleich</button></div><div id="variants" class="tab active"><div id="variantCards"></div></div><div id="colors" class="tab"><div id="colorCards"></div><div class="note">Farben sind typische Zuordnungen. Für eine Restaurierung Baujahr, Modell und originale Lackreste gemeinsam bewerten.</div></div><div id="compare" class="tab"><div class="comparePick"><select id="cmpA" onchange="renderCompare()"></select><b>VS</b><select id="cmpB" onchange="renderCompare()"></select></div><div id="compareBody"></div></div></section>
+<section id="s51" class="view"><div class="pageHead dark"><span class="eyebrow lime">S51 STUDIO</span><h1>Varianten & Farben</h1><p>Referenz für Restauration, Kauf und Originalitätsprüfung.</p></div><div class="s51img"><img src="assets/s51-overview.svg" alt="S51 Modellübersicht"></div><div class="configHeroActions"><button class="btn black" onclick="nav('configurator')">S51 Konfigurator öffnen →</button></div><div class="tabs"><button class="active" onclick="tab(event,'variants')">Varianten</button><button onclick="tab(event,'colors')">Farben</button><button onclick="tab(event,'compare')">Vergleich</button></div><div id="variants" class="tab active"><div id="variantCards"></div></div><div id="colors" class="tab"><div id="colorCards"></div><div class="note">Farben sind typische Zuordnungen. Für eine Restaurierung Baujahr, Modell und originale Lackreste gemeinsam bewerten.</div></div><div id="compare" class="tab"><div class="comparePick"><select id="cmpA" onchange="renderCompare()"></select><b>VS</b><select id="cmpB" onchange="renderCompare()"></select></div><div id="compareBody"></div></div></section>
 
 
 
 
 
 
+
+<section id="configurator" class="view">
+  <div class="pageHead dark">
+    <span class="eyebrow lime">S51 KONFIGURATOR · PHASE 1</span>
+    <h1>Deine S51 zusammenstellen</h1>
+    <p>Bauteile auswählen, Vorschau sofort aktualisieren, Konfiguration speichern und in die Garage übernehmen.</p>
+  </div>
+  <div class="configIntro">
+    <p>Der Konfigurator bildet die komplette Auswahl- und Speicherlogik ab. Die aktuelle Fahrzeugansicht ist eine interaktive 2D/SVG-Vorschau; austauschbare GLB-3D-Bauteile folgen im nächsten Ausbau.</p>
+    <span class="configBadge">LIVE · OFFLINE</span>
+  </div>
+  <div class="configShell">
+    <div class="configStage">
+      <div id="configPreview" class="configPreviewFrame"></div>
+      <div class="configStageBar">
+        <button class="btn" onclick="configReset()">Zurücksetzen</button>
+        <button class="btn" onclick="configMatchPaint()">Seitendeckel = Tank</button>
+        <button class="btn black" onclick="configAddToGarage()">In Garage übernehmen</button>
+      </div>
+      <div id="configGarageStatus" class="configStatus hidden"></div>
+      <div id="configSummary" class="configSummary"></div>
+    </div>
+    <div class="configPanel">
+      <div id="configCategoryNav" class="configCats"></div>
+      <div id="configOptions"></div>
+    </div>
+  </div>
+  <div class="configSaveBox">
+    <span class="eyebrow">KONFIGURATIONEN</span>
+    <h2>Speichern & später weiterbauen</h2>
+    <div class="configSaveRow">
+      <input id="configName" placeholder="Name, z. B. S51 Enduro Grün">
+      <button class="btn black" onclick="configSave()">Konfiguration speichern</button>
+    </div>
+    <div id="configSaved"></div>
+  </div>
+</section>
 
 <section id="dashboard" class="view">
   <div class="pageHead dark">
@@ -83,6 +120,6 @@
 
 <section id="bikeDetail" class="view"><button class="back" onclick="nav('garage')">← Garage</button><div id="bikeDetailBody"></div></section>
 
-<section id="more" class="view"><div class="pageHead"><span class="eyebrow">TOOLS</span><h1>Mehr</h1></div><div class="links"><button onclick="nav('identify')">Modell bestimmen →</button><button onclick="nav('originality')">Originalitätscheck →</button><button onclick="nav('fincheck')">FIN / Baujahr prüfen →</button><button onclick="nav('dashboard')">Fahrzeug-Dashboard →</button><button onclick="nav('timeline')">Fahrzeug-Zeitstrahl →</button><button onclick="nav('costs')">Fahrzeugkosten →</button><button onclick="nav('restoration')">Restaurationsprojekt →</button><button onclick="nav('documents')">KBA / TÜV / Dokumente →</button><button onclick="nav('service')">Service-Erinnerungen →</button><button onclick="nav('guideddiag')">Geführte Diagnose →</button><button onclick="nav('shopping')">Ersatzteil-Favoriten / Einkaufsliste →</button><button onclick="nav('assemblies')">Baugruppen / Explosionsansichten →</button><button onclick="nav('vehiclediag')">Fahrzeugspezifische Diagnose →</button><button onclick="nav('s51specs')">S51-Untervarianten →</button><button onclick="nav('carbref')">Vergaser-/Zündungsreferenz →</button><button onclick="nav('torquefluids')">Füllmengen & Drehmomente →</button><button onclick="nav('interactivewiring')">Interaktiver Stromfluss →</button><button onclick="nav('vehicledata')">Technische Fahrzeugdaten →</button><button onclick="nav('partsref')">Baugruppenreferenz →</button><button onclick="nav('maintenance')">Wartungsplan →</button><button onclick="nav('wiring')">Schaltplan-Systeme →</button><a href="https://www.werkers-werkstatt.com/" target="_blank">Website öffnen ↗</a><a href="privacy.html">Datenschutz →</a><a href="support.html">Support →</a></div><div class="note"><b>Version 3.8:</b> Offline-Assets, vollständiges Backup/Import, Technikarchiv und Android-Projektstruktur. <button id="installPwa" class="btn black" onclick="installPwa()" style="margin-top:10px">App installieren</button></div></section>
+<section id="more" class="view"><div class="pageHead"><span class="eyebrow">TOOLS</span><h1>Mehr</h1></div><div class="links"><button onclick="nav('configurator')">S51 Konfigurator →</button><button onclick="nav('identify')">Modell bestimmen →</button><button onclick="nav('originality')">Originalitätscheck →</button><button onclick="nav('fincheck')">FIN / Baujahr prüfen →</button><button onclick="nav('dashboard')">Fahrzeug-Dashboard →</button><button onclick="nav('timeline')">Fahrzeug-Zeitstrahl →</button><button onclick="nav('costs')">Fahrzeugkosten →</button><button onclick="nav('restoration')">Restaurationsprojekt →</button><button onclick="nav('documents')">KBA / TÜV / Dokumente →</button><button onclick="nav('service')">Service-Erinnerungen →</button><button onclick="nav('guideddiag')">Geführte Diagnose →</button><button onclick="nav('shopping')">Ersatzteil-Favoriten / Einkaufsliste →</button><button onclick="nav('assemblies')">Baugruppen / Explosionsansichten →</button><button onclick="nav('vehiclediag')">Fahrzeugspezifische Diagnose →</button><button onclick="nav('s51specs')">S51-Untervarianten →</button><button onclick="nav('carbref')">Vergaser-/Zündungsreferenz →</button><button onclick="nav('torquefluids')">Füllmengen & Drehmomente →</button><button onclick="nav('interactivewiring')">Interaktiver Stromfluss →</button><button onclick="nav('vehicledata')">Technische Fahrzeugdaten →</button><button onclick="nav('partsref')">Baugruppenreferenz →</button><button onclick="nav('maintenance')">Wartungsplan →</button><button onclick="nav('wiring')">Schaltplan-Systeme →</button><a href="https://www.werkers-werkstatt.com/" target="_blank">Website öffnen ↗</a><a href="privacy.html">Datenschutz →</a><a href="support.html">Support →</a></div><div class="note"><b>Version 3.9:</b> Offline-Assets, vollständiges Backup/Import, Technikarchiv und Android-Projektstruktur. <button id="installPwa" class="btn black" onclick="installPwa()" style="margin-top:10px">App installieren</button></div></section>
 </main>
-<nav><button data-v="home" class="active" onclick="nav('home')"><span>⌂</span>Start</button><button data-v="models" onclick="nav('models')"><span>◫</span>Modelle</button><button data-v="workshop" onclick="nav('workshop')"><span>⚙</span>Technik</button><button data-v="diagnose" onclick="nav('diagnose')"><span>?</span>Diagnose</button><button data-v="garage" onclick="nav('garage')"><span>▣</span>Garage</button></nav></div><script src="app.js"></script></body></html>
+<nav><button data-v="home" class="active" onclick="nav('home')"><span>⌂</span>Start</button><button data-v="models" onclick="nav('models')"><span>◫</span>Modelle</button><button data-v="workshop" onclick="nav('workshop')"><span>⚙</span>Technik</button><button data-v="diagnose" onclick="nav('diagnose')"><span>?</span>Diagnose</button><button data-v="garage" onclick="nav('garage')"><span>▣</span>Garage</button></nav></div><script src="app.js"></script><script src="configurator.js"></script></body></html>
