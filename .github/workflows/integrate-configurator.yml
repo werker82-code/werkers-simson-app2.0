@@ -2,9 +2,6 @@ name: Integrate S51 Configurator
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/integrate-configurator.yml'
 
 permissions:
   contents: write
@@ -16,60 +13,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Patch web and app bundle
-        shell: python
+      - name: Integrate configurator
+        run: python3 scripts/integrate_configurator.py
+
+      - name: Verify integration
         run: |
-          from pathlib import Path
-
-          CONFIG_SECTION = '''
-<section id="configurator" class="view">
-  <div class="pageHead dark"><span class="eyebrow lime">S51 KONFIGURATOR · PHASE 1</span><h1>Deine S51 zusammenstellen</h1><p>Bauteile auswählen, Vorschau sofort aktualisieren, Konfiguration speichern und in die Garage übernehmen.</p></div>
-  <div class="configIntro"><p>Der neue Konfigurator bildet die komplette Auswahl- und Speicherlogik bereits ab. Die aktuelle Fahrzeugansicht ist eine interaktive 2D/SVG-Vorschau; die austauschbaren GLB-3D-Bauteile folgen im nächsten Ausbau.</p><span class="configBadge">LIVE · OFFLINE</span></div>
-  <div class="configShell">
-    <div class="configStage">
-      <div id="configPreview" class="configPreviewFrame"></div>
-      <div class="configStageBar"><button class="btn" onclick="configReset()">Zurücksetzen</button><button class="btn" onclick="configMatchPaint()">Seitendeckel = Tank</button><button class="btn black" onclick="configAddToGarage()">In Garage übernehmen</button></div>
-      <div id="configGarageStatus" class="configStatus hidden"></div>
-      <div id="configSummary" class="configSummary"></div>
-    </div>
-    <div class="configPanel"><div id="configCategoryNav" class="configCats"></div><div id="configOptions"></div></div>
-  </div>
-  <div class="configSaveBox"><span class="eyebrow">KONFIGURATIONEN</span><h2>Speichern & später weiterbauen</h2><div class="configSaveRow"><input id="configName" placeholder="Name, z. B. S51 Enduro Grün"><button class="btn black" onclick="configSave()">Konfiguration speichern</button></div><div id="configSaved"></div></div>
-</section>
-'''
-
-          def patch_index(path):
-              p = Path(path)
-              s = p.read_text(encoding='utf-8')
-              if 'configurator.css' not in s:
-                  s = s.replace('<link rel="stylesheet" href="style.css">', '<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="configurator.css">')
-              s = s.replace('V3.8 · STORE RELEASE', 'V3.9 · CONFIGURATOR')
-              s = s.replace('Varianten, Farben & Vergleich', 'Varianten, Farben & Konfigurator')
-              if 'nav(\'configurator\')">S51 Konfigurator öffnen' not in s:
-                  s = s.replace('<div class="tabs"><button class="active"', '<div class="configHeroActions"><button class="btn black" onclick="nav(\'configurator\')">S51 Konfigurator öffnen →</button></div><div class="tabs"><button class="active"', 1)
-              if 'id="configurator"' not in s:
-                  marker = '\n\n\n\n\n\n\n\n<section id="dashboard"'
-                  if marker in s:
-                      s = s.replace(marker, '\n' + CONFIG_SECTION + '\n<section id="dashboard"', 1)
-                  else:
-                      s = s.replace('<section id="dashboard"', CONFIG_SECTION + '\n<section id="dashboard"', 1)
-              if 'S51 Konfigurator →' not in s:
-                  s = s.replace('<button onclick="nav(\'identify\')">Modell bestimmen →</button>', '<button onclick="nav(\'configurator\')">S51 Konfigurator →</button><button onclick="nav(\'identify\')">Modell bestimmen →</button>', 1)
-              s = s.replace('<b>Version 3.8:</b>', '<b>Version 3.9:</b>')
-              if '<script src="configurator.js"></script>' not in s:
-                  s = s.replace('<script src="app.js"></script>', '<script src="app.js"></script><script src="configurator.js"></script>')
-              p.write_text(s, encoding='utf-8')
-
-          patch_index('index.html')
-          patch_index('www/index.html')
-
-          for path in ['sw.js','www/sw.js']:
-              p=Path(path)
-              s=p.read_text(encoding='utf-8')
-              s=s.replace('ww-v3-8','ww-v3-9-configurator')
-              if './configurator.css' not in s:
-                  s=s.replace('"./style.css","./app.js"', '"./style.css","./configurator.css","./app.js","./configurator.js"')
-              p.write_text(s,encoding='utf-8')
+          grep -q 'id="configurator"' index.html
+          grep -q 'configurator.js' index.html
+          grep -q 'configurator.css' index.html
+          grep -q 'id="configurator"' www/index.html
+          grep -q 'configurator.js' www/index.html
+          grep -q 'configurator.css' www/index.html
+          echo "Configurator integration verified"
 
       - name: Commit integration
         run: |
