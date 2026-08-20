@@ -19,6 +19,9 @@ jobs:
       - name: Repository auschecken
         uses: actions/checkout@v4
 
+      - name: Aktuelles Web-Bundle und Version vorbereiten
+        run: python3 scripts/prepare_release.py --android
+
       - name: Java 17 einrichten
         uses: actions/setup-java@v4
         with:
@@ -63,7 +66,7 @@ jobs:
       - name: AAB hochladen
         uses: actions/upload-artifact@v4
         with:
-          name: werkers-simson-${{ inputs.signed && 'SIGNED' || 'UNSIGNED' }}-aab
+          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-${{ inputs.signed && 'SIGNED' || 'UNSIGNED' }}-aab
           path: android-store-project/app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
           retention-days: 30
