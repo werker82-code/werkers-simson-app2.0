@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       signed:
-        description: "Signierte APK/AAB mit Play-Store-Schlüssel bauen?"
+        description: "Signierte Store-Version bauen? false = installierbare Beta-APK"
         required: true
         type: boolean
         default: false
@@ -70,22 +70,39 @@ jobs:
           echo "ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "ANDROID_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
 
-      - name: APK und AAB bauen
+      - name: Signierte Store-Version bauen
+        if: ${{ inputs.signed }}
         working-directory: android-store-project
         run: gradle --no-daemon clean assembleRelease bundleRelease
 
+      - name: Installierbare Beta-APK bauen
+        if: ${{ !inputs.signed }}
+        working-directory: android-store-project
+        run: gradle --no-daemon clean assembleDebug
+
       - name: AAB für Google Play hochladen
+        if: ${{ inputs.signed }}
         uses: actions/upload-artifact@v4
         with:
-          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-${{ inputs.signed && 'SIGNED' || 'UNSIGNED' }}-aab
+          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-SIGNED-aab
           path: android-store-project/app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
           retention-days: 30
 
-      - name: APK zum direkten Testen hochladen
+      - name: Signierte APK hochladen
+        if: ${{ inputs.signed }}
         uses: actions/upload-artifact@v4
         with:
-          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-${{ inputs.signed && 'SIGNED' || 'UNSIGNED' }}-apk
+          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-SIGNED-apk
           path: android-store-project/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Beta-APK zum direkten Testen hochladen
+        if: ${{ !inputs.signed }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-BETA-apk
+          path: android-store-project/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 30
