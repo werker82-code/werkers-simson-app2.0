@@ -1,10 +1,10 @@
-name: Build Werkers Simson AAB
+name: Build Werkers Simson Android
 
 on:
   workflow_dispatch:
     inputs:
       signed:
-        description: "Signiertes AAB für Google Play bauen?"
+        description: "Signierte APK/AAB mit Play-Store-Schlüssel bauen?"
         required: true
         type: boolean
         default: false
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  build-aab:
+  build-android:
     runs-on: ubuntu-latest
     steps:
       - name: Repository auschecken
@@ -21,6 +21,17 @@ jobs:
 
       - name: Aktuelles Web-Bundle und Version vorbereiten
         run: python3 scripts/prepare_release.py --android
+
+      - name: Build-Quelle auf aktuellen Stand prüfen
+        run: |
+          test -f android-store-project/app/src/main/assets/version.js
+          test -f android-store-project/app/src/main/assets/configurator3d.js
+          test -f android-store-project/app/src/main/assets/assets/models/manifest.json
+          grep -q 'version.js' android-store-project/app/src/main/assets/index.html
+          grep -q '4.5.0' android-store-project/app/src/main/assets/version.js
+          grep -q 'GLB 4.5' android-store-project/app/src/main/assets/configurator3d.js
+          grep -q 'versionCode = 4501' android-store-project/app/build.gradle
+          echo "Android-Bundle: V${APP_VERSION} · Build ${APP_BUILD} · ${RENDERER_VERSION}"
 
       - name: Java 17 einrichten
         uses: actions/setup-java@v4
@@ -59,14 +70,22 @@ jobs:
           echo "ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "ANDROID_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
 
-      - name: AAB bauen
+      - name: APK und AAB bauen
         working-directory: android-store-project
-        run: gradle --no-daemon clean bundleRelease
+        run: gradle --no-daemon clean assembleRelease bundleRelease
 
-      - name: AAB hochladen
+      - name: AAB für Google Play hochladen
         uses: actions/upload-artifact@v4
         with:
           name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-${{ inputs.signed && 'SIGNED' || 'UNSIGNED' }}-aab
           path: android-store-project/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: APK zum direkten Testen hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-${{ inputs.signed && 'SIGNED' || 'UNSIGNED' }}-apk
+          path: android-store-project/app/build/outputs/apk/release/*.apk
           if-no-files-found: error
           retention-days: 30
