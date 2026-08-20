@@ -30,6 +30,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Installierbare Test-App neben der Store-Version.
+            // Android signiert Debug-Builds automatisch mit dem Debug-Key.
+            applicationIdSuffix '.beta'
+            versionNameSuffix '-beta'
+            debuggable true
+        }
         release {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
