@@ -14,8 +14,8 @@ android {
         applicationId = 'com.werkerswerkstatt.simson'
         minSdk = 24
         targetSdk = 36
-        versionCode = 381
-        versionName = '3.8.1'
+        versionCode = 4501
+        versionName = '4.5.0'
     }
 
     signingConfigs {
