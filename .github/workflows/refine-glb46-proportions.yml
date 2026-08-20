@@ -1,0 +1,41 @@
+name: Refine S51 GLB 4.6 Proportions
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: GLB 4.6 Proportionen anwenden
+        run: python scripts/refine_glb46_proportions.py
+
+      - name: Änderungen prüfen
+        run: |
+          git diff --check
+          grep -q 'GLB 4.6 PROPORTION' www/configurator3d.js
+          grep -q '"version": "4.6.0"' app-version.json
+          grep -q '"build": 4601' app-version.json
+
+      - name: Änderungen committen
+        run: |
+          if git diff --quiet; then
+            echo "Keine Änderungen notwendig."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add www/configurator3d.js configurator3d.js app-version.json www/version.js www/sw.js android-store-project/app/build.gradle scripts/prepare_release.py .github/workflows/build-aab.yml
+          git commit -m "Correct S51 proportions and camera for GLB 4.6"
+          git push
