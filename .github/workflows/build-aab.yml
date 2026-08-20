@@ -10,7 +10,7 @@ on:
         default: false
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-android:
@@ -98,7 +98,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Beta-APK zum direkten Testen hochladen
+      - name: Beta-APK als Artifact sichern
         if: ${{ !inputs.signed }}
         uses: actions/upload-artifact@v4
         with:
@@ -106,3 +106,22 @@ jobs:
           path: android-store-project/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 30
+
+      - name: Beta-APK direkt unter Releases veröffentlichen
+        if: ${{ !inputs.signed }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          SRC=$(find android-store-project/app/build/outputs/apk/debug -maxdepth 1 -name '*.apk' -print -quit)
+          test -n "$SRC"
+          OUT="Werkers-Simson-v${APP_VERSION}-b${APP_BUILD}-BETA.apk"
+          cp "$SRC" "$OUT"
+          TAG="beta-v${APP_VERSION}-b${APP_BUILD}"
+          TITLE="Werkers Simson Beta v${APP_VERSION} · Build ${APP_BUILD}"
+          NOTES="Installierbare Android-Beta mit ${RENDERER_VERSION}. Paket-ID der Beta: com.werkerswerkstatt.simson.beta."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$OUT" --clobber
+          else
+            gh release create "$TAG" "$OUT" --target "$GITHUB_SHA" --title "$TITLE" --notes "$NOTES" --prerelease
+          fi
