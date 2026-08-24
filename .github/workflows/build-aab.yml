@@ -1,37 +1,45 @@
-name: Build Werkers Simson Android
+name: Build Werkers Simson 5.0 Android AAB
 
 on:
   workflow_dispatch:
-    inputs:
-      signed:
-        description: "Signierte Store-Version bauen? false = installierbare Beta-APK"
-        required: true
-        type: boolean
-        default: false
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+
     steps:
       - name: Repository auschecken
         uses: actions/checkout@v4
 
-      - name: Aktuelles Web-Bundle und Version vorbereiten
-        run: python3 scripts/prepare_release.py --android
-
-      - name: Build-Quelle auf aktuellen Stand prüfen
+      - name: Android-Projekt 5.0.0 Build 50000 entpacken
+        shell: bash
         run: |
-          test -f android-store-project/app/src/main/assets/version.js
-          test -f android-store-project/app/src/main/assets/configurator3d.js
-          test -f android-store-project/app/src/main/assets/assets/models/manifest.json
-          grep -q 'version.js' android-store-project/app/src/main/assets/index.html
-          grep -q '4.5.0' android-store-project/app/src/main/assets/version.js
-          grep -q 'GLB 4.5' android-store-project/app/src/main/assets/configurator3d.js
-          grep -q 'versionCode = 4501' android-store-project/app/build.gradle
-          echo "Android-Bundle: V${APP_VERSION} · Build ${APP_BUILD} · ${RENDERER_VERSION}"
+          set -euo pipefail
+          ANDROID_ZIP="$GITHUB_WORKSPACE/werkers-simson-5.0.0-build50000-android-project.zip"
+          test -f "$ANDROID_ZIP" || {
+            echo "::error::Die Datei werkers-simson-5.0.0-build50000-android-project.zip fehlt im Hauptverzeichnis."
+            exit 1
+          }
+
+          mkdir -p "$GITHUB_WORKSPACE/mobile-build"
+          unzip -q "$ANDROID_ZIP" -d "$GITHUB_WORKSPACE/mobile-build"
+          echo "ANDROID_PROJECT=$GITHUB_WORKSPACE/mobile-build/android-store-project" >> "$GITHUB_ENV"
+
+      - name: Release-Inhalt prüfen
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$ANDROID_PROJECT/app/build.gradle"
+          test -f "$ANDROID_PROJECT/app/src/main/assets/configurator3d.js"
+          test -f "$ANDROID_PROJECT/app/src/main/assets/version.js"
+          grep -Fq "versionCode = 50000" "$ANDROID_PROJECT/app/build.gradle"
+          grep -Fq "versionName = '5.0.0'" "$ANDROID_PROJECT/app/build.gradle"
+          grep -Fq '"build":50000' "$ANDROID_PROJECT/app/src/main/assets/version.js"
+          test "$(find "$ANDROID_PROJECT/app/src/main/assets/assets/models/hd" -maxdepth 1 -name '*.glb' | wc -l)" -eq 45
 
       - name: Java 17 einrichten
         uses: actions/setup-java@v4
@@ -39,7 +47,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Gradle einrichten
+      - name: Gradle 8.13 einrichten
         uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: "8.13"
@@ -48,80 +56,47 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Android API 36 installieren
+        shell: bash
         run: |
           yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Keystore vorbereiten
-        if: ${{ inputs.signed }}
+      - name: Google-Play-Upload-Key vorbereiten
+        shell: bash
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          set -euo pipefail
           if [ -z "$KEYSTORE_B64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
-            echo "::error::Es fehlen Signatur-Secrets."
+            echo "::error::Mindestens eines der vier Android-Signatur-Secrets fehlt."
             exit 1
           fi
-          echo "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/werkers-upload-key.jks"
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/werkers-upload-key.jks"
           echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/werkers-upload-key.jks" >> "$GITHUB_ENV"
           echo "ANDROID_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
           echo "ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "ANDROID_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
 
-      - name: Signierte Store-Version bauen
-        if: ${{ inputs.signed }}
-        working-directory: android-store-project
-        run: gradle --no-daemon clean assembleRelease bundleRelease
+      - name: Signiertes Google-Play-AAB bauen
+        working-directory: ${{ env.ANDROID_PROJECT }}
+        run: gradle --no-daemon clean bundleRelease
 
-      - name: Installierbare Beta-APK bauen
-        if: ${{ !inputs.signed }}
-        working-directory: android-store-project
-        run: gradle --no-daemon clean assembleDebug
-
-      - name: AAB für Google Play hochladen
-        if: ${{ inputs.signed }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-SIGNED-aab
-          path: android-store-project/app/build/outputs/bundle/release/*.aab
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Signierte APK hochladen
-        if: ${{ inputs.signed }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-SIGNED-apk
-          path: android-store-project/app/build/outputs/apk/release/*.apk
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Beta-APK als Artifact sichern
-        if: ${{ !inputs.signed }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: werkers-simson-v${{ env.APP_VERSION }}-b${{ env.APP_BUILD }}-BETA-apk
-          path: android-store-project/app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Beta-APK direkt unter Releases veröffentlichen
-        if: ${{ !inputs.signed }}
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: AAB prüfen
+        shell: bash
         run: |
-          set -e
-          SRC=$(find android-store-project/app/build/outputs/apk/debug -maxdepth 1 -name '*.apk' -print -quit)
-          test -n "$SRC"
-          OUT="Werkers-Simson-v${APP_VERSION}-b${APP_BUILD}-BETA.apk"
-          cp "$SRC" "$OUT"
-          TAG="beta-v${APP_VERSION}-b${APP_BUILD}"
-          TITLE="Werkers Simson Beta v${APP_VERSION} · Build ${APP_BUILD}"
-          NOTES="Installierbare Android-Beta mit ${RENDERER_VERSION}. Paket-ID der Beta: com.werkerswerkstatt.simson.beta."
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$OUT" --clobber
-          else
-            gh release create "$TAG" "$OUT" --target "$GITHUB_SHA" --title "$TITLE" --notes "$NOTES" --prerelease
-          fi
+          set -euo pipefail
+          AAB=$(find "$ANDROID_PROJECT/app/build/outputs/bundle/release" -maxdepth 1 -name '*.aab' -print -quit)
+          test -n "$AAB"
+          test -s "$AAB"
+          echo "AAB erfolgreich erstellt: $AAB"
+
+      - name: AAB zum Herunterladen bereitstellen
+        uses: actions/upload-artifact@v4
+        with:
+          name: Werkers-Simson-5.0.0-build50000-SIGNED-AAB
+          path: ${{ env.ANDROID_PROJECT }}/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 30
