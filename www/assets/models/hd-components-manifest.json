@@ -1,0 +1,322 @@
+{
+  "version": "glb-5.0-hd-components-1",
+  "coordinateSystem": "global S51 modular coordinates; wheels use local origin",
+  "target": "250000-400000 triangles per assembled smartphone configuration",
+  "components": {
+    "tank": {
+      "url": "assets/models/hd/tank_hd.glb",
+      "label": "Tank",
+      "vertices": 8450,
+      "triangles": 16896,
+      "subdivisionLevel": 2
+    },
+    "sidecover": {
+      "url": "assets/models/hd/sidecover_hd.glb",
+      "label": "Seitendeckel",
+      "vertices": 1538,
+      "triangles": 3072,
+      "subdivisionLevel": 2
+    },
+    "wheel": {
+      "url": "assets/models/hd/wheel_hd.glb",
+      "label": "Reifen",
+      "vertices": 18225,
+      "triangles": 35840,
+      "subdivisionLevel": 2
+    },
+    "rim": {
+      "url": "assets/models/hd/rim_hd.glb",
+      "label": "Felge",
+      "vertices": 11025,
+      "triangles": 21504,
+      "subdivisionLevel": 2
+    },
+    "spokes": {
+      "url": "assets/models/hd/spokes_hd.glb",
+      "label": "Speichen",
+      "vertices": 6000,
+      "triangles": 7680,
+      "subdivisionLevel": 2
+    },
+    "star5": {
+      "url": "assets/models/hd/star5_hd.glb",
+      "label": "5-Speichen-Rad",
+      "vertices": 750,
+      "triangles": 960,
+      "subdivisionLevel": 2
+    },
+    "star10": {
+      "url": "assets/models/hd/star10_hd.glb",
+      "label": "10-Speichen-Rad",
+      "vertices": 1500,
+      "triangles": 1920,
+      "subdivisionLevel": 2
+    },
+    "hub": {
+      "url": "assets/models/hd/hub_hd.glb",
+      "label": "Radnabe",
+      "vertices": 3214,
+      "triangles": 5120,
+      "subdivisionLevel": 2
+    },
+    "brakedisc": {
+      "url": "assets/models/hd/brakedisc_hd.glb",
+      "label": "Bremsscheibe",
+      "vertices": 4490,
+      "triangles": 7168,
+      "subdivisionLevel": 2
+    },
+    "engine": {
+      "url": "assets/models/hd/engine_hd.glb",
+      "label": "Motorgehaeuse",
+      "vertices": 33332,
+      "triangles": 63424,
+      "subdivisionLevel": 2
+    },
+    "engine_fins": {
+      "url": "assets/models/hd/engine_fins_hd.glb",
+      "label": "Zylinder und Kuehlrippen",
+      "vertices": 2400,
+      "triangles": 3072,
+      "subdivisionLevel": 2
+    },
+    "carb": {
+      "url": "assets/models/hd/carb_hd.glb",
+      "label": "Vergaser",
+      "vertices": 11709,
+      "triangles": 22144,
+      "subdivisionLevel": 2
+    },
+    "frame": {
+      "url": "assets/models/hd/frame_hd.glb",
+      "label": "Rahmen",
+      "vertices": 6160,
+      "triangles": 9856,
+      "subdivisionLevel": 2
+    },
+    "swingarm": {
+      "url": "assets/models/hd/swingarm_hd.glb",
+      "label": "Schwinge",
+      "vertices": 1590,
+      "triangles": 2496,
+      "subdivisionLevel": 2
+    },
+    "fork": {
+      "url": "assets/models/hd/fork_hd.glb",
+      "label": "Telegabel",
+      "vertices": 2160,
+      "triangles": 3456,
+      "subdivisionLevel": 2
+    },
+    "shocks": {
+      "url": "assets/models/hd/shocks_hd.glb",
+      "label": "Federbeine",
+      "vertices": 5840,
+      "triangles": 9344,
+      "subdivisionLevel": 2
+    },
+    "shocks_long": {
+      "url": "assets/models/hd/shocks_long_hd.glb",
+      "label": "lange Federbeine",
+      "vertices": 5840,
+      "triangles": 9344,
+      "subdivisionLevel": 2
+    },
+    "exhaust_series": {
+      "url": "assets/models/hd/exhaust_series_hd.glb",
+      "label": "Serienauspuff",
+      "vertices": 1390,
+      "triangles": 2176,
+      "subdivisionLevel": 2
+    },
+    "exhaust_enduro": {
+      "url": "assets/models/hd/exhaust_enduro_hd.glb",
+      "label": "Enduroauspuff",
+      "vertices": 1350,
+      "triangles": 2112,
+      "subdivisionLevel": 2
+    },
+    "exhaust_sport": {
+      "url": "assets/models/hd/exhaust_sport_hd.glb",
+      "label": "Sportauspuff",
+      "vertices": 1200,
+      "triangles": 1920,
+      "subdivisionLevel": 2
+    },
+    "seat_standard": {
+      "url": "assets/models/hd/seat_standard_hd.glb",
+      "label": "Seriensitzbank",
+      "vertices": 2466,
+      "triangles": 4480,
+      "subdivisionLevel": 2
+    },
+    "seat_flat": {
+      "url": "assets/models/hd/seat_flat_hd.glb",
+      "label": "flache Sitzbank",
+      "vertices": 2466,
+      "triangles": 4480,
+      "subdivisionLevel": 2
+    },
+    "seat_sport": {
+      "url": "assets/models/hd/seat_sport_hd.glb",
+      "label": "Sportsitzbank",
+      "vertices": 2466,
+      "triangles": 4480,
+      "subdivisionLevel": 2
+    },
+    "handlebar_street": {
+      "url": "assets/models/hd/handlebar_street_hd.glb",
+      "label": "Strassenlenker",
+      "vertices": 1720,
+      "triangles": 2752,
+      "subdivisionLevel": 2
+    },
+    "handlebar_enduro": {
+      "url": "assets/models/hd/handlebar_enduro_hd.glb",
+      "label": "Endurolenker +50 mm",
+      "vertices": 2040,
+      "triangles": 3264,
+      "subdivisionLevel": 2
+    },
+    "handlebar_cross": {
+      "url": "assets/models/hd/handlebar_cross_hd.glb",
+      "label": "Crosslenker",
+      "vertices": 2040,
+      "triangles": 3264,
+      "subdivisionLevel": 2
+    },
+    "cockpit": {
+      "url": "assets/models/hd/cockpit_hd.glb",
+      "label": "Cockpit",
+      "vertices": 5183,
+      "triangles": 9856,
+      "subdivisionLevel": 2
+    },
+    "headlight_shell": {
+      "url": "assets/models/hd/headlight_shell_hd.glb",
+      "label": "Scheinwerfergehaeuse",
+      "vertices": 7345,
+      "triangles": 14336,
+      "subdivisionLevel": 2
+    },
+    "headlight_classic": {
+      "url": "assets/models/hd/headlight_classic_hd.glb",
+      "label": "Serienscheinwerfer",
+      "vertices": 6441,
+      "triangles": 12544,
+      "subdivisionLevel": 2
+    },
+    "headlight_h4": {
+      "url": "assets/models/hd/headlight_h4_hd.glb",
+      "label": "H4-Scheinwerfer",
+      "vertices": 6591,
+      "triangles": 12736,
+      "subdivisionLevel": 2
+    },
+    "headlight_led": {
+      "url": "assets/models/hd/headlight_led_hd.glb",
+      "label": "LED-Scheinwerfer",
+      "vertices": 9762,
+      "triangles": 18944,
+      "subdivisionLevel": 2
+    },
+    "indicators_front": {
+      "url": "assets/models/hd/indicators_front_hd.glb",
+      "label": "Blinker vorn",
+      "vertices": 6642,
+      "triangles": 12800,
+      "subdivisionLevel": 2
+    },
+    "indicators_rear": {
+      "url": "assets/models/hd/indicators_rear_hd.glb",
+      "label": "Blinker hinten",
+      "vertices": 6642,
+      "triangles": 12800,
+      "subdivisionLevel": 2
+    },
+    "taillight": {
+      "url": "assets/models/hd/taillight_hd.glb",
+      "label": "Ruecklicht",
+      "vertices": 4361,
+      "triangles": 8448,
+      "subdivisionLevel": 2
+    },
+    "licenseplate": {
+      "url": "assets/models/hd/licenseplate_hd.glb",
+      "label": "Kennzeichen",
+      "vertices": 150,
+      "triangles": 192,
+      "subdivisionLevel": 2
+    },
+    "front_fender_classic": {
+      "url": "assets/models/hd/front_fender_classic_hd.glb",
+      "label": "Vorderradschutzblech Serie",
+      "vertices": 2192,
+      "triangles": 4352,
+      "subdivisionLevel": 2
+    },
+    "front_fender_enduro": {
+      "url": "assets/models/hd/front_fender_enduro_hd.glb",
+      "label": "Vorderradschutzblech Enduro",
+      "vertices": 1808,
+      "triangles": 3584,
+      "subdivisionLevel": 2
+    },
+    "rear_fender": {
+      "url": "assets/models/hd/rear_fender_hd.glb",
+      "label": "Hinterradschutzblech Serie",
+      "vertices": 2192,
+      "triangles": 4352,
+      "subdivisionLevel": 2
+    },
+    "rear_fender_short": {
+      "url": "assets/models/hd/rear_fender_short_hd.glb",
+      "label": "Hinterradschutzblech kurz",
+      "vertices": 1391,
+      "triangles": 2640,
+      "subdivisionLevel": 2
+    },
+    "luggage_rack": {
+      "url": "assets/models/hd/luggage_rack_hd.glb",
+      "label": "hoher klappbarer Gepaecktraeger",
+      "vertices": 2496,
+      "triangles": 3328,
+      "subdivisionLevel": 1
+    },
+    "frame_street": {
+      "url": "assets/models/hd/frame_street_hd.glb",
+      "label": "S51 B1-4 Hauptrahmen ohne Endurostreben",
+      "vertices": 5512,
+      "triangles": 8704,
+      "subdivisionLevel": 2
+    },
+    "frame_enduro": {
+      "url": "assets/models/hd/frame_enduro_hd.glb",
+      "label": "S51 Enduro Hauptrahmen mit Unterzugstreben",
+      "vertices": 6160,
+      "triangles": 9856,
+      "subdivisionLevel": 2
+    },
+    "wheel_road": {
+      "url": "assets/models/hd/wheel_road_hd.glb",
+      "label": "Strassenreifen",
+      "vertices": 18225,
+      "triangles": 35840,
+      "subdivisionLevel": 2
+    },
+    "wheel_classic": {
+      "url": "assets/models/hd/wheel_classic_hd.glb",
+      "label": "klassischer Reifen",
+      "vertices": 18225,
+      "triangles": 35840,
+      "subdivisionLevel": 2
+    },
+    "wheel_enduro": {
+      "url": "assets/models/hd/wheel_enduro_hd.glb",
+      "label": "Enduro-Stollenreifen",
+      "vertices": 18225,
+      "triangles": 35840,
+      "subdivisionLevel": 2
+    }
+  }
+}

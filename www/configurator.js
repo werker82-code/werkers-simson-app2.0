@@ -22,12 +22,53 @@
     light: "classic"
   };
 
+  const VARIANT_PRESETS = {
+    street: {
+      base: "street", frontFender: "chrome", rearFender: "series", tire: "road",
+      fork: "series", shock: "series", handlebar: "street", seat: "standard",
+      exhaust: "series"
+    },
+    enduro: {
+      base: "enduro", frontFender: "black", rearFender: "series", tire: "enduro",
+      fork: "enduro", shock: "series", handlebar: "enduro", seat: "standard",
+      exhaust: "enduro"
+    }
+  };
+
+  const WORKSHOP_PRESETS = [
+    {
+      id: "b14_original", title: "B1-4 Original", tag: "GRUNDMODELL",
+      description: "Straßenrahmen, tiefer Serienauspuff und hoher Gepäckträger.",
+      config: {...VARIANT_PRESETS.street, tankColor: "#8ba070", sideColor: "#8ba070", engine: "silver", light: "classic"}
+    },
+    {
+      id: "enduro_original", title: "Enduro Original", tag: "GRUNDMODELL",
+      description: "Enduro-Streben, Lenker +5 cm und hoher Auspuff mit Hitzeschutz.",
+      config: {...VARIANT_PRESETS.enduro, tankColor: "#8ba070", sideColor: "#8ba070", engine: "silver", light: "classic"}
+    },
+    {
+      id: "street_sport", title: "Street Sport", tag: "UMBAU",
+      description: "17-Zoll-Optik, Scheibenbremse, kurzer Auspuff und roter Lack.",
+      config: {...VARIANT_PRESETS.street, tankColor: "#8f2630", sideColor: "#161616", wheelSize: "17", brake: "disc", exhaust: "sport", seat: "sport"}
+    },
+    {
+      id: "enduro_touring", title: "Enduro Touring", tag: "UMBAU",
+      description: "Enduro-Basis mit grobem Reifen, langem Fahrwerk und LED-Optik.",
+      config: {...VARIANT_PRESETS.enduro, tankColor: "#c4a35a", sideColor: "#c4a35a", shock: "long", light: "led"}
+    },
+    {
+      id: "black_custom", title: "Black Custom", tag: "UMBAU",
+      description: "Schwarzer Lack, dunkle Felgen, Scheibenbremse und LED-Licht.",
+      config: {...VARIANT_PRESETS.street, tankColor: "#161616", sideColor: "#161616", rim: "black", brake: "disc", light: "led", exhaust: "sport"}
+    }
+  ];
+
   const META = {
     base: {
       title: "Grundmodell",
       groups: [{field: "base", label: "Ausführung", options: [
-        ["street","S51 Straße","seriennahe Straßenproportionen"],
-        ["enduro","S51 Enduro","höhere Front, Enduro-Details und robuste Optik"]
+        ["street","S51 B1-4","Straßenmodell mit tiefem Serienauspuff und Gepäckträger"],
+        ["enduro","S51 Enduro","ursprüngliches Modell mit 5 cm höherem Lenker, hohem Auspuff, Hitzeschutz und Gepäckträger"]
       ]}]
     },
     paint: {
@@ -117,7 +158,7 @@
       title: "Lenker & Cockpit",
       groups: [{field: "handlebar", label: "Lenker", options: [
         ["street","Straßenlenker","flach und klassisch"],
-        ["enduro","Endurolenker","höherer Lenker"],
+        ["enduro","Endurolenker","5 cm höher als der B1-4-Straßenlenker"],
         ["cross","Crossbar","Lenker mit Querstrebe"]
       ]}]
     },
@@ -178,6 +219,49 @@
       if(hit) return hit[1];
     }
     return value;
+  }
+
+  function configStatus(message){
+    const status = document.getElementById("configGarageStatus");
+    if(!status) return;
+    status.textContent = message;
+    status.classList.remove("hidden");
+  }
+
+  function presetMatches(preset){
+    return Object.entries(preset.config).every(([field,value]) => cfg[field] === value);
+  }
+
+  function renderPresets(){
+    const el = document.getElementById("configPresets");
+    if(!el) return;
+    el.innerHTML = WORKSHOP_PRESETS.map(preset => `<button class="configPreset ${presetMatches(preset)?"active":""}" onclick="configApplyPreset('${preset.id}')">
+      <small>${preset.tag}</small><b>${preset.title}</b><span>${preset.description}</span><i>${presetMatches(preset)?"Aktiv":"Laden →"}</i>
+    </button>`).join("");
+  }
+
+  function encodeConfig(value){
+    const bytes = new TextEncoder().encode(JSON.stringify(value));
+    let binary = "";
+    bytes.forEach(byte => binary += String.fromCharCode(byte));
+    return btoa(binary).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"");
+  }
+
+  function decodeConfig(value){
+    const normalized = value.replace(/-/g,"+").replace(/_/g,"/");
+    const binary = atob(normalized + "=".repeat((4-normalized.length%4)%4));
+    const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
+  function loadSharedConfig(){
+    const match = location.hash.match(/^#s51=([A-Za-z0-9_-]+)$/);
+    if(!match) return false;
+    try {
+      cfg = {...DEFAULT_CONFIG, ...decodeConfig(match[1])};
+      saveCurrent();
+      return true;
+    } catch (_) { return false; }
   }
 
   function renderCategoryNav(){
@@ -281,17 +365,42 @@
       ? `<path d="M331 188 L538 188 L533 213 L344 213 Z" fill="url(#seatGrad)" stroke="#0b0b0b" stroke-width="4"/>`
       : `<path d="M326 186 Q426 166 548 187 L545 211 Q445 219 338 211 Z" fill="url(#seatGrad)" stroke="#0b0b0b" stroke-width="4"/>`;
 
+    // The 16-inch wheel envelope maps 50 mm to roughly 14 SVG pixels here.
+    const enduroHandlebarRise = 14;
     const handlebar = cfg.handlebar === "enduro"
-      ? `<path d="M621 206 L648 147 L696 137 M648 147 L621 128" class="bar"/><line x1="651" y1="146" x2="689" y2="139" class="grip"/>`
+      ? `<path d="M621 206 L649 ${178-enduroHandlebarRise} L698 ${183-enduroHandlebarRise} M649 ${178-enduroHandlebarRise} L625 ${165-enduroHandlebarRise}" class="bar"/><line x1="660" y1="${180-enduroHandlebarRise}" x2="698" y2="${183-enduroHandlebarRise}" class="grip"/>`
       : cfg.handlebar === "cross"
       ? `<path d="M621 206 L646 164 L699 158" class="bar"/><line x1="640" y1="150" x2="691" y2="146" stroke="#8b8b89" stroke-width="5"/><line x1="652" y1="162" x2="691" y2="157" class="grip"/>`
       : `<path d="M621 206 L649 178 L698 183" class="bar"/><line x1="660" y1="180" x2="697" y2="183" class="grip"/>`;
 
     const exhaust = cfg.exhaust === "enduro"
-      ? `<path d="M468 324 C545 314 583 285 613 245 C642 208 685 211 735 236" class="exhaustPipe"/><path d="M724 224 L817 246" class="muffler"/><path d="M738 229 L808 246" stroke="#5f6262" stroke-width="3"/>`
+      ? `<g aria-label="Enduro-Auspuff hoch mit Hitzeschutz">
+          <path d="M503 315 C532 319 548 337 544 356 C541 374 522 384 505 379 C487 374 477 361 478 348 C479 337 468 328 453 324" class="exhaustPipe"/>
+          <path d="M459 311 L283 280 Q269 279 259 290 L257 309 Q266 320 281 319 L452 332 Q466 332 474 321 Z" fill="url(#chrome)" stroke="#5f6262" stroke-width="3"/>
+          <path d="M446 310 L292 288 Q279 287 271 295 L270 306 L445 325" fill="none" stroke="#6e7272" stroke-width="7" stroke-linecap="round"/>
+          <path d="M425 302 L297 288 Q285 287 277 294 L274 304 L409 319" fill="none" stroke="#242626" stroke-width="10" stroke-linecap="round"/>
+          <path d="M407 301 L294 290" stroke="#9da1a1" stroke-width="2" stroke-dasharray="12 7"/>
+          <ellipse cx="260" cy="299" rx="7" ry="16" fill="#4b4e4e" stroke="#d9dcdb" stroke-width="3"/>
+        </g>`
       : cfg.exhaust === "sport"
       ? `<path d="M470 329 C552 333 616 347 686 351" class="exhaustPipe"/><path d="M667 342 L756 352" class="muffler"/><path d="M681 344 L747 352" stroke="#5f6262" stroke-width="3"/>`
-      : `<path d="M470 330 C560 340 649 355 744 363" class="exhaustPipe"/><path d="M716 351 L835 368" class="muffler"/><path d="M733 355 L823 367" stroke="#5f6262" stroke-width="3"/>`;
+      : `<g aria-label="B1-4 Serienauspuff tief ohne Hitzeschutz">
+          <path d="M503 315 C532 319 548 338 544 357 C540 375 523 386 505 381 C487 377 478 365 479 353 C480 343 473 334 461 329" class="exhaustPipe"/>
+          <path d="M510 374 L474 371 Q462 370 451 365 L278 356 Q264 356 254 366 L254 383 Q265 391 279 388 L451 382 Q469 382 480 378 L510 386 Z" fill="url(#chrome)" stroke="#5f6262" stroke-width="3"/>
+          <path d="M455 368 L280 360" stroke="#f5f6f3" stroke-width="3" opacity=".65"/>
+          <ellipse cx="255" cy="374" rx="7" ry="17" fill="#4b4e4e" stroke="#d9dcdb" stroke-width="3"/>
+          <path d="M337 369 L326 336" stroke="#303232" stroke-width="5"/><circle cx="326" cy="334" r="5" fill="#2b2d2d"/>
+        </g>`;
+
+    const rearRack = `<g aria-label="hoher klappbarer Gepäckträger" fill="none" stroke="url(#chrome)" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M306 205 L306 132 Q306 116 291 116 Q276 116 276 132 L276 205" stroke-width="8"/>
+      <path d="M303 204 L250 204 Q238 204 237 215 Q237 226 250 226 L299 226" stroke-width="7"/>
+      <path d="M282 128 L299 128" stroke-width="4"/>
+      <path d="M297 205 L258 217" stroke-width="3" opacity=".8"/>
+      <circle cx="303" cy="205" r="6" fill="#8e9394" stroke="#252626" stroke-width="2"/>
+      <circle cx="276" cy="205" r="6" fill="#8e9394" stroke="#252626" stroke-width="2"/>
+      <path d="M272 208 L313 208 L316 218 L270 218 Z" fill="#1a1b1b" stroke="#111" stroke-width="2"/>
+    </g>`;
 
     const frontFenderY = frontY - wheelR + (isEnduro ? 25 : 13);
     const rearFenderY = rearY - wheelR + 20;
@@ -348,6 +457,8 @@
         <path d="${rearFenderPath}" fill="none" stroke="${rearFenderColor}" stroke-width="${cfg.rearFender==="short"?10:13}" stroke-linecap="round"/>
         <path d="M650 ${frontFenderY+18} Q706 ${frontFenderY-12} 765 ${frontFenderY+17}" fill="none" stroke="${fenderColor}" stroke-width="14" stroke-linecap="round"/>
 
+        ${rearRack}
+
         <path d="M338 225 C374 190 466 181 555 208 C567 213 571 225 565 237 L540 267 L365 265 L334 248 Z" fill="${cfg.tankColor}" stroke="#161616" stroke-width="5"/>
         <path d="M355 229 C394 203 470 198 539 214" fill="none" stroke="#fff" stroke-width="4" opacity=".18"/>
         <path d="M352 252 L543 252" stroke="#101010" stroke-width="2" opacity=".5"/>
@@ -397,33 +508,23 @@
         <g onclick="configSetCategory('paint')" class="hotspot"><circle cx="448" cy="219" r="15"/><text x="448" y="224">1</text></g>
         <g onclick="configSetCategory('wheels')" class="hotspot"><circle cx="710" cy="${frontY}" r="15"/><text x="710" y="${frontY+5}">2</text></g>
         <g onclick="configSetCategory('engine')" class="hotspot"><circle cx="468" cy="350" r="15"/><text x="468" y="355">3</text></g>
-        <g onclick="configSetCategory('exhaust')" class="hotspot"><circle cx="744" cy="356" r="15"/><text x="744" y="361">4</text></g>
+        <g onclick="configSetCategory('exhaust')" class="hotspot"><circle cx="${cfg.exhaust==="enduro"?354:350}" cy="${cfg.exhaust==="enduro"?300:374}" r="15"/><text x="${cfg.exhaust==="enduro"?354:350}" y="${cfg.exhaust==="enduro"?305:379}">4</text></g>
       </g>
 
       <text x="34" y="38" font-family="Arial" font-size="15" font-weight="700" letter-spacing="2">WERKERS S51 STUDIO · PHASE 2</text>
       <text x="34" y="63" font-family="Arial" font-size="12" fill="#65635e">${escapeHtml(optionLabel("base",cfg.base))} · ${cfg.wheelSize} Zoll · ${escapeHtml(optionLabel("wheelType",cfg.wheelType))}</text>
-      <text x="34" y="514" font-family="Arial" font-size="11" fill="#6e6b65">Realistischere 2D/3D-Hybridansicht · Hotspots 1–4 öffnen direkt die Baugruppe</text>
+      <text x="34" y="514" font-family="Arial" font-size="11" fill="#6e6b65">Interne Ersatzvorschau · der Konfigurator wird ausschließlich in 3D angezeigt</text>
     </svg>`;
   }
 
   function renderPreview(){
     const el = document.getElementById("configPreview");
     if(!el) return;
-    el.innerHTML = `
-      <div class="configViewToolbar">
-        <div>
-          <button class="${previewMode==="side"?"active":""}" onclick="configSetView('side')">Seite</button>
-          <button class="${previewMode==="three"?"active":""}" onclick="configSetView('three')">3/4</button>
-          <button class="${previewMode==="detail"?"active":""}" onclick="configSetView('detail')">Detail</button>
-        </div>
-        <div>
-          <button onclick="configZoom(-.1)">−</button>
-          <span>${Math.round(previewZoom*100)}%</span>
-          <button onclick="configZoom(.1)">+</button>
-        </div>
-      </div>
-      ${previewSvg()}
-      <div class="configHotspotLegend"><span><b>1</b> Lack</span><span><b>2</b> Räder</span><span><b>3</b> Motor</span><span><b>4</b> Auspuff</span></div>`;
+    el.innerHTML = `<div class="config3dOnlyPlaceholder" role="status">
+      <b>3D-Werkstatt wird vorbereitet</b>
+      <span>HD-Grundmodell und modulare Umbauansicht werden lokal geladen.</span>
+      <button class="btn black" onclick="window.S51ThreeD?.mount?.()">3D erneut laden</button>
+    </div>`;
   }
 
   function renderSummary(){
@@ -457,7 +558,7 @@
       : `<div class="note">Noch keine Konfiguration gespeichert.</div>`;
   }
 
-  function renderAll(){ renderCategoryNav(); renderOptions(); renderPreview(); renderSummary(); renderSaved(); }
+  function renderAll(){ renderPresets(); renderCategoryNav(); renderOptions(); renderPreview(); renderSummary(); renderSaved(); }
 
   window.configSetCategory = function(key){
     if(!META[key]) return;
@@ -468,31 +569,43 @@
     if(panel && window.innerWidth < 760) panel.scrollIntoView({behavior:"smooth",block:"start"});
   };
   window.configSelect = function(field,value){
-    cfg[field] = value;
+    if(field === "base" && VARIANT_PRESETS[value]) cfg = {...cfg, ...VARIANT_PRESETS[value]};
+    else cfg[field] = value;
     saveCurrent();
+    renderPresets();
     renderOptions();
     renderPreview();
     renderSummary();
   };
-  window.configSetView = function(mode){
-    if(!["side","three","detail"].includes(mode)) return;
-    previewMode = mode;
-    previewZoom = mode === "detail" ? 1.2 : 1;
-    renderPreview();
-  };
-  window.configZoom = function(delta){
-    previewZoom = Math.max(.8,Math.min(1.45,Math.round((previewZoom+delta)*10)/10));
-    renderPreview();
+  window.configApplyPreset = function(id){
+    const preset = WORKSHOP_PRESETS.find(item => item.id === id);
+    if(!preset) return;
+    cfg = {...DEFAULT_CONFIG, ...preset.config};
+    saveCurrent();
+    activeCategory = "base";
+    renderAll();
+    configStatus(`${preset.title} wurde geladen. Alle Baugruppen können weiter verändert werden.`);
   };
   window.configReset = function(){
     cfg = {...DEFAULT_CONFIG};
     saveCurrent();
     activeCategory = "base";
-    previewMode = "side";
-    previewZoom = 1;
     renderAll();
   };
   window.configMatchPaint = function(){ cfg.sideColor = cfg.tankColor; saveCurrent(); renderAll(); };
+  window.configShare = async function(){
+    const url = new URL(location.href);
+    url.hash = `s51=${encodeConfig(cfg)}`;
+    const shareData = {title:"Meine Simson S51 Konfiguration",text:`${optionLabel("base",cfg.base)} aus der Werkers Tuning-Werkstatt`,url:url.toString()};
+    try {
+      if(navigator.share) await navigator.share(shareData);
+      else if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(shareData.url);
+      else window.prompt("Konfigurationslink kopieren:",shareData.url);
+      configStatus("Der Konfigurationslink wurde zum Teilen bereitgestellt.");
+    } catch (error) {
+      if(error?.name !== "AbortError") window.prompt("Konfigurationslink kopieren:",shareData.url);
+    }
+  };
   window.configSave = function(){
     const input = document.getElementById("configName");
     const fallback = `S51 ${optionLabel("base",cfg.base)} ${new Date().toLocaleDateString("de-DE")}`;
@@ -536,10 +649,12 @@
     const eyebrow = section.querySelector(".pageHead .eyebrow");
     const intro = section.querySelector(".configIntro p");
     const badge = section.querySelector(".configBadge");
-    if(eyebrow) eyebrow.textContent = "S51 KONFIGURATOR · PHASE 2";
-    if(intro) intro.textContent = "Realistischere S51-Proportionen, austauschbare Räder, Schutzbleche, Bremsen, Fahrwerk und Detailansichten. Die echte GLB-3D-Schicht folgt als nächster Ausbau.";
-    if(badge) badge.textContent = "LIVE · DETAILANSICHT";
+    const shared = loadSharedConfig();
+    if(eyebrow) eyebrow.textContent = "S51 TUNING-WERKSTATT · FUNKTIONSPROBE";
+    if(intro) intro.textContent = "Der Konfigurator ist vollständig dreidimensional: 3D HD kontrolliert die beiden festen Grundmodelle, 3D modular zeigt frei kombinierbare Umbauten.";
+    if(badge) badge.textContent = "LIVE · OFFLINE · TEILBAR";
     renderAll();
+    if(shared) configStatus("Eine geteilte S51-Konfiguration wurde geladen.");
   }
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded",init); else init();
 })();

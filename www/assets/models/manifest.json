@@ -1,6 +1,8 @@
 {
-  "version": "visual-quality-1",
+  "version": "glb-5.0-hd-components-1",
   "components": {
+    "s51B14Hd": "assets/models/simson-s51-b1-4.glb",
+    "s51EnduroHd": "assets/models/simson-s51-enduro.glb",
     "tank": "assets/models/tank.glb",
     "sidecover": "assets/models/sidecover.glb",
     "engine": "assets/models/engine.glb",
@@ -38,7 +40,8 @@
     "licenseplate": "assets/models/licenseplate.glb",
     "frontFenderClassic": "assets/models/front_fender_classic.glb",
     "frontFenderEnduro": "assets/models/front_fender_enduro.glb",
-    "rearFender": "assets/models/rear_fender.glb"
+    "rearFender": "assets/models/rear_fender.glb",
+    "hdManifest": "assets/models/hd-components-manifest.json"
   },
   "detail": {
     "tank": "lofted S51 profile with flattened underside and knee recesses",
@@ -62,9 +65,9 @@
     "rearLighting": "separate taillight and license plate components"
   },
   "quality": {
-    "renderer": "GLB 4.5 Studio",
-    "lighting": "dual-key studio light with specular material response",
-    "presentation": "transparent WebGL over radial studio background with contact shadows",
-    "proportions": "larger wheel envelope and refined camera/stance"
+    "renderer": "shared Three.js GLB 5.0 renderer for reference and modular modes",
+    "modularGeometry": "independent HD GLBs for every selectable assembly",
+    "assembledTriangleBudget": "250000-400000 triangles depending on configuration",
+    "componentCount": 45
   }
 }

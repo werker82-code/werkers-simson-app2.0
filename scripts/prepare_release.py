@@ -15,12 +15,12 @@ ANDROID_ASSETS = ROOT / "android-store-project/app/src/main/assets"
 ANDROID_GRADLE = ROOT / "android-store-project/app/build.gradle"
 
 
-def load_release() -> dict:
+def load_release(version_override: str | None = None, build_override: int | None = None) -> dict:
     data = json.loads(VERSION_FILE.read_text(encoding="utf-8"))
-    version = str(data["version"]).strip()
-    build = int(data["build"])
+    version = str(version_override if version_override is not None else data["version"]).strip()
+    build = int(build_override if build_override is not None else data["build"])
     renderer = str(data.get("renderer", "")).strip()
-    if not re.fullmatch(r"\d+\.\d+\.\d+", version):
+    if not re.fullmatch(r"\d+\.\d+(?:\.\d+)?", version):
         raise SystemExit(f"Ungültige Version: {version}")
     if build < 1:
         raise SystemExit("Build muss > 0 sein")
@@ -68,7 +68,8 @@ def patch_service_worker(path: Path, release: dict) -> None:
     if not path.exists():
         return
     s = path.read_text(encoding="utf-8")
-    cache = f"ww-v{release['version'].replace('.', '-')}-b{release['build']}-glb4-5"
+    renderer_slug = re.sub(r"[^a-z0-9]+", "-", release.get("renderer", "").lower()).strip("-")
+    cache = f"ww-v{release['version'].replace('.', '-')}-b{release['build']}-{renderer_slug or 'renderer'}"
     s, n = re.subn(r'const C="[^"]+";', f'const C="{cache}";', s, count=1)
     if n != 1:
         raise RuntimeError(f"Cache-Konstante nicht gefunden: {path}")
@@ -119,9 +120,11 @@ def main() -> None:
     mode.add_argument("--web", action="store_true", help="Prepare canonical www bundle")
     mode.add_argument("--repo", action="store_true", help="Prepare www plus checked-in Android version metadata")
     mode.add_argument("--android", action="store_true", help="Prepare www and copy it into Android assets")
+    ap.add_argument("--version", help="Temporäre Release-Version, ohne app-version.json zu ändern")
+    ap.add_argument("--build", type=int, help="Temporäre Buildnummer, ohne app-version.json zu ändern")
     args = ap.parse_args()
 
-    release = load_release()
+    release = load_release(args.version, args.build)
     sync_web(release)
     if args.repo or args.android:
         patch_android_gradle(release)

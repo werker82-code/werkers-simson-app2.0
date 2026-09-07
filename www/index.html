@@ -2,8 +2,8 @@
 <div class="app"><header><button class="brand" onclick="nav('home')"><img src="assets/icon.svg"><span><b>WERKERS WERKSTATT</b><small>SIMSON KULT & TECHNIK · V3.9 · CONFIGURATOR</small></span></button><button class="searchBtn" onclick="openSearch()">⌕</button></header>
 <div id="overlay" class="overlay hidden"><div class="searchPanel"><div class="searchTop"><input id="globalSearch" placeholder="S51, Kupplung, Zündung …" oninput="doSearch()"><button onclick="closeSearch()">✕</button></div><div id="searchResults"></div></div></div>
 <main>
-<section id="home" class="view active"><article class="hero"><div class="shade"></div><div class="heroText"><span class="eyebrow lime">WERKERS WERKSTATT</span><h1>SIMSON<br>KULT & TECHNIK</h1><p>Modelle, Werkstattwissen, Diagnose und deine digitale Garage.</p><div><button class="btn light" onclick="nav('models')">Modelle</button><button class="btn ghost" onclick="nav('diagnose')">Diagnose</button></div></div></article>
-<div class="heading"><span class="eyebrow">SCHNELLSTART</span><h2>Werkzeuge für die Garage</h2></div><div class="dash"><button onclick="nav('s51')"><span>01</span><b>S51 Studio</b><small>Varianten, Farben & Konfigurator</small></button><button onclick="nav('diagnose')"><span>02</span><b>Fehlerdiagnose</b><small>Symptom → Prüfkette</small></button><button onclick="nav('garage')"><span>03</span><b>Meine Simson</b><small>Fahrzeuge & Wartungsbuch</small></button><button onclick="nav('techarchive')"><span>04</span><b>Technikarchiv</b><small>Fahrzeugdaten & Schaltpläne</small></button></div>
+<section id="home" class="view active"><article class="hero"><div class="shade"></div><div class="heroText"><span class="eyebrow lime">WERKERS WERKSTATT</span><h1>SIMSON<br>KULT & TECHNIK</h1><p>Modelle, Werkstattwissen, Diagnose und deine digitale Garage.</p><div><button class="btn light" onclick="nav('configurator')">3D-Konfigurator</button><button class="btn ghost" onclick="nav('models')">Modelle</button><button class="btn ghost" onclick="nav('diagnose')">Diagnose</button></div></div></article>
+<div class="heading"><span class="eyebrow">SCHNELLSTART</span><h2>Werkzeuge für die Garage</h2></div><div class="dash"><button onclick="nav('configurator')"><span>01</span><b>3D-Konfigurator</b><small>B1-4, Enduro & modulare HD-Werkstatt</small></button><button onclick="nav('diagnose')"><span>02</span><b>Fehlerdiagnose</b><small>Symptom → Prüfkette</small></button><button onclick="nav('garage')"><span>03</span><b>Meine Simson</b><small>Fahrzeuge & Wartungsbuch</small></button><button onclick="nav('techarchive')"><span>04</span><b>Technikarchiv</b><small>Fahrzeugdaten & Schaltpläne</small></button></div>
 <article class="spot"><div><span class="eyebrow lime">S51 TECHNIK-FOKUS</span><h2>Varianten direkt vergleichen</h2><p>Getriebe, Zündung, Ausstattung und typische Farbtöne.</p><button onclick="nav('s51')">S51 Studio öffnen →</button></div><div>S51</div></article>
 <div class="heading"><span class="eyebrow">SAMMLER</span><h2>Seltene Simsons</h2></div><div id="homeRare"></div><button class="wide" onclick="nav('rare')">Rangliste öffnen →</button></section>
 
@@ -20,13 +20,20 @@
 
 <section id="configurator" class="view">
   <div class="pageHead dark">
-    <span class="eyebrow lime">S51 KONFIGURATOR · PHASE 3</span>
-    <h1>Deine S51 zusammenstellen</h1>
-    <p>Bauteile auswählen, Vorschau sofort aktualisieren, Konfiguration speichern und in die Garage übernehmen.</p>
+    <span class="eyebrow lime">S51 TUNING-WERKSTATT · FUNKTIONSPROBE</span>
+    <h1>Deine S51 virtuell aufbauen</h1>
+    <p>Grundmodell wählen, Baugruppen tauschen, Farben abstimmen und die Konfiguration speichern oder teilen.</p>
   </div>
   <div class="configIntro">
-    <p>Der Konfigurator bietet jetzt zusätzlich eine echte, offline-fähige WebGL-3D-Ansicht. Räder, Tank/Seitendeckel, Motor und Auspuff werden als getrennte 3D-Komponenten gerendert; die 2D-Hybridansicht bleibt als schnelle Alternative verfügbar.</p>
+    <p>Der Konfigurator arbeitet vollständig in 3D. Nutze das HD-Referenzmodell für die Grundmodelle oder die modulare 3D-Werkstatt für frei kombinierte Umbauten.</p>
     <span class="configBadge">LIVE · OFFLINE</span>
+  </div>
+  <div class="workshopFlow" aria-label="Arbeitsablauf">
+    <span><b>1</b> Grundmodell</span><i>→</i><span><b>2</b> Schnellstil</span><i>→</i><span><b>3</b> Baugruppen</span><i>→</i><span><b>4</b> Speichern</span>
+  </div>
+  <div class="workshopPresets">
+    <div class="workshopPresetsHead"><div><span class="eyebrow">SCHNELLSTART</span><h2>Werkstatt-Stil auswählen</h2></div><small>Die Originalstile laden exakt unsere beiden festgelegten Grundmodelle.</small></div>
+    <div id="configPresets" class="configPresets"></div>
   </div>
   <div class="configShell">
     <div class="configStage">
@@ -50,6 +57,7 @@
     <div class="configSaveRow">
       <input id="configName" placeholder="Name, z. B. S51 Enduro Grün">
       <button class="btn black" onclick="configSave()">Konfiguration speichern</button>
+      <button class="btn" onclick="configShare()">Link teilen</button>
     </div>
     <div id="configSaved"></div>
   </div>

@@ -1,255 +1,583 @@
 (() => {
-  const KEY = 'ww_s51_config_current_v1';
-  let active = false, host = null, canvas = null, gl = null, program = null;
-  let yaw = -0.52, pitch = -0.075, distance = 8.60, dragging = false, px = 0, py = 0, raf = 0;
-  let meshes = {}, wrapped = false, pinchDist = 0, glbReady = false;
-
-  const vs = `attribute vec3 aPos;attribute vec3 aNormal;uniform mat4 uMVP;uniform mat4 uModel;varying vec3 vN;varying vec3 vP;void main(){vec4 p=uModel*vec4(aPos,1.0);vP=p.xyz;gl_Position=uMVP*vec4(aPos,1.0);vN=mat3(uModel)*aNormal;}`;
-  const fs = `precision mediump float;varying vec3 vN;varying vec3 vP;uniform vec3 uColor;uniform float uSpec;uniform float uRough;uniform float uEmit;uniform float uAlpha;void main(){vec3 n=normalize(vN);vec3 l1=normalize(vec3(.38,.86,.42));vec3 l2=normalize(vec3(-.72,.32,.62));vec3 v=normalize(vec3(0.0,1.35,7.0)-vP);float d1=max(dot(n,l1),0.0);float d2=max(dot(n,l2),0.0);vec3 h1=normalize(l1+v);vec3 h2=normalize(l2+v);float sh=mix(88.0,14.0,clamp(uRough,0.0,1.0));float sp1=pow(max(dot(n,h1),0.0),sh)*uSpec;float sp2=pow(max(dot(n,h2),0.0),max(8.0,sh*.55))*uSpec*.34;float hemi=.24+.16*(n.y*.5+.5);float rim=pow(1.0-abs(dot(n,v)),2.4)*.08;vec3 col=uColor*(hemi+d1*.64+d2*.20)+vec3(sp1*.88+sp2)+uColor*uEmit+vec3(rim);col=pow(max(col,vec3(0.0)),vec3(.92));gl_FragColor=vec4(col,uAlpha);}`;
-
-  const M = {
-    id(){return [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]},
-    mul(a,b){const o=new Array(16).fill(0);for(let r=0;r<4;r++)for(let c=0;c<4;c++)for(let k=0;k<4;k++)o[c*4+r]+=a[k*4+r]*b[c*4+k];return o},
-    t(x,y,z){let m=this.id();m[12]=x;m[13]=y;m[14]=z;return m},
-    s(x,y,z){let m=this.id();m[0]=x;m[5]=y;m[10]=z;return m},
-    rx(a){let c=Math.cos(a),s=Math.sin(a),m=this.id();m[5]=c;m[6]=s;m[9]=-s;m[10]=c;return m},
-    ry(a){let c=Math.cos(a),s=Math.sin(a),m=this.id();m[0]=c;m[2]=-s;m[8]=s;m[10]=c;return m},
-    rz(a){let c=Math.cos(a),s=Math.sin(a),m=this.id();m[0]=c;m[1]=s;m[4]=-s;m[5]=c;return m},
-    p(fov,asp,n,f){let q=1/Math.tan(fov/2),nf=1/(n-f);return [q/asp,0,0,0,0,q,0,0,0,0,(f+n)*nf,-1,0,0,2*f*n*nf,0]}
+  const CONFIG_KEY = 'ww_s51_config_current_v1';
+  const THREE_URL = './assets/vendor/three/three.module.min.js';
+  const LOADER_URL = './assets/vendor/three/GLTFLoader.js';
+  const ROOM_URL = './assets/vendor/three/RoomEnvironment.js';
+  const MODEL_VARIANTS = {
+    street: {
+      url: 'assets/models/simson-s51-b1-4.glb',
+      title: 'S51 B1-4', modelName: 'Simson_S51_B1_4_HD',
+      originalNote: 'B1-4-Originalgeometrie · tiefer Auspuff ohne Hitzeschutz · Gepäckträger',
+      reference: {
+        base: 'street', frontFender: 'chrome', rearFender: 'series', wheelSize: '16',
+        wheelType: 'spokes', rim: 'aluminium', tire: 'road', brake: 'drum', fork: 'series',
+        shock: 'series', handlebar: 'street', seat: 'standard', exhaust: 'series', light: 'classic'
+      }
+    },
+    enduro: {
+      url: 'assets/models/simson-s51-enduro.glb',
+      title: 'S51 ENDURO', modelName: 'Simson_S51_Enduro_HD',
+      originalNote: 'Enduro-Originalgeometrie · Lenker +5 cm · hoher Auspuff mit Hitzeschutz · Gepäckträger',
+      reference: {
+        base: 'enduro', frontFender: 'black', rearFender: 'series', wheelSize: '16',
+        wheelType: 'spokes', rim: 'aluminium', tire: 'enduro', brake: 'drum', fork: 'enduro',
+        shock: 'series', handlebar: 'enduro', seat: 'standard', exhaust: 'enduro', light: 'classic'
+      }
+    }
+  };
+  const HD_COMPONENT_ROOT = 'assets/models/hd/';
+  const HD_COMPONENT_FILES = {
+    tank: 'tank_hd.glb', sidecover: 'sidecover_hd.glb', wheel: 'wheel_hd.glb',
+    wheel_road: 'wheel_road_hd.glb', wheel_classic: 'wheel_classic_hd.glb', wheel_enduro: 'wheel_enduro_hd.glb', rim: 'rim_hd.glb',
+    spokes: 'spokes_hd.glb', star5: 'star5_hd.glb', star10: 'star10_hd.glb', hub: 'hub_hd.glb',
+    brakedisc: 'brakedisc_hd.glb', engine: 'engine_hd.glb', engine_fins: 'engine_fins_hd.glb',
+    carb: 'carb_hd.glb', frame: 'frame_hd.glb', frame_street: 'frame_street_hd.glb',
+    frame_enduro: 'frame_enduro_hd.glb', swingarm: 'swingarm_hd.glb', fork: 'fork_hd.glb',
+    shocks: 'shocks_hd.glb', shocks_long: 'shocks_long_hd.glb', exhaust_series: 'exhaust_series_hd.glb',
+    exhaust_enduro: 'exhaust_enduro_hd.glb', exhaust_sport: 'exhaust_sport_hd.glb',
+    seat_standard: 'seat_standard_hd.glb', seat_flat: 'seat_flat_hd.glb', seat_sport: 'seat_sport_hd.glb',
+    handlebar_street: 'handlebar_street_hd.glb', handlebar_enduro: 'handlebar_enduro_hd.glb',
+    handlebar_cross: 'handlebar_cross_hd.glb', cockpit: 'cockpit_hd.glb', headlight_shell: 'headlight_shell_hd.glb',
+    headlight_classic: 'headlight_classic_hd.glb', headlight_h4: 'headlight_h4_hd.glb',
+    headlight_led: 'headlight_led_hd.glb', indicators_front: 'indicators_front_hd.glb',
+    indicators_rear: 'indicators_rear_hd.glb', taillight: 'taillight_hd.glb', licenseplate: 'licenseplate_hd.glb',
+    front_fender_classic: 'front_fender_classic_hd.glb', front_fender_enduro: 'front_fender_enduro_hd.glb',
+    rear_fender: 'rear_fender_hd.glb', rear_fender_short: 'rear_fender_short_hd.glb',
+    luggage_rack: 'luggage_rack_hd.glb'
   };
 
-  function cfg(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(_){return {}}}
-  function hex(h){h=(h||'#777').replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');return [parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255]}
-  function shader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s}
-  function mkProgram(){const p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,vs));gl.attachShader(p,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
-  function mesh(pos,nor,idx){const p=gl.createBuffer(),n=gl.createBuffer(),i=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,p);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pos),gl.STATIC_DRAW);gl.bindBuffer(gl.ARRAY_BUFFER,n);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(nor),gl.STATIC_DRAW);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,i);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(idx),gl.STATIC_DRAW);return {p,n,i,count:idx.length}}
+  let runtimePromise = null;
+  let THREE = null, GLTFLoader = null, RoomEnvironment = null;
+  let active = false, host = null, canvas = null, renderer = null, scene = null, camera = null;
+  let model = null, environment = null, raf = 0, generation = 0, wrapped = false, loadedVariant = null;
+  let viewMode = 'hd';
+  let yaw = -0.58, pitch = 0.055, distance = 7.65;
+  const target = { x: 0, y: -0.18, z: 0 };
+  const pointers = new Map();
+  let lastPointer = null, lastPinch = 0;
 
-  function cube(){const p=[-1,-1,1,1,-1,1,1,1,1,-1,1,1,1,-1,-1,-1,-1,-1,-1,1,-1,1,1,-1,-1,1,1,1,1,1,1,1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,1,-1,1,-1,-1,1,1,-1,1,1,-1,-1,1,1,-1,1,1,1,-1,-1,-1,-1,-1,1,-1,1,1,-1,1,-1];const n=[0,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0];let idx=[];for(let f=0;f<6;f++){let o=f*4;idx.push(o,o+1,o+2,o,o+2,o+3)}return mesh(p,n,idx)}
-  function uvSphere(seg=28,ring=16){let p=[],n=[],idx=[];for(let y=0;y<=ring;y++){let v=y/ring,ph=v*Math.PI;for(let x=0;x<=seg;x++){let u=x/seg,th=u*Math.PI*2,s=Math.sin(ph),nx=Math.cos(th)*s,ny=Math.cos(ph),nz=Math.sin(th)*s;p.push(nx,ny,nz);n.push(nx,ny,nz)}}for(let y=0;y<ring;y++)for(let x=0;x<seg;x++){let a=y*(seg+1)+x,b=a+seg+1;idx.push(a,b,a+1,b,b+1,a+1)}return mesh(p,n,idx)}
-  function torus(rs=.72,rt=.14,seg=36,tube=14){let p=[],n=[],idx=[];for(let i=0;i<=seg;i++){let u=i/seg*Math.PI*2,cu=Math.cos(u),su=Math.sin(u);for(let j=0;j<=tube;j++){let v=j/tube*Math.PI*2,cv=Math.cos(v),sv=Math.sin(v),x=(rs+rt*cv)*cu,y=(rs+rt*cv)*su,z=rt*sv;p.push(x,y,z);n.push(cv*cu,cv*su,sv)}}for(let i=0;i<seg;i++)for(let j=0;j<tube;j++){let a=i*(tube+1)+j,b=a+tube+1;idx.push(a,b,a+1,b,b+1,a+1)}return mesh(p,n,idx)}
-  function cyl(seg=26){let p=[],n=[],idx=[];for(let i=0;i<=seg;i++){let a=i/seg*Math.PI*2,c=Math.cos(a),s=Math.sin(a);p.push(c,-1,s,c,1,s);n.push(c,0,s,c,0,s)}for(let i=0;i<seg;i++){let a=i*2,b=a+2;idx.push(a,a+1,b,a+1,b+1,b)}return mesh(p,n,idx)}
-  function wedge(){const p=[-1,-1,1,1,-1,1,.65,1,1,-.65,1,1,-1,-1,-1,1,-1,-1,.65,1,-1,-.65,1,-1];const n=[];for(let i=0;i<8;i++)n.push(0,0,i<4?1:-1);const idx=[0,1,2,0,2,3,4,6,5,4,7,6,0,4,5,0,5,1,3,2,6,3,6,7,1,5,6,1,6,2,0,3,7,0,7,4];return mesh(p,n,idx)}
-  function initMeshes(){meshes={cube:cube(),sphere:uvSphere(),torus:torus(),cyl:cyl(),wedge:wedge()}}
-  async function loadGLBMesh(url,key){
-    try{
-      const buf=await fetch(url).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer()});
-      const dv=new DataView(buf);if(dv.getUint32(0,true)!==0x46546c67)throw Error('not glb');
-      let off=12,jsonDoc=null,bin=null;
-      while(off<buf.byteLength){const len=dv.getUint32(off,true),typ=dv.getUint32(off+4,true);off+=8;const part=buf.slice(off,off+len);off+=len;if(typ===0x4E4F534A)jsonDoc=JSON.parse(new TextDecoder().decode(part));else if(typ===0x004E4942)bin=part}
-      const prim=jsonDoc.meshes[0].primitives[0],acc=jsonDoc.accessors,bv=jsonDoc.bufferViews;
-      function read(ai){const a=acc[ai],v=bv[a.bufferView],start=(v.byteOffset||0)+(a.byteOffset||0),count=a.count,comps=a.type==='VEC3'?3:1;let arr;if(a.componentType===5126)arr=new Float32Array(bin,start,count*comps);else if(a.componentType===5123)arr=new Uint16Array(bin,start,count*comps);else throw Error('component');return Array.from(arr)}
-      meshes[key]=mesh(read(prim.attributes.POSITION),read(prim.attributes.NORMAL),read(prim.indices));
-      return true;
-    }catch(e){console.warn('GLB fallback',key,e);return false}
-  }
-  async function loadGLBComponents(){
-    const root='assets/models/';
-    const defs=[
-      ['tank.glb','glbTank'],['sidecover.glb','glbSidecover'],
-      ['engine.glb','glbEngine'],['engine_fins.glb','glbEngineFins'],['carb.glb','glbCarb'],
-      ['wheel.glb','glbWheel'],['rim.glb','glbRim'],['spokes.glb','glbSpokes'],
-      ['star5.glb','glbStar5'],['star10.glb','glbStar10'],['hub.glb','glbHub'],['brakedisc.glb','glbBrakeDisc'],
-      ['frame.glb','glbFrame'],['swingarm.glb','glbSwingarm'],['fork.glb','glbFork'],
-      ['shocks.glb','glbShocks'],['shocks_long.glb','glbShocksLong'],
-      ['exhaust_series.glb','glbExhaustSeries'],['exhaust_enduro.glb','glbExhaustEnduro'],['exhaust_sport.glb','glbExhaustSport'],
-      ['seat_standard.glb','glbSeatStandard'],['seat_flat.glb','glbSeatFlat'],['seat_sport.glb','glbSeatSport'],
-      ['handlebar_street.glb','glbHandlebarStreet'],['handlebar_enduro.glb','glbHandlebarEnduro'],['handlebar_cross.glb','glbHandlebarCross'],['cockpit.glb','glbCockpit'],
-      ['headlight_shell.glb','glbHeadlightShell'],['headlight_classic.glb','glbHeadlightClassic'],['headlight_h4.glb','glbHeadlightH4'],['headlight_led.glb','glbHeadlightLed'],
-      ['indicators_front.glb','glbIndicatorsFront'],['indicators_rear.glb','glbIndicatorsRear'],['taillight.glb','glbTaillight'],['licenseplate.glb','glbLicenseplate'],
-      ['front_fender_classic.glb','glbFrontFenderClassic'],['front_fender_enduro.glb','glbFrontFenderEnduro'],['rear_fender.glb','glbRearFender']
-    ];
-    const ok=await Promise.all(defs.map(([file,key])=>loadGLBMesh(root+file,key)));
-    glbReady=ok.some(Boolean);
+  function config() {
+    try { return JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}'); }
+    catch (_) { return {}; }
   }
 
-  function materialFor(meshName,color){const k=(meshName||'').toLowerCase();let m={spec:.16,rough:.58,emit:0,alpha:1};if(k.includes('tank')||k.includes('sidecover'))m={spec:.52,rough:.22,emit:0,alpha:1};if(k.includes('wheel'))m={spec:.07,rough:.86,emit:0,alpha:1};if(k.includes('rim')||k.includes('spokes')||k.includes('hub')||k.includes('brakedisc'))m={spec:.88,rough:.12,emit:0,alpha:1};if(k.includes('engine')||k.includes('fork')||k.includes('exhaust')||k.includes('handlebar'))m={spec:.66,rough:.24,emit:0,alpha:1};if(k.includes('frame')||k.includes('swingarm'))m={spec:.24,rough:.48,emit:0,alpha:1};if(k.includes('headlight'))m={spec:.42,rough:.20,emit:.22,alpha:1};if(k.includes('taillight')||k.includes('indicator'))m={spec:.32,rough:.28,emit:.18,alpha:1};return m}
-  function draw(meshName,model,color,vp,override){const me=meshes[meshName];if(!me)return;const mvp=M.mul(vp,model),mat=Object.assign(materialFor(meshName,color),override||{});gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,new Float32Array(mvp));gl.uniformMatrix4fv(gl.getUniformLocation(program,'uModel'),false,new Float32Array(model));gl.uniform3fv(gl.getUniformLocation(program,'uColor'),new Float32Array(color));gl.uniform1f(gl.getUniformLocation(program,'uSpec'),mat.spec);gl.uniform1f(gl.getUniformLocation(program,'uRough'),mat.rough);gl.uniform1f(gl.getUniformLocation(program,'uEmit'),mat.emit);gl.uniform1f(gl.getUniformLocation(program,'uAlpha'),mat.alpha);const ap=gl.getAttribLocation(program,'aPos'),an=gl.getAttribLocation(program,'aNormal');gl.bindBuffer(gl.ARRAY_BUFFER,me.p);gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ARRAY_BUFFER,me.n);gl.enableVertexAttribArray(an);gl.vertexAttribPointer(an,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,me.i);gl.drawElements(gl.TRIANGLES,me.count,gl.UNSIGNED_SHORT,0)}
-  function xform(t=[0,0,0],s=[1,1,1],r=[0,0,0]){return M.mul(M.t(...t),M.mul(M.rz(r[2]),M.mul(M.ry(r[1]),M.mul(M.rx(r[0]),M.s(...s)))))}
-  function tubeBetween(a,b,r=.07){const dx=b[0]-a[0],dy=b[1]-a[1],dz=b[2]-a[2],len=Math.hypot(dx,dy,dz),mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,mz=(a[2]+b[2])/2;const yaw=Math.atan2(dx,dz),pitch=Math.atan2(Math.hypot(dx,dz),dy);return xform([mx,my,mz],[r,len/2,r],[pitch,yaw,0])}
-  function axleModel(x,y,z,r=.16,w=.20){return xform([x,y,z],[r,w,r],[Math.PI/2,0,0])}
-
-  function drawWheel(cx,cy,wr,front,c,vp,chrome,dark){
-    const tire=[.025,.026,.027], rim=c.rim==='black'?[.07,.075,.08]:c.rim==='polished'?[.88,.90,.90]:[.65,.67,.68];
-    const sc=wr/.91;
-    if(meshes.glbWheel)draw('glbWheel',xform([cx,cy,0],[sc,sc,sc]),tire,vp);else draw('torus',xform([cx,cy,0],[wr,wr,wr]),tire,vp);
-    if(meshes.glbRim)draw('glbRim',xform([cx,cy,0],[sc,sc,sc]),rim,vp);else draw('torus',xform([cx,cy,0],[wr*.79,wr*.79,wr*.79]),rim,vp);
-    if(c.tire==='enduro'){for(let i=0;i<24;i++){const a=i*Math.PI*2/24,x=cx+Math.cos(a)*wr*.91,y=cy+Math.sin(a)*wr*.91;draw('cube',xform([x,y,0],[.046,.090,.19],[0,0,a]),[.03,.03,.03],vp)}}
-    const type=c.wheelType||'spokes';
-    if(type==='spokes'){
-      if(meshes.glbSpokes)draw('glbSpokes',xform([cx,cy,0],[sc,sc,sc]),chrome,vp);
-      else for(let i=0;i<20;i++){const a=i*Math.PI*2/20,b=a+.11,rr=wr*.64;draw('cyl',tubeBetween([cx+Math.cos(a)*wr*.18,cy+Math.sin(a)*wr*.18,-.07],[cx+Math.cos(b)*rr,cy+Math.sin(b)*rr,.07],.013),chrome,vp);draw('cyl',tubeBetween([cx+Math.cos(a)*wr*.18,cy+Math.sin(a)*wr*.18,.07],[cx+Math.cos(b)*rr,cy+Math.sin(b)*rr,-.07],.013),chrome,vp)}
-    }else if(type==='star5'){
-      if(meshes.glbStar5)draw('glbStar5',xform([cx,cy,0],[sc,sc,sc]),rim,vp);
-      else for(let i=0;i<5;i++){const a=i*Math.PI*2/5,rr=wr*.62;draw('cyl',tubeBetween([cx,cy,0],[cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,0],.072),rim,vp)}
-    }else{
-      if(meshes.glbStar10)draw('glbStar10',xform([cx,cy,0],[sc,sc,sc]),rim,vp);
-      else for(let i=0;i<10;i++){const a=i*Math.PI*2/10,rr=wr*.62;draw('cyl',tubeBetween([cx,cy,0],[cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,0],.047),rim,vp)}
-    }
-    if(meshes.glbHub)draw('glbHub',xform([cx,cy,0],[sc,sc,sc]),chrome,vp);else{draw('cyl',axleModel(cx,cy,0,.13,.22),chrome,vp);draw('cyl',axleModel(cx,cy,-.05,.24,.05),[.40,.42,.42],vp)}
-    if(front&&c.brake==='disc'){
-      if(meshes.glbBrakeDisc)draw('glbBrakeDisc',xform([cx,cy,-.16],[sc,sc,sc]),[.68,.70,.70],vp);else draw('cyl',axleModel(cx,cy,-.16,wr*.38,.018),[.67,.69,.69],vp);
-      draw('cube',xform([cx+wr*.31,cy-.03,-.24],[.105,.19,.095],[0,0,-.12]),[.10,.10,.10],vp);
-      draw('cyl',tubeBetween([cx+wr*.31,cy+.14,-.24],[1.54,.63,-.26],.018),dark,vp);
-    }else if(front){draw('cyl',axleModel(cx,cy,-.02,.23,.16),[.49,.51,.51],vp)}
-    else{draw('cube',xform([cx-.18,cy-.03,.13],[.08,.18,.08]),dark,vp)}
+  function variantForConfig(value = config()) {
+    return value.base === 'enduro' ? 'enduro' : 'street';
   }
 
-  function drawEngine(c,vp,metal,dark,chrome){
-    const fin=c.engine==='black'?[.16,.17,.17]:[.39,.41,.41], cover=c.engine==='polished'?[.90,.91,.90]:metal, alloy=[.58,.60,.60];
-    const base=xform([.02,-.57,0]);
-    if(meshes.glbEngine)draw('glbEngine',base,metal,vp);else draw('sphere',xform([.02,-.57,0],[.61,.45,.47]),metal,vp);
-    if(meshes.glbEngineFins)draw('glbEngineFins',base,fin,vp);else{
-      for(let i=0;i<9;i++)draw('cube',xform([.025,-.13+i*.068,0],[.405,.020,.395]),fin,vp);
-      for(let i=0;i<5;i++)draw('cube',xform([.025,.43+i*.052,0],[.47-.025*i,.017,.43-.018*i]),fin,vp);
-    }
-    if(meshes.glbCarb)draw('glbCarb',base,alloy,vp);else{
-      draw('cube',xform([-.60,.15,.30],[.17,.20,.14],[0,0,-.04]),alloy,vp);
-      draw('sphere',xform([-.60,-.03,.30],[.17,.09,.14]),alloy,vp);
-    }
-    draw('cyl',tubeBetween([.03,.78,0],[.04,.95,0],.038),[.85,.85,.81],vp);
-    draw('cube',xform([.04,.975,0],[.065,.040,.055]),dark,vp);
-    draw('cyl',tubeBetween([.04,1.01,0],[-.12,1.13,.16],.018),dark,vp);
-    draw('cyl',tubeBetween([-.59,.36,.30],[-.45,.82,.24],.010),dark,vp);
-    draw('cyl',tubeBetween([-.70,.28,.29],[-.55,.67,.32],.012),[.30,.36,.24],vp);
-    draw('cyl',tubeBetween([.38,-.80,-.37],[.85,-.95,-.37],.034),chrome,vp);
-    draw('cube',xform([.91,-.98,-.37],[.18,.035,.08],[0,0,-.10]),dark,vp);
-    draw('cyl',tubeBetween([-.34,-.73,-.25],[-.74,-.91,-.25],.034),chrome,vp);
-    draw('cube',xform([-.80,-.94,-.25],[.18,.035,.08]),dark,vp);
-    draw('cyl',tubeBetween([.46,-.42,.30],[.78,-.29,.30],.045),dark,vp);
-    draw('sphere',xform([.83,-.27,.30],[.09,.09,.09]),dark,vp);
+  function ensureRuntime() {
+    if (!runtimePromise) runtimePromise = Promise.all([
+      import(THREE_URL), import(LOADER_URL), import(ROOM_URL)
+    ]).then(([threeModule, loaderModule, roomModule]) => {
+      THREE = threeModule;
+      GLTFLoader = loaderModule.GLTFLoader;
+      RoomEnvironment = roomModule.RoomEnvironment;
+    });
+    return runtimePromise;
   }
 
-  function drawTankAndBody(c,vp,paint,side,dark,chrome,enduro){
-    if(meshes.glbTank)draw('glbTank',xform([-.17,.78,0],[1,1,1],[0,0,-.035]),paint,vp);else{
-      draw('sphere',xform([-.17,.78,0],[.91,.34,.405],[0,0,-.035]),paint,vp);
-      draw('sphere',xform([.44,.77,0],[.43,.30,.385],[0,0,-.13]),paint,vp);
-      draw('wedge',xform([-.72,.73,0],[.34,.20,.36],[0,0,.09]),paint,vp);
-    }
-    draw('cyl',xform([-.28,1.11,0],[.11,.025,.11],[0,0,Math.PI/2]),chrome,vp);
-    draw('sphere',xform([-.08,.70,-.39],[.38,.14,.045],[0,0,-.04]),dark,vp);
-    draw('sphere',xform([-.08,.70,.39],[.38,.14,.045],[0,0,-.04]),dark,vp);
-    if(meshes.glbSidecover)draw('glbSidecover',xform([-.28,.02,-.31],[1,1,1],[0,0,-.10]),side,vp);else draw('wedge',xform([-.28,.02,-.31],[.55,.36,.055],[0,0,-.10]),side,vp);
-    if(meshes.glbSidecover)draw('glbSidecover',xform([-.28,.02,.31],[1,1,1],[0,0,-.10]),side,vp);else draw('wedge',xform([-.28,.02,.31],[.55,.36,.055],[0,0,-.10]),side,vp);
-    const seatType=c.seat||'standard', seatMesh=seatType==='flat'?'glbSeatFlat':seatType==='sport'?'glbSeatSport':'glbSeatStandard';
-    if(meshes[seatMesh])draw(seatMesh,xform(),dark,vp);else draw('wedge',xform([-.62,1.20,0],[1.03,.15,.35],[0,0,.018]),dark,vp);
-    draw('cyl',tubeBetween([-1.55,1.14,-.31],[-1.88,.93,-.31],.026),chrome,vp);draw('cyl',tubeBetween([-1.55,1.14,.31],[-1.88,.93,.31],.026),chrome,vp);
-    if(enduro)draw('cube',xform([-.76,.94,-.40],[.34,.065,.04],[0,0,.02]),dark,vp);
-    draw('cyl',tubeBetween([-.98,.53,-.31],[-.98,.14,-.31],.025),chrome,vp);
+  function html(variant) {
+    const meta = MODEL_VARIANTS[variant];
+    const modular = viewMode === 'modular';
+    return `<div class="config3dTop">
+      <b id="config3dModelTitle">${meta.title} · ${modular ? 'MODULARE HD-WERKSTATT' : 'HD-REFERENZMODELL'}</b>
+      <span>Ziehen = drehen · Mausrad/Pinch = zoomen</span>
+      <div class="config3dModeSwitch" aria-label="3D-Modus">
+        <button class="${modular ? '' : 'active'}" onclick="window.S51ThreeD.setMode('hd')">3D HD</button>
+        <button class="${modular ? 'active' : ''}" onclick="window.S51ThreeD.setMode('modular')">3D modular</button>
+      </div>
+    </div>
+    <div class="config3dCamera">
+      <button onclick="window.S51ThreeD.camera('side')">Seite</button>
+      <button onclick="window.S51ThreeD.camera('three')">3/4</button>
+      <button onclick="window.S51ThreeD.camera('front')">Front</button>
+      <button onclick="window.S51ThreeD.camera('rear')">Heck</button>
+      <button onclick="window.S51ThreeD.camera('reset')">Ansicht zurücksetzen</button>
+    </div>
+    <div class="config3dStage">
+      <canvas id="config3dCanvas" aria-label="Drehbare hochauflösende 3D-Vorschau der Simson ${meta.title}"></canvas>
+      <div id="config3dLoad" class="config3dLoad" role="status"><b>${modular ? 'HD-Baugruppen werden geladen' : 'HD-Modell wird geladen'}</b><span>0 %</span></div>
+    </div>
+    <div class="config3dFoot"><span id="config3dVariantNote">${modular ? 'Modulare Werkstatt auf derselben HD-Grundgeometrie' : meta.originalNote}</span><b id="config3dModelTag">GLB 5.0 · ${meta.title} · ${modular ? 'MODULAR HD' : 'HD'}</b></div>`;
   }
 
-  function drawCockpit(c,vp,dark,chrome){
-    let barType=c.handlebar||c.bar||'street';
-    if(c.base==='enduro'&&barType==='street')barType='enduro';
-    const barMesh=barType==='enduro'?'glbHandlebarEnduro':barType==='cross'?'glbHandlebarCross':'glbHandlebarStreet';
-    const barColor=barType==='cross'?dark:chrome;
-    if(meshes[barMesh])draw(barMesh,xform(),barColor,vp);else{
-      const high=barType==='enduro',barY=high?1.80:1.60,barX=1.60;
-      draw('cyl',tubeBetween([1.50,.82,0],[barX,barY-.08,0],.034),chrome,vp);
-      draw('cyl',tubeBetween([barX,barY,0],[barX,barY+.02,.58],.034),chrome,vp);draw('cyl',tubeBetween([barX,barY,0],[barX,barY+.02,-.58],.034),chrome,vp);
-    }
-    if(meshes.glbCockpit)draw('glbCockpit',xform(),dark,vp);else draw('cyl',xform([1.53,1.36,-.055],[.195,.060,.195],[Math.PI/2,0,0]),dark,vp);
-    if(meshes.glbHeadlightShell)draw('glbHeadlightShell',xform(),dark,vp);else draw('sphere',xform([1.60,1.02,0],[.31,.29,.27]),dark,vp);
-    const light=c.light||'classic',lensMesh=light==='led'?'glbHeadlightLed':light==='h4'?'glbHeadlightH4':'glbHeadlightClassic';
-    const lensColor=light==='led'?[.74,.91,.35]:light==='h4'?[.91,.91,.82]:[.91,.85,.58];
-    if(meshes[lensMesh])draw(lensMesh,xform(),lensColor,vp);else draw('sphere',xform([1.80,1.02,0],[.12,.24,.235]),lensColor,vp);
-    draw('cyl',tubeBetween([1.43,1.21,-.24],[1.59,.98,-.24],.026),chrome,vp);draw('cyl',tubeBetween([1.43,1.21,.24],[1.59,.98,.24],.026),chrome,vp);
-    if(meshes.glbIndicatorsFront)draw('glbIndicatorsFront',xform(),[.94,.46,.05],vp);else{
-      draw('sphere',xform([1.68,1.19,-.42],[.10,.08,.08]),[.94,.46,.05],vp);draw('sphere',xform([1.68,1.19,.42],[.10,.08,.08]),[.94,.46,.05],vp);
-    }
-    draw('cyl',tubeBetween([1.55,1.18,-.24],[1.66,1.19,-.38],.018),chrome,vp);draw('cyl',tubeBetween([1.55,1.18,.24],[1.66,1.19,.38],.018),chrome,vp);
-    draw('cyl',tubeBetween([1.58,1.53,-.42],[1.50,.82,-.18],.011),dark,vp);draw('cyl',tubeBetween([1.58,1.53,.42],[.65,.55,.18],.011),dark,vp);
-    if(c.mirror!=='none'&&(c.mirror||c.base==='street')){
-      const y=barType==='enduro'?1.82:1.60;
-      draw('cyl',tubeBetween([1.60,y,-.48],[1.72,y+.38,-.55],.018),chrome,vp);draw('sphere',xform([1.75,y+.44,-.57],[.14,.19,.05],[0,0,-.25]),[.32,.34,.34],vp);
+  async function mount(mode = viewMode) {
+    viewMode = mode === 'modular' ? 'modular' : 'hd';
+    host = document.getElementById('configPreview');
+    if (!host) return;
+    destroy();
+    active = true;
+    const variant = variantForConfig();
+    const currentGeneration = ++generation;
+    host.innerHTML = html(variant);
+    canvas = document.getElementById('config3dCanvas');
+    try {
+      await ensureRuntime();
+      if (!active || currentGeneration !== generation) return;
+      setupRenderer();
+      bind();
+      renderLoop();
+      if (viewMode === 'modular') await loadModularModel(currentGeneration, variant);
+      else await loadModel(currentGeneration, variant);
+    } catch (error) {
+      showError(error);
     }
   }
 
-  function drawFrameAndRunningGear(c,vp,dark,chrome,ry,fy,enduro){
-    if(meshes.glbFrame)draw('glbFrame',xform(),dark,vp);else{
-      const frame=[[-1.96,ry,0],[-.82,.25,0],[-.05,-.79,0],[-.82,.25,0],[-.67,1.02,0],[-.67,1.02,0],[.72,.24,0],[-.05,-.79,0],[.72,.24,0],[1.53,.82,0]];
-      for(let i=0;i<frame.length;i+=2)draw('cyl',tubeBetween(frame[i],frame[i+1],.072),dark,vp);
-    }
-    if(meshes.glbSwingarm)draw('glbSwingarm',xform([0,ry+1.05,0]),dark,vp);else{
-      draw('cyl',tubeBetween([-.06,-.70,-.13],[-1.98,ry,-.13],.045),dark,vp);draw('cyl',tubeBetween([-.06,-.70,.13],[-1.98,ry,.13],.045),dark,vp);
-    }
-    const forkColor=c.fork==='black'?dark:chrome;
-    if(meshes.glbFork)draw('glbFork',xform([0,fy+1.05,0]),forkColor,vp);else{
-      draw('cyl',tubeBetween([1.48,.74,-.10],[2.15,fy,-.10],.050),forkColor,vp);draw('cyl',tubeBetween([1.48,.74,.10],[2.15,fy,.10],.050),forkColor,vp);
-    }
-    const sh=c.shock==='chrome'?chrome:[.24,.25,.25], shockMesh=c.shock==='long'?'glbShocksLong':'glbShocks';
-    if(meshes[shockMesh])draw(shockMesh,xform(),sh,vp);else{
-      draw('cyl',tubeBetween([-1.90,ry,-.20],[-.70,.57,-.20],.050),sh,vp);draw('cyl',tubeBetween([-1.90,ry,.20],[-.70,.57,.20],.050),sh,vp);
-    }
-    draw('cube',xform([-1.05,-.66,.22],[.83,.045,.10],[0,0,.04]),dark,vp);draw('cyl',tubeBetween([-.28,-.87,.15],[-.55,-1.48,.25],.035),dark,vp);draw('cyl',tubeBetween([-.28,-.87,-.15],[-.55,-1.48,-.25],.035),dark,vp);
-    const fenderDelta=fy+1.05;
-    if(enduro||c.frontFender==='black'){
-      if(meshes.glbFrontFenderEnduro)draw('glbFrontFenderEnduro',xform([0,fenderDelta,0]),dark,vp);else draw('wedge',xform([2.07,-.29+fenderDelta,0],[.63,.055,.30],[0,0,.15]),dark,vp);
-    }else{
-      const fc=c.frontFender==='paint'?hex(c.tankColor||'#2f608f'):chrome;
-      if(meshes.glbFrontFenderClassic)draw('glbFrontFenderClassic',xform([0,fenderDelta,0]),fc,vp);else draw('wedge',xform([2.14,-.18+fenderDelta,0],[.65,.045,.29],[0,0,.04]),fc,vp);
-    }
-    const rearColor=c.rearFender==='paint'?hex(c.tankColor||'#2f608f'):dark, rearDelta=ry+1.05;
-    if(meshes.glbRearFender)draw('glbRearFender',xform([0,rearDelta,0]),rearColor,vp);else draw('wedge',xform([-2.03,-.20+rearDelta,0],[.66,.045,.29],[0,0,-.04]),rearColor,vp);
+  function setupRenderer() {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(38, 1, 0.05, 60);
+
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = environment;
+    pmrem.dispose();
+
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x7c766c, 1.65));
+    const key = new THREE.DirectionalLight(0xffffff, 3.25);
+    key.position.set(-3.6, 6.8, 4.8);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    key.shadow.camera.left = -4.5; key.shadow.camera.right = 4.5;
+    key.shadow.camera.top = 4; key.shadow.camera.bottom = -3;
+    key.shadow.bias = -0.00035;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xdbe8ff, 1.35);
+    fill.position.set(4.2, 3.4, -4.8);
+    scene.add(fill);
+
+    const floorMaterial = new THREE.MeshStandardMaterial({ color: 0xd8d4ca, roughness: 0.93, metalness: 0 });
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 9), floorMaterial);
+    floor.name = 'StudioFloor';
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -1.82;
+    floor.receiveShadow = true;
+    scene.add(floor);
+    resize();
+    updateCamera();
   }
 
-  function drawExhaust(c,vp){
-    const ex=[.67,.70,.70], heat=[.10,.10,.10];
-    const key=c.exhaust==='enduro'?'glbExhaustEnduro':c.exhaust==='sport'?'glbExhaustSport':'glbExhaustSeries';
-    if(meshes[key]){draw(key,xform(),ex,vp);return}
-    if(c.exhaust==='enduro'){
-      draw('cyl',tubeBetween([.35,-.38,-.40],[1.38,.07,-.40],.070),ex,vp);draw('cyl',tubeBetween([1.38,.07,-.40],[2.08,.56,-.40],.105),ex,vp);draw('cube',xform([1.55,.18,-.49],[.46,.055,.06],[0,0,.32]),heat,vp);
-    }else if(c.exhaust==='sport'){
-      draw('cyl',tubeBetween([.35,-.38,-.40],[1.50,-.72,-.40],.078),ex,vp);draw('cyl',tubeBetween([1.50,-.72,-.40],[2.10,-.72,-.40],.108),ex,vp);draw('cyl',tubeBetween([2.10,-.72,-.40],[2.34,-.67,-.40],.070),ex,vp);
-    }else{
-      draw('cyl',tubeBetween([.35,-.38,-.40],[1.48,-.79,-.40],.070),ex,vp);draw('cyl',tubeBetween([1.48,-.79,-.40],[2.43,-.79,-.40],.112),ex,vp);draw('cyl',tubeBetween([2.43,-.79,-.40],[2.58,-.76,-.40],.070),ex,vp);
+  function loadModel(currentGeneration, variant) {
+    const meta = MODEL_VARIANTS[variant];
+    return new Promise((resolve, reject) => {
+      const loader = new GLTFLoader();
+      loader.load(meta.url, gltf => {
+        if (!active || currentGeneration !== generation) return resolve();
+        model = gltf.scene;
+        model.name = meta.modelName;
+        loadedVariant = variant;
+        model.rotation.y = Math.PI / 2;
+        model.updateMatrixWorld(true);
+
+        const rawBox = new THREE.Box3().setFromObject(model);
+        const rawSize = rawBox.getSize(new THREE.Vector3());
+        const scale = 5.02 / Math.max(rawSize.x, 0.001);
+        model.scale.setScalar(scale);
+        model.updateMatrixWorld(true);
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.x -= center.x;
+        model.position.z -= center.z;
+        model.position.y += -1.79 - box.min.y;
+
+        prepareMaterials();
+        scene.add(model);
+        applyConfig();
+        const loading = document.getElementById('config3dLoad');
+        if (loading) loading.remove();
+        resolve();
+      }, event => {
+        const label = document.querySelector('#config3dLoad span');
+        if (!label) return;
+        const percentage = event.total ? Math.min(100, Math.round(event.loaded / event.total * 100)) : null;
+        label.textContent = percentage === null ? `${Math.round(event.loaded / 1024)} KB` : `${percentage} %`;
+      }, reject);
+    });
+  }
+
+  function modularPlan(cfg) {
+    const plan = [];
+    const add = (component, position = [0, 0, 0], scale = [1, 1, 1], rotation = [0, 0, 0]) =>
+      plan.push({ component, position, scale, rotation });
+    const wheelRadius = ({16: .82, 17: .85, 18: .88, 19: .91})[cfg.wheelSize || '16'] || .82;
+    const wheelScale = wheelRadius / .91;
+    const rearY = -1.03 + (cfg.shock === 'long' ? .12 : 0);
+    const frontY = -1.03 + (cfg.fork === 'enduro' ? .12 : 0);
+    const rearX = -1.68, frontX = 1.72;
+    const chassisScale = [.82, .98, 1];
+    const addWheel = (x, y, front) => {
+      const transformScale = [wheelScale, wheelScale, wheelScale];
+      add(cfg.tire === 'enduro' ? 'wheel_enduro' : cfg.tire === 'classic' ? 'wheel_classic' : 'wheel_road', [x, y, 0], transformScale);
+      add('rim', [x, y, 0], transformScale);
+      add(cfg.wheelType === 'star5' ? 'star5' : cfg.wheelType === 'star10' ? 'star10' : 'spokes', [x, y, 0], transformScale);
+      add('hub', [x, y, 0], transformScale);
+      if (front && cfg.brake === 'disc') add('brakedisc', [x, y, -.16], transformScale);
+    };
+
+    add(cfg.base === 'enduro' ? 'frame_enduro' : 'frame_street', [0, 0, 0], chassisScale);
+    add('luggage_rack');
+    add('swingarm', [0, rearY + 1.05, 0], chassisScale);
+    add('fork', [0, frontY + 1.05, 0], chassisScale);
+    add(cfg.shock === 'long' ? 'shocks_long' : 'shocks', [0, 0, 0], chassisScale);
+    addWheel(rearX, rearY, false);
+    addWheel(frontX, frontY, true);
+
+    add('tank', [-.10, .86, 0], [.88, .90, .92], [0, 0, -.025]);
+    add('sidecover', [-.18, .14, -.28], [.78, .84, .86], [0, 0, -.075]);
+    add('sidecover', [-.18, .14, .28], [.78, .84, .86], [0, 0, -.075]);
+    add('engine', [.02, -.48, 0], [.80, .80, .84]);
+    add('engine_fins', [.02, -.48, 0], [.80, .80, .84]);
+    add('carb', [.02, -.48, 0], [.80, .80, .84]);
+    add(`exhaust_${cfg.exhaust === 'enduro' ? 'enduro' : cfg.exhaust === 'sport' ? 'sport' : 'series'}`, [0, 0, 0], chassisScale);
+    add(`seat_${cfg.seat === 'flat' ? 'flat' : cfg.seat === 'sport' ? 'sport' : 'standard'}`, [.05, .02, 0], [.84, .96, .96]);
+    add(`handlebar_${cfg.handlebar === 'enduro' ? 'enduro' : cfg.handlebar === 'cross' ? 'cross' : 'street'}`, [0, 0, 0], chassisScale);
+    add('cockpit', [0, 0, 0], chassisScale);
+    add('headlight_shell', [0, 0, 0], chassisScale);
+    add(`headlight_${cfg.light === 'led' ? 'led' : cfg.light === 'h4' ? 'h4' : 'classic'}`, [0, 0, 0], chassisScale);
+    add('indicators_front', [0, 0, 0], chassisScale);
+    add('indicators_rear', [0, 0, 0], chassisScale);
+    add('taillight', [0, 0, 0], chassisScale);
+    add('licenseplate', [0, 0, 0], chassisScale);
+
+    const frontFender = cfg.base === 'enduro' || cfg.frontFender === 'black' ? 'front_fender_enduro' : 'front_fender_classic';
+    add(frontFender, [-.43, frontY + 1.05, 0]);
+    add(cfg.rearFender === 'short' ? 'rear_fender_short' : 'rear_fender', [.37, rearY + 1.05, 0]);
+    return plan;
+  }
+
+  function loadGltf(loader, url) {
+    return new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject));
+  }
+
+  async function loadModularModel(currentGeneration, variant) {
+    const cfg = config();
+    const plan = modularPlan(cfg);
+    const loader = new GLTFLoader();
+    const cache = new Map();
+    const getAsset = component => {
+      const url = HD_COMPONENT_ROOT + HD_COMPONENT_FILES[component];
+      if (!cache.has(url)) cache.set(url, loadGltf(loader, url));
+      return cache.get(url);
+    };
+    model = new THREE.Group();
+    model.name = `Simson_S51_Modular_HD_${variant}`;
+    loadedVariant = variant;
+    let completed = 0, triangles = 0;
+    const parts = await Promise.all(plan.map(async descriptor => {
+      const gltf = await getAsset(descriptor.component);
+      if (!active || currentGeneration !== generation) return null;
+      const part = gltf.scene.clone(true);
+      part.name = `HD_${descriptor.component}`;
+      part.position.set(...descriptor.position);
+      part.scale.set(...descriptor.scale);
+      part.rotation.set(...descriptor.rotation);
+      part.traverse(object => {
+        if (!object.isMesh) return;
+        object.userData.component = descriptor.component;
+        const geometry = object.geometry;
+        triangles += geometry.index ? geometry.index.count / 3 : geometry.attributes.position.count / 3;
+      });
+      completed++;
+      const label = document.querySelector('#config3dLoad span');
+      if (label) label.textContent = `${Math.round(completed / plan.length * 100)} %`;
+      return part;
+    }));
+    if (!active || currentGeneration !== generation) return;
+    parts.filter(Boolean).forEach(part => model.add(part));
+    model.userData.triangleCount = Math.round(triangles);
+    prepareMaterials();
+    scene.add(model);
+    applyConfig();
+    const tag = document.getElementById('config3dModelTag');
+    if (tag) tag.textContent = `GLB 5.0 · MODULAR HD · ${Math.round(triangles / 1000)}K TRI`;
+    document.getElementById('config3dLoad')?.remove();
+  }
+
+  function prepareMaterials() {
+    const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    model.traverse(object => {
+      if (!object.isMesh) return;
+      object.castShadow = true;
+      object.receiveShadow = true;
+      const source = Array.isArray(object.material) ? object.material : [object.material];
+      const cloned = source.map(material => {
+        const copy = material.clone();
+        copy.userData.originalColor = copy.color?.clone();
+        copy.userData.originalMetalness = copy.metalness;
+        copy.userData.originalRoughness = copy.roughness;
+        if (copy.map) { copy.map.anisotropy = anisotropy; copy.map.needsUpdate = true; }
+        return copy;
+      });
+      object.material = Array.isArray(object.material) ? cloned : cloned[0];
+    });
+  }
+
+  function setMaterialColor(material, value) {
+    if (!material?.color) return;
+    material.color.set(value);
+    material.needsUpdate = true;
+  }
+
+  function applyConfig() {
+    if (!model) return;
+    const cfg = config();
+    const tankColor = cfg.tankColor || '#2f608f';
+    const sideColor = cfg.sideColor || tankColor;
+    const engine = cfg.engine || 'silver';
+    model.traverse(object => {
+      if (!object.isMesh) return;
+      const component = object.userData.component || '';
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach(material => {
+        if (material.userData.originalColor) material.color.copy(material.userData.originalColor);
+        if (material.userData.originalMetalness !== undefined) material.metalness = material.userData.originalMetalness;
+        if (material.userData.originalRoughness !== undefined) material.roughness = material.userData.originalRoughness;
+        const materialName = String(material.name || '').trim().toLocaleLowerCase('de');
+        if (component === 'tank') {
+          setMaterialColor(material, tankColor); material.metalness = .18; material.roughness = .24;
+        } else if (component === 'sidecover') {
+          setMaterialColor(material, sideColor); material.metalness = .16; material.roughness = .25;
+        } else if (component === 'engine' || component === 'engine_fins' || component === 'carb') {
+          if (engine === 'black') { setMaterialColor(material, '#202425'); material.metalness = .22; material.roughness = .56; }
+          else if (engine === 'polished') { setMaterialColor(material, '#dce1e1'); material.metalness = .83; material.roughness = .16; }
+          else { setMaterialColor(material, '#8c9292'); material.metalness = .48; material.roughness = .42; }
+        } else if (component === 'wheel' || component.startsWith('wheel_')) {
+          setMaterialColor(material, '#17191a'); material.metalness = .02; material.roughness = .82;
+        } else if (component === 'rim' || component === 'star5' || component === 'star10') {
+          setMaterialColor(material, cfg.rim === 'black' ? '#17191a' : cfg.rim === 'polished' ? '#eef1f0' : '#aeb3b3');
+          material.metalness = cfg.rim === 'black' ? .32 : .86; material.roughness = cfg.rim === 'polished' ? .12 : .24;
+        } else if (component === 'spokes' || component === 'hub' || component === 'brakedisc' || component === 'luggage_rack') {
+          setMaterialColor(material, '#d5d9d8'); material.metalness = .9; material.roughness = .14;
+        } else if (component === 'frame' || component === 'frame_street' || component === 'frame_enduro' || component === 'swingarm') {
+          setMaterialColor(material, '#111314'); material.metalness = .25; material.roughness = .42;
+        } else if (component === 'fork') {
+          setMaterialColor(material, cfg.fork === 'black' ? '#161819' : '#c8cdcc'); material.metalness = cfg.fork === 'black' ? .28 : .82; material.roughness = .22;
+        } else if (component === 'shocks' || component === 'shocks_long') {
+          setMaterialColor(material, cfg.shock === 'chrome' ? '#d9dddc' : '#343738'); material.metalness = .74; material.roughness = .2;
+        } else if (component.startsWith('exhaust_')) {
+          setMaterialColor(material, '#d8dcdb'); material.metalness = .92; material.roughness = .12;
+        } else if (component.startsWith('seat_')) {
+          setMaterialColor(material, '#171819'); material.metalness = .02; material.roughness = .68;
+        } else if (component.startsWith('handlebar_')) {
+          setMaterialColor(material, component === 'handlebar_cross' ? '#17191a' : '#d2d6d5'); material.metalness = .82; material.roughness = .18;
+        } else if (component === 'cockpit' || component === 'headlight_shell') {
+          setMaterialColor(material, '#181a1b'); material.metalness = .18; material.roughness = .46;
+        } else if (component === 'headlight_led') {
+          setMaterialColor(material, '#d9ff39'); material.emissive?.set('#455e10'); material.emissiveIntensity = .34;
+        } else if (component === 'headlight_h4' || component === 'headlight_classic') {
+          setMaterialColor(material, component === 'headlight_h4' ? '#edf4f4' : '#f0dfaa'); material.metalness = .05; material.roughness = .18;
+        } else if (component.startsWith('indicators_')) {
+          setMaterialColor(material, '#f27b08'); material.metalness = .05; material.roughness = .23;
+        } else if (component === 'taillight') {
+          setMaterialColor(material, '#b51518'); material.metalness = .05; material.roughness = .22;
+        } else if (component === 'licenseplate') {
+          setMaterialColor(material, '#e9e9e3'); material.metalness = .12; material.roughness = .4;
+        } else if (component.startsWith('front_fender_')) {
+          setMaterialColor(material, cfg.frontFender === 'paint' ? tankColor : component.endsWith('enduro') ? '#17191a' : '#d5d9d8');
+          material.metalness = component.endsWith('classic') && cfg.frontFender !== 'paint' ? .88 : .22; material.roughness = .2;
+        } else if (component.startsWith('rear_fender')) {
+          setMaterialColor(material, '#d2d6d5'); material.metalness = .86; material.roughness = .18;
+        } else if (materialName === 'fuel tank') {
+          setMaterialColor(material, object.name === 'Plane03' ? sideColor : tankColor);
+        } else if (materialName === 'engine' || materialName === 'motor') {
+          if (engine === 'black') {
+            setMaterialColor(material, '#202425'); material.metalness = 0.22; material.roughness = 0.56;
+          } else if (engine === 'polished') {
+            setMaterialColor(material, '#dce1e1'); material.metalness = 0.83; material.roughness = 0.16;
+          } else {
+            setMaterialColor(material, '#8c9292'); material.metalness = 0.48; material.roughness = 0.42;
+          }
+        }
+        material.needsUpdate = true;
+      });
+    });
+
+    const variant = loadedVariant || variantForConfig(cfg);
+    const meta = MODEL_VARIANTS[variant];
+    const changed = Object.entries(meta.reference).filter(([field, value]) => (cfg[field] || value) !== value);
+    const note = document.getElementById('config3dVariantNote');
+    if (note) {
+      note.textContent = viewMode === 'modular'
+        ? changed.length
+          ? `${meta.title} als modulare HD-Basis · ${changed.length} abweichende Baugruppe${changed.length === 1 ? '' : 'n'} aktiv`
+          : `${meta.title} in der modularen HD-Werkstatt · Serienkonfiguration aktiv`
+        : changed.length
+          ? `${meta.title}-Referenzgeometrie aktiv · Für abweichende Baugruppen „3D modular“ öffnen`
+          : `${meta.originalNote} · Lack und Motoroptik synchronisiert`;
+      note.classList.toggle('warn', changed.length > 0);
     }
   }
 
-  function drawRearLighting(c,vp,dark,chrome){
-    draw('cube',xform([-1.78,.69,0],[.10,.15,.23]),dark,vp);
-    if(meshes.glbTaillight)draw('glbTaillight',xform(),[.62,.03,.02],vp);else draw('cube',xform([-1.84,.72,0],[.15,.12,.21]),[.46,.04,.03],vp);
-    if(meshes.glbLicenseplate)draw('glbLicenseplate',xform(),[.84,.84,.80],vp);else draw('cube',xform([-2.04,.42,0],[.03,.18,.22]),[.82,.82,.78],vp);
-    if(meshes.glbIndicatorsRear)draw('glbIndicatorsRear',xform(),[.94,.46,.05],vp);else{
-      draw('sphere',xform([-1.69,.77,-.37],[.10,.08,.08]),[.90,.47,.06],vp);draw('sphere',xform([-1.69,.77,.37],[.10,.08,.08]),[.90,.47,.06],vp);
+  function updateCamera() {
+    if (!camera) return;
+    const horizontal = Math.cos(pitch) * distance;
+    camera.position.set(
+      target.x + Math.sin(yaw) * horizontal,
+      target.y + Math.sin(pitch) * distance,
+      target.z + Math.cos(yaw) * horizontal
+    );
+    camera.lookAt(target.x, target.y, target.z);
+  }
+
+  function cameraPreset(name) {
+    if (name === 'side') { yaw = 0; pitch = 0.035; distance = 7.35; }
+    else if (name === 'three') { yaw = -0.58; pitch = 0.055; distance = 7.65; }
+    else if (name === 'front') { yaw = -Math.PI / 2; pitch = 0.025; distance = 6.65; }
+    else if (name === 'rear') { yaw = Math.PI / 2; pitch = 0.025; distance = 6.65; }
+    else { yaw = -0.58; pitch = 0.055; distance = 7.65; }
+    updateCamera();
+  }
+
+  function resize() {
+    if (!renderer || !canvas || !camera) return;
+    const width = Math.max(1, canvas.clientWidth);
+    const height = Math.max(1, canvas.clientHeight);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const pixelWidth = Math.floor(width * dpr), pixelHeight = Math.floor(height * dpr);
+    if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
     }
-    draw('cyl',tubeBetween([-1.60,.76,-.23],[-1.69,.77,-.34],.018),chrome,vp);draw('cyl',tubeBetween([-1.60,.76,.23],[-1.69,.77,.34],.018),chrome,vp);
   }
 
-  function scene(vp){
-    const c=cfg(),paint=hex(c.tankColor||'#2f608f'),side=hex(c.sideColor||c.tankColor||'#2f608f'),dark=[.065,.07,.07],metal=c.engine==='black'?[.11,.12,.12]:c.engine==='polished'?[.84,.86,.86]:[.52,.55,.56],chrome=[.74,.77,.78];
-    const enduro=c.base==='enduro',wr={16:.82,17:.85,18:.88,19:.91}[c.wheelSize||16]||.82,ry=-1.03+(c.shock==='long'?.12:0),fy=-1.03+(c.fork==='enduro'?.12:0);
-    draw('cube',xform([0,-1.90,0],[3.45,.035,1.38]),[.79,.78,.74],vp,{spec:.06,rough:.94});
-    draw('sphere',xform([-2.05,-1.835,0],[.76,.026,.44]),[.025,.025,.025],vp,{spec:0,rough:1,alpha:.16});
-    draw('sphere',xform([2.15,-1.835,0],[.76,.026,.44]),[.025,.025,.025],vp,{spec:0,rough:1,alpha:.16});
-    draw('sphere',xform([.05,-1.845,0],[2.05,.018,.50]),[.035,.035,.035],vp,{spec:0,rough:1,alpha:.055});
-    drawWheel(-2.05,ry,wr,false,c,vp,chrome,dark);drawWheel(2.15,fy,wr,true,c,vp,chrome,dark);
-    drawFrameAndRunningGear(c,vp,dark,chrome,ry,fy,enduro);
-    drawTankAndBody(c,vp,paint,side,dark,chrome,enduro);
-    drawEngine(c,vp,metal,dark,chrome);
-    drawExhaust(c,vp);
-    drawCockpit(c,vp,dark,chrome);
-    drawRearLighting(c,vp,dark,chrome);
-    draw('cyl',tubeBetween([-.30,-.80,-.30],[-.70,-.80,-.48],.035),chrome,vp);draw('cyl',tubeBetween([-.30,-.80,.30],[-.70,-.80,.48],.035),chrome,vp);
+  function renderLoop() {
+    if (!active || !renderer || !scene || !camera) return;
+    resize();
+    updateCamera();
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(renderLoop);
   }
 
-  function render(){if(!active||!gl||!canvas)return;resize();gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);const asp=canvas.width/canvas.height,proj=M.p(Math.PI/4.5,asp,.1,100),view=M.mul(M.t(0,-.03,-distance),M.mul(M.rx(pitch),M.ry(yaw))),vp=M.mul(proj,view);scene(vp);raf=requestAnimationFrame(render)}
-  function resize(){const d=Math.min(devicePixelRatio||1,2),w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight);if(canvas.width!==Math.floor(w*d)||canvas.height!==Math.floor(h*d)){canvas.width=Math.floor(w*d);canvas.height=Math.floor(h*d);gl.viewport(0,0,canvas.width,canvas.height)}}
-  function camera(name){if(name==='side'){yaw=-.02;pitch=-.055;distance=8.45}else if(name==='three'){yaw=-.52;pitch=-.075;distance=8.60}else if(name==='front'){yaw=-1.56;pitch=-.06;distance=8.30}else if(name==='rear'){yaw=1.56;pitch=-.06;distance=8.30}else{yaw=-.52;pitch=-.075;distance=8.60}}
-  function mount(){host=document.getElementById('configPreview');if(!host)return;active=true;host.innerHTML=`<div class="config3dTop"><b>S51 3D · GLB 4.5 STUDIO</b><span>Ziehen = drehen · Mausrad/Pinch = zoomen</span><button onclick="window.S51ThreeD.close()">2D zurück</button></div><div class="config3dCamera"><button onclick="window.S51ThreeD.camera('side')">Seite</button><button onclick="window.S51ThreeD.camera('three')">3/4</button><button onclick="window.S51ThreeD.camera('front')">Front</button><button onclick="window.S51ThreeD.camera('rear')">Heck</button><button onclick="window.S51ThreeD.camera('reset')">Ansicht zurücksetzen</button></div><canvas id="config3dCanvas" aria-label="Drehbare 3D-Vorschau der Simson S51"></canvas><div class="config3dFoot"><span>Studio-Materiallicht · Lackglanz · Chromreflexe · Kontaktschatten · optimierte Proportionen</span><b>GLB 4.5</b></div>`;canvas=document.getElementById('config3dCanvas');gl=canvas.getContext('webgl',{antialias:true,alpha:true,premultipliedAlpha:false});if(!gl){active=false;host.innerHTML='<div class="config3dUnavailable">WebGL ist auf diesem Gerät nicht verfügbar. Die 2D-Vorschau bleibt nutzbar.</div>';return}program=mkProgram();initMeshes();loadGLBComponents();bind();cancelAnimationFrame(raf);render()}
-  function close(){active=false;cancelAnimationFrame(raf);if(typeof window.configSetView==='function')window.configSetView('side')}
-  function bind(){
-    canvas.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
-    canvas.addEventListener('pointermove',e=>{if(!dragging)return;yaw+=(e.clientX-px)*.009;pitch=Math.max(-1.02,Math.min(.62,pitch+(e.clientY-py)*.007));px=e.clientX;py=e.clientY});
-    canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
-    canvas.addEventListener('wheel',e=>{e.preventDefault();distance=Math.max(5.2,Math.min(12,distance+e.deltaY*.006))},{passive:false});
-    canvas.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});
-    canvas.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinchDist){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);distance=Math.max(5.2,Math.min(12,distance+(pinchDist-d)*.012));pinchDist=d}},{passive:true});
+  function bind() {
+    const down = event => {
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      canvas.setPointerCapture(event.pointerId);
+      lastPointer = { x: event.clientX, y: event.clientY };
+      if (pointers.size === 2) lastPinch = pinchDistance();
+    };
+    const move = event => {
+      if (!pointers.has(event.pointerId)) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (pointers.size === 2) {
+        const next = pinchDistance();
+        if (lastPinch) distance = Math.max(4.7, Math.min(11.5, distance + (lastPinch - next) * 0.012));
+        lastPinch = next;
+      } else if (lastPointer) {
+        yaw -= (event.clientX - lastPointer.x) * 0.009;
+        pitch = Math.max(-0.28, Math.min(0.62, pitch + (event.clientY - lastPointer.y) * 0.006));
+      }
+      lastPointer = { x: event.clientX, y: event.clientY };
+    };
+    const up = event => {
+      pointers.delete(event.pointerId);
+      lastPinch = 0;
+      lastPointer = pointers.size ? [...pointers.values()][0] : null;
+    };
+    canvas.addEventListener('pointerdown', down);
+    canvas.addEventListener('pointermove', move);
+    canvas.addEventListener('pointerup', up);
+    canvas.addEventListener('pointercancel', up);
+    canvas.addEventListener('wheel', event => {
+      event.preventDefault();
+      distance = Math.max(4.7, Math.min(11.5, distance + event.deltaY * 0.006));
+    }, { passive: false });
   }
-  function addButton(){const box=document.getElementById('configPreview');if(!box||active)return;const tb=box.querySelector('.configViewToolbar>div:first-child');if(tb&&!tb.querySelector('.config3dBtn')){const b=document.createElement('button');b.className='config3dBtn';b.textContent='3D WebGL';b.onclick=mount;tb.appendChild(b)}}
-  function keep3D(){if(active)setTimeout(()=>{if(!document.getElementById('config3dCanvas'))mount()},0)}
-  function wrapConfigurator(){if(wrapped)return;wrapped=true;['configSet','configSetColor','configSetCategory','configReset','configMatchPaint','configLoad'].forEach(n=>{const old=window[n];if(typeof old==='function'){window[n]=function(...a){const r=old.apply(this,a);keep3D();return r}}})}
-  const obs=new MutationObserver(()=>{if(!active)addButton()});
-  function boot(){const p=document.getElementById('configPreview');if(p){obs.observe(p,{childList:true,subtree:true});addButton()}wrapConfigurator()}
-  window.S51ThreeD={mount,close,camera,isActive:()=>active};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+
+  function pinchDistance() {
+    const values = [...pointers.values()];
+    if (values.length < 2) return 0;
+    return Math.hypot(values[0].x - values[1].x, values[0].y - values[1].y);
+  }
+
+  function showError(error) {
+    console.error('S51 HD GLB konnte nicht geladen werden', error);
+    const loading = document.getElementById('config3dLoad');
+    if (loading) loading.innerHTML = `<b>HD-Modell konnte nicht geladen werden</b><span>Bitte Verbindung, Dateipaket und Browser-Hardwarebeschleunigung prüfen.</span><button onclick="window.S51ThreeD.mount()">3D erneut laden</button>`;
+  }
+
+  function disposeMaterial(material) {
+    if (!material) return;
+    for (const value of Object.values(material)) if (value?.isTexture) value.dispose();
+    material.dispose?.();
+  }
+
+  function destroy() {
+    active = false;
+    generation++;
+    cancelAnimationFrame(raf);
+    pointers.clear();
+    lastPointer = null; lastPinch = 0;
+    if (scene) scene.traverse(object => {
+      object.geometry?.dispose?.();
+      if (Array.isArray(object.material)) object.material.forEach(disposeMaterial);
+      else disposeMaterial(object.material);
+    });
+    environment?.dispose?.();
+    renderer?.dispose?.();
+    renderer?.forceContextLoss?.();
+    renderer = null; scene = null; camera = null; model = null; environment = null; canvas = null; loadedVariant = null;
+  }
+
+  function close() {
+    destroy();
+  }
+
+  function setMode(mode) {
+    const next = mode === 'modular' ? 'modular' : 'hd';
+    if (next === viewMode && active) return;
+    mount(next);
+  }
+
+  function keep3D() {
+    if (!active) return;
+    setTimeout(() => {
+      if (!active) return;
+      if (!document.getElementById('config3dCanvas') || variantForConfig() !== loadedVariant) mount();
+      else applyConfig();
+    }, 0);
+  }
+
+  function wrapConfigurator() {
+    if (wrapped) return;
+    wrapped = true;
+    ['configSet', 'configSetColor', 'configSetCategory', 'configReset', 'configMatchPaint', 'configLoad', 'configSelect', 'configApplyPreset'].forEach(name => {
+      const original = window[name];
+      if (typeof original !== 'function') return;
+      window[name] = function(...args) {
+        const result = original.apply(this, args);
+        keep3D();
+        return result;
+      };
+    });
+  }
+
+  function boot() {
+    const preview = document.getElementById('configPreview');
+    wrapConfigurator();
+    const section = document.getElementById('configurator');
+    const syncVisibility = () => {
+      const visible = section?.classList?.contains('active');
+      if (visible && !active) mount(viewMode);
+      else if (!visible && active) destroy();
+    };
+    if (section) new MutationObserver(syncVisibility).observe(section, { attributes: true, attributeFilter: ['class'] });
+    if (preview) syncVisibility();
+  }
+
+  window.S51ThreeD = {
+    mount, close, destroy, setMode, camera: cameraPreset, applyConfig, isActive: () => active,
+    mode: () => viewMode,
+    planForConfig: value => modularPlan({ ...config(), ...value }).map(item => item.component)
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();

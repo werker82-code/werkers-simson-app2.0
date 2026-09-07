@@ -1,6 +1,6 @@
 {
-  "name": "Werkers Werkstatt – Simson Kult & Technik 3.8",
-  "short_name": "Werkers Simson 3.8",
+  "name": "Werkers Werkstatt – Simson Kult & Technik 5.0",
+  "short_name": "Werkers Simson 5.0",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -14,7 +14,7 @@
       "purpose": "any maskable"
     }
   ],
-  "version": "3.2.0",
+  "version": "5.0.0",
   "screenshots": [
     {
       "src": "assets/splash.png",

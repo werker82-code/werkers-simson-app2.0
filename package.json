@@ -1,6 +1,6 @@
 {
   "name": "werkers-simson-store",
-  "version": "3.8.1",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "sync": "npx cap sync",
