@@ -43,7 +43,7 @@ jobs:
           test -d "$RELEASE_PARTS"
           : > "$RELEASE_ZIP"
           for RELEASE_PART in "$RELEASE_PARTS"/part-*.b64; do
-            base64 --decode "$RELEASE_PART" >> "$RELEASE_ZIP"
+            base64 --decode < "$RELEASE_PART" >> "$RELEASE_ZIP"
           done
           echo "8dbc31ad1cd4fad1b27ab206e8bf2e14b57163f54bce740f86f37479cc6fdb27  $RELEASE_ZIP" | shasum -a 256 --check
           mkdir -p "$RUNNER_TEMP/mobile-release"
