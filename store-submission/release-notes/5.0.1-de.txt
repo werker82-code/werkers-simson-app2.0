@@ -1,0 +1,7 @@
+Neu in Version 5.0.1:
+
+- Neuer App-Kopf mit Simson-Treffen und direktem Zugang zur FIN-Prüfung.
+- Übersichtlichere Menüführung und funktionierende Zurück-Taste am Smartphone.
+- FIN-Auswertung mit Modell, Baureihe, Baujahr, Exportprüfung und passenden Modellbildern.
+- Detailliertes S51-HD-Modell wieder als Standard im 3D-Konfigurator.
+- Kopfbereich und untere Navigation bleiben außerhalb der Smartphone-Systemleisten bedienbar.

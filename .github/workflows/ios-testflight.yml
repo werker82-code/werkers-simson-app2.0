@@ -1,7 +1,20 @@
 name: iOS TestFlight Build
 
 on:
+  push:
+    branches:
+      - ios-appstore-1.0-build2
+      - release-5.0.1
   workflow_dispatch:
+    inputs:
+      marketing_version:
+        description: App-Store-Version
+        required: true
+        default: '1.0'
+      build_number:
+        description: Eindeutige iOS-Buildnummer
+        required: true
+        default: '3'
 
 permissions:
   contents: read
@@ -15,13 +28,36 @@ jobs:
       APP_ID: com.werkerswerkstatt.simson
       APP_NAME: Werkers Simson
       TEAM_ID: TYJS76T49A
+      IOS_MARKETING_VERSION: ${{ inputs.marketing_version || '1.0' }}
+      IOS_BUILD_NUMBER: ${{ inputs.build_number || '3' }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Release-Version und Web-Bundle vorbereiten
-        run: python3 scripts/prepare_release.py --web
+      - name: Gemeinsamen App-Stand 5.0.1 vorbereiten
+        run: |
+          set -euo pipefail
+          RELEASE_PARTS="$GITHUB_WORKSPACE/.release/werkers-simson-5.0.1-build50001"
+          RELEASE_ZIP="$RUNNER_TEMP/werkers-simson-5.0.1-build50001-android-project.zip"
+          test -d "$RELEASE_PARTS"
+          cat "$RELEASE_PARTS"/part-*.b64 | base64 --decode > "$RELEASE_ZIP"
+          echo "8dbc31ad1cd4fad1b27ab206e8bf2e14b57163f54bce740f86f37479cc6fdb27  $RELEASE_ZIP" | shasum -a 256 --check
+          mkdir -p "$RUNNER_TEMP/mobile-release"
+          unzip -q "$RELEASE_ZIP" -d "$RUNNER_TEMP/mobile-release"
+          test -f "$RUNNER_TEMP/mobile-release/android-store-project/app/src/main/assets/index.html"
+          rm -rf "$GITHUB_WORKSPACE/www"
+          cp -R "$RUNNER_TEMP/mobile-release/android-store-project/app/src/main/assets" "$GITHUB_WORKSPACE/www"
+          grep -Fq '"version":"5.0.1"' "$GITHUB_WORKSPACE/www/version.js"
+          grep -Fq "let viewMode = 'hd'" "$GITHUB_WORKSPACE/www/configurator3d.js"
+          grep -Fq 'DETAILLIERTES HD-MODELL' "$GITHUB_WORKSPACE/www/configurator3d.js"
+
+      - name: App-Store-Version prüfen
+        run: |
+          [[ "$IOS_MARKETING_VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]
+          [[ "$IOS_BUILD_NUMBER" =~ ^[1-9][0-9]*$ ]]
+          echo "App Store version: $IOS_MARKETING_VERSION"
+          echo "iOS build: $IOS_BUILD_NUMBER"
 
       - name: Select Xcode
         run: |
@@ -86,8 +122,8 @@ jobs:
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/WerkersSimson.xcarchive" \
             PRODUCT_BUNDLE_IDENTIFIER="$APP_ID" \
-            MARKETING_VERSION="$APP_VERSION" \
-            CURRENT_PROJECT_VERSION="$APP_BUILD" \
+            MARKETING_VERSION="$IOS_MARKETING_VERSION" \
+            CURRENT_PROJECT_VERSION="$IOS_BUILD_NUMBER" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             archive | tee "$RUNNER_TEMP/archive.log"
@@ -134,7 +170,7 @@ jobs:
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Werkers-Simson-iOS-v${{ env.APP_VERSION }}-build-${{ env.APP_BUILD }}
+          name: Werkers-Simson-iOS-v${{ env.IOS_MARKETING_VERSION }}-build-${{ env.IOS_BUILD_NUMBER }}
           path: ${{ runner.temp }}/export/*.ipa
           if-no-files-found: error
 
