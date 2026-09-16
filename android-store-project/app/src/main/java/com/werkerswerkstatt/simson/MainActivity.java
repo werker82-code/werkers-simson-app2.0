@@ -58,8 +58,13 @@ public class MainActivity extends Activity {
     if (requestCode == FILE_CHOOSER_REQUEST && filePathCallback != null) {
       Uri[] results = null;
       if (resultCode == Activity.RESULT_OK && data != null) {
-        String dataString = data.getDataString();
-        if (dataString != null) results = new Uri[]{Uri.parse(dataString)};
+        if (data.getClipData() != null) {
+          int count = data.getClipData().getItemCount();
+          results = new Uri[count];
+          for (int i = 0; i < count; i++) results[i] = data.getClipData().getItemAt(i).getUri();
+        } else if (data.getData() != null) {
+          results = new Uri[]{data.getData()};
+        }
       }
       filePathCallback.onReceiveValue(results);
       filePathCallback = null;
@@ -69,5 +74,18 @@ public class MainActivity extends Activity {
   @Override public void onBackPressed() {
     if (webView != null && webView.canGoBack()) webView.goBack();
     else super.onBackPressed();
+  }
+
+  @Override protected void onDestroy() {
+    if (filePathCallback != null) {
+      filePathCallback.onReceiveValue(null);
+      filePathCallback = null;
+    }
+    if (webView != null) {
+      webView.stopLoading();
+      webView.destroy();
+      webView = null;
+    }
+    super.onDestroy();
   }
 }
