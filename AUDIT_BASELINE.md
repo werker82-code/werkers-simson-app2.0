@@ -14,4 +14,9 @@ Prüfpunkte:
 - iOS Build/TestFlight-Konfiguration
 - Versionsabgleich zwischen Web, Android und iOS
 
+Erste Korrekturen:
+- Versionsmetadaten auf 5.0.1 / Build 50001 vereinheitlicht.
+- Android-Dateiauswahl verarbeitet nun auch mehrere ausgewählte Dateien (ClipData).
+- WebView/File-Chooser werden beim Beenden sauber freigegeben.
+
 Änderungen werden zunächst auf fix/app-audit-2026-09-16 geprüft und erst anschließend nach main übernommen.
