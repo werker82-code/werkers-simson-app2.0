@@ -14,8 +14,8 @@ android {
         applicationId = 'com.werkerswerkstatt.simson'
         minSdk = 24
         targetSdk = 36
-        versionCode = 4501
-        versionName = '4.5.0'
+        versionCode = 50001
+        versionName = '5.0.1'
     }
 
     signingConfigs {
@@ -31,8 +31,6 @@ android {
 
     buildTypes {
         debug {
-            // Installierbare Test-App neben der Store-Version.
-            // Android signiert Debug-Builds automatisch mit dem Debug-Key.
             applicationIdSuffix '.beta'
             versionNameSuffix '-beta'
             debuggable true
