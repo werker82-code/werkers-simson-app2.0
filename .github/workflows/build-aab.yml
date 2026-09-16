@@ -1,4 +1,4 @@
-name: Build Werkers Simson 5.0.1 Android AAB
+name: Build Werkers Simson 5.0.1 Build 50002 Android AAB
 
 on:
   push:
@@ -34,6 +34,13 @@ jobs:
           unzip -q "$ANDROID_ZIP" -d "$GITHUB_WORKSPACE/mobile-build"
           echo "ANDROID_PROJECT=$GITHUB_WORKSPACE/mobile-build/android-store-project" >> "$GITHUB_ENV"
 
+      - name: Versionscode 50002 setzen
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's/versionCode = 50001/versionCode = 50002/' "$ANDROID_PROJECT/app/build.gradle"
+          sed -i 's/"build":50001/"build":50002/' "$ANDROID_PROJECT/app/src/main/assets/version.js"
+
       - name: Release-Inhalt prüfen
         shell: bash
         run: |
@@ -41,9 +48,9 @@ jobs:
           test -f "$ANDROID_PROJECT/app/build.gradle"
           test -f "$ANDROID_PROJECT/app/src/main/assets/configurator3d.js"
           test -f "$ANDROID_PROJECT/app/src/main/assets/version.js"
-          grep -Fq "versionCode = 50001" "$ANDROID_PROJECT/app/build.gradle"
+          grep -Fq "versionCode = 50002" "$ANDROID_PROJECT/app/build.gradle"
           grep -Fq "versionName = '5.0.1'" "$ANDROID_PROJECT/app/build.gradle"
-          grep -Fq '"build":50001' "$ANDROID_PROJECT/app/src/main/assets/version.js"
+          grep -Fq '"build":50002' "$ANDROID_PROJECT/app/src/main/assets/version.js"
           grep -Fq "let viewMode = 'hd'" "$ANDROID_PROJECT/app/src/main/assets/configurator3d.js"
           grep -Fq 'DETAILLIERTES HD-MODELL' "$ANDROID_PROJECT/app/src/main/assets/configurator3d.js"
           grep -Fq "safe-area-inset-top" "$ANDROID_PROJECT/app/src/main/assets/style.css"
@@ -107,7 +114,7 @@ jobs:
       - name: AAB zum Herunterladen bereitstellen
         uses: actions/upload-artifact@v4
         with:
-          name: Werkers-Simson-5.0.1-build50001-SIGNED-AAB
+          name: Werkers-Simson-5.0.1-build50002-SIGNED-AAB
           path: ${{ env.ANDROID_PROJECT }}/app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
           retention-days: 30
