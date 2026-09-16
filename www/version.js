@@ -1,6 +1,6 @@
 /* Auto-generated from app-version.json. Do not edit by hand. */
 (() => {
-  const release = {"version":"4.5.0","build":4501,"renderer":"GLB 4.5 Studio","channel":"beta","source":"www","releaseDate":"2026-08-20"};
+  const release = {"version":"5.0.1","build":50001,"renderer":"GLB 5.0 Studio","channel":"beta","source":"www","releaseDate":"2026-09-16"};
   window.WERKERS_RELEASE = Object.freeze(release);
 
   function applyReleaseLabel() {
