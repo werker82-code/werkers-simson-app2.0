@@ -27,13 +27,9 @@ jobs:
           set -euo pipefail
           RELEASE_PARTS="$GITHUB_WORKSPACE/.release/werkers-simson-5.0.1-build50001"
           ANDROID_ZIP="$RUNNER_TEMP/werkers-simson-5.0.1-build50001-android-project.zip"
-          test -d "$RELEASE_PARTS" || {
-            echo "::error::Die Release-Teildateien fehlen."
-            exit 1
-          }
+          test -d "$RELEASE_PARTS" || { echo "::error::Die Release-Teildateien fehlen."; exit 1; }
           cat "$RELEASE_PARTS"/part-*.b64 | base64 --decode > "$ANDROID_ZIP"
           echo "8dbc31ad1cd4fad1b27ab206e8bf2e14b57163f54bce740f86f37479cc6fdb27  $ANDROID_ZIP" | sha256sum --check
-
           mkdir -p "$GITHUB_WORKSPACE/mobile-build"
           unzip -q "$ANDROID_ZIP" -d "$GITHUB_WORKSPACE/mobile-build"
           echo "ANDROID_PROJECT=$GITHUB_WORKSPACE/mobile-build/android-store-project" >> "$GITHUB_ENV"
@@ -66,13 +62,15 @@ jobs:
           gradle-version: "8.13"
 
       - name: Android SDK einrichten
-        uses: android-actions/setup-android@v3
-
-      - name: Android API 36 installieren
         shell: bash
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+          set -euo pipefail
+          export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Google-Play-Upload-Key vorbereiten
         shell: bash
