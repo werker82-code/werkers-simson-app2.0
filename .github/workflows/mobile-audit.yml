@@ -1,0 +1,99 @@
+name: Mobile Release Audit
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild packaged release project
+        shell: bash
+        run: |
+          set -euo pipefail
+          PARTS="$GITHUB_WORKSPACE/.release/werkers-simson-5.0.1-build50001"
+          ZIP="$RUNNER_TEMP/release.zip"
+          cat "$PARTS"/part-*.b64 | base64 --decode > "$ZIP"
+          echo "8dbc31ad1cd4fad1b27ab206e8bf2e14b57163f54bce740f86f37479cc6fdb27  $ZIP" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/release"
+          unzip -q "$ZIP" -d "$RUNNER_TEMP/release"
+          echo "ANDROID_PROJECT=$RUNNER_TEMP/release/android-store-project" >> "$GITHUB_ENV"
+      - name: Validate app payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$ANDROID_PROJECT/app/src/main/assets/index.html"
+          test -f "$ANDROID_PROJECT/app/src/main/assets/data.json"
+          test -f "$ANDROID_PROJECT/app/src/main/assets/configurator3d.js"
+          test -f "$ANDROID_PROJECT/app/src/main/assets/version.js"
+          grep -Fq "versionCode = 50001" "$ANDROID_PROJECT/app/build.gradle"
+          grep -Fq "versionName = '5.0.1'" "$ANDROID_PROJECT/app/build.gradle"
+          grep -Fq '"version":"5.0.1"' "$ANDROID_PROJECT/app/src/main/assets/version.js"
+          grep -Fq "let viewMode = 'hd'" "$ANDROID_PROJECT/app/src/main/assets/configurator3d.js"
+          test "$(find "$ANDROID_PROJECT/app/src/main/assets/assets/models/hd" -maxdepth 1 -name '*.glb' | wc -l)" -eq 45
+          python3 -m json.tool "$ANDROID_PROJECT/app/src/main/assets/data.json" >/dev/null
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Build unsigned Android release and debug APK
+        working-directory: ${{ env.ANDROID_PROJECT }}
+        run: gradle --no-daemon clean assembleDebug assembleRelease
+      - name: Verify APKs
+        shell: bash
+        run: |
+          set -euo pipefail
+          find "$ANDROID_PROJECT/app/build/outputs/apk" -name '*.apk' -type f -size +0c -print
+          test -n "$(find "$ANDROID_PROJECT/app/build/outputs/apk/debug" -name '*.apk' -print -quit)"
+          test -n "$(find "$ANDROID_PROJECT/app/build/outputs/apk/release" -name '*.apk' -print -quit)"
+
+  ios-audit:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare common 5.0.1 web payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          PARTS="$GITHUB_WORKSPACE/.release/werkers-simson-5.0.1-build50001"
+          ZIP="$RUNNER_TEMP/release.zip"
+          : > "$ZIP"
+          for P in "$PARTS"/part-*.b64; do base64 --decode < "$P" >> "$ZIP"; done
+          echo "8dbc31ad1cd4fad1b27ab206e8bf2e14b57163f54bce740f86f37479cc6fdb27  $ZIP" | shasum -a 256 --check
+          mkdir -p "$RUNNER_TEMP/release"
+          unzip -q "$ZIP" -d "$RUNNER_TEMP/release"
+          rm -rf www
+          cp -R "$RUNNER_TEMP/release/android-store-project/app/src/main/assets" www
+          grep -Fq '"version":"5.0.1"' www/version.js
+          python3 -m json.tool www/data.json >/dev/null
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Capacitor dependencies
+        run: npm install
+      - name: Create and sync iOS project
+        run: |
+          rm -rf ios
+          npx cap add ios
+          npx cap sync ios
+      - name: Build iOS simulator app without signing
+        shell: bash
+        run: |
+          set -o pipefail
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
