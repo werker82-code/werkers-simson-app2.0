@@ -10,11 +10,11 @@ on:
       marketing_version:
         description: App-Store-Version
         required: true
-        default: '1.0'
+        default: '5.0.1'
       build_number:
         description: Eindeutige iOS-Buildnummer
         required: true
-        default: '3'
+        default: '50001'
 
 permissions:
   contents: read
@@ -28,8 +28,8 @@ jobs:
       APP_ID: com.werkerswerkstatt.simson
       APP_NAME: Werkers Simson
       TEAM_ID: TYJS76T49A
-      IOS_MARKETING_VERSION: ${{ inputs.marketing_version || '1.0' }}
-      IOS_BUILD_NUMBER: ${{ inputs.build_number || '3' }}
+      IOS_MARKETING_VERSION: ${{ inputs.marketing_version || '5.0.1' }}
+      IOS_BUILD_NUMBER: ${{ inputs.build_number || '50001' }}
 
     steps:
       - name: Checkout repository
@@ -86,8 +86,6 @@ jobs:
           /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" ios/App/App/Info.plist || \
           /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" ios/App/App/Info.plist
 
-          # App Store icons must be fully opaque. Convert through JPEG to
-          # guarantee that the final PNG contains no alpha/transparency channel.
           if [ -f "www/assets/icon-512.png" ]; then
             mkdir -p ios/App/App/Assets.xcassets/AppIcon.appiconset
             sips -z 1024 1024 -s format jpeg -s formatOptions 100 \
@@ -109,7 +107,6 @@ jobs:
           test -n "$ASC_KEY_ID" || (echo "Missing secret ASC_KEY_ID" && exit 1)
           test -n "$ASC_ISSUER_ID" || (echo "Missing secret ASC_ISSUER_ID" && exit 1)
           test -n "$ASC_KEY_P8" || (echo "Missing secret ASC_KEY_P8" && exit 1)
-
           mkdir -p "$HOME/.appstoreconnect/private_keys"
           printf '%s' "$ASC_KEY_P8" > "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
           chmod 600 "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
